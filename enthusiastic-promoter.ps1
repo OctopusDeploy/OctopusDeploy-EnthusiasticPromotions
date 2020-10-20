@@ -1,31 +1,42 @@
-if (-not (Test-Path variable:OctopusParameters)) {
-    $OctopusParameters = New-Object 'System.Collections.Generic.Dictionary[String,String]'
-}
-#automatically provided variables
-$projectName = $OctopusParameters["Octopus.Project.Name"]
-$spaceId = $OctopusParameters["Octopus.Space.Id"]
-$projectId = $OctopusParameters["Octopus.Project.Id"]
-
-#variables provided from additional packages
-$octopusToolsPath = $OctopusParameters["Octopus.Action.Package[OctopusTools].ExtractedPath"]
-$octopusVersioningPath = $OctopusParameters["Octopus.Action.Package[Octopus.Versioning].ExtractedPath"]
-
-#variables from the project
-$octofrontApiKey = $OctopusParameters["OctofrontSoftwareProblemsAuthToken"]
-$octofrontUrl = $OctopusParameters["OctofrontUrl"]
-$octopusApiKey = $OctopusParameters["OctopusApiKey"]
 
 #lookup table for "how long the release needs to be in the specified environment, before allowing it to move on"
 $waitTimeForEnvironmentLookup = @{
-    "Environments-2583" = @{ "Name" = "Branch Instances (Staging)"; "BakeTime" = New-TimeSpan -Minutes 0; "StabilizationPhaseBakeTime" = New-TimeSpan -Hours 2; }
-    "Environments-2621" = @{ "Name" = "Octopus Cloud Tests";        "BakeTime" = New-TimeSpan -Minutes 0; "StabilizationPhaseBakeTime" = New-TimeSpan -Minutes 0;}
-    "Environments-2601" = @{ "Name" = "Production";   				"BakeTime" = New-TimeSpan -Minutes 0; "StabilizationPhaseBakeTime" = New-TimeSpan -Minutes 0;}
-    "Environments-2584" = @{ "Name" = "Branch Instances (Prod)";    "BakeTime" = New-TimeSpan -Days 1;    "StabilizationPhaseBakeTime" = New-TimeSpan -Days 1; }
-    "Environments-2585" = @{ "Name" = "Staff";                      "BakeTime" = New-TimeSpan -Minutes 0; "StabilizationPhaseBakeTime" = New-TimeSpan -Days 1; }
-    "Environments-2586" = @{ "Name" = "Friends of Octopus";         "BakeTime" = New-TimeSpan -Minutes 0; "StabilizationPhaseBakeTime" = New-TimeSpan -Days 1; }
-    "Environments-2587" = @{ "Name" = "Early Adopters";             "BakeTime" = New-TimeSpan -Minutes 0; "StabilizationPhaseBakeTime" = New-TimeSpan -Days 7; }
-    "Environments-2588" = @{ "Name" = "Stable";                     "BakeTime" = New-TimeSpan -Minutes 0; "StabilizationPhaseBakeTime" = New-TimeSpan -Days 7; }
+    "Environments-2583" = @{ "Name" = "Branch Instances (Staging)"; "BakeTime" = New-TimeSpan -Minutes 0; "StabilizationPhaseBakeTime" = New-TimeSpan -Hours 2;   }
+    "Environments-2621" = @{ "Name" = "Octopus Cloud Tests";        "BakeTime" = New-TimeSpan -Minutes 0; "StabilizationPhaseBakeTime" = New-TimeSpan -Minutes 0; }
+    "Environments-2601" = @{ "Name" = "Production";                 "BakeTime" = New-TimeSpan -Minutes 0; "StabilizationPhaseBakeTime" = New-TimeSpan -Minutes 0; }
+    "Environments-2584" = @{ "Name" = "Branch Instances (Prod)";    "BakeTime" = New-TimeSpan -Days 1;    "StabilizationPhaseBakeTime" = New-TimeSpan -Days 1;    }
+    "Environments-2585" = @{ "Name" = "Staff";                      "BakeTime" = New-TimeSpan -Minutes 0; "StabilizationPhaseBakeTime" = New-TimeSpan -Days 1;    }
+    "Environments-2586" = @{ "Name" = "Friends of Octopus";         "BakeTime" = New-TimeSpan -Minutes 0; "StabilizationPhaseBakeTime" = New-TimeSpan -Days 1;    }
+    "Environments-2587" = @{ "Name" = "Early Adopters";             "BakeTime" = New-TimeSpan -Minutes 0; "StabilizationPhaseBakeTime" = New-TimeSpan -Days 7;    }
+    "Environments-2588" = @{ "Name" = "Stable";                     "BakeTime" = New-TimeSpan -Minutes 0; "StabilizationPhaseBakeTime" = New-TimeSpan -Days 7;    }
     "Environments-2589" = @{ "Name" = "General Availablilty";       "BakeTime" = New-TimeSpan -Minutes 0; "StabilizationPhaseBakeTime" = New-TimeSpan -Minutes 0; }
+}
+
+if (Test-Path variable:OctopusParameters) {
+    #automatically provided variables
+    $projectName = $OctopusParameters["Octopus.Project.Name"]
+    $spaceId = $OctopusParameters["Octopus.Space.Id"]
+    $projectId = $OctopusParameters["Octopus.Project.Id"]
+
+    #variables provided from additional packages
+    $octopusToolsPath = $OctopusParameters["Octopus.Action.Package[OctopusTools].ExtractedPath"]
+    $octopusVersioningPath = $OctopusParameters["Octopus.Action.Package[Octopus.Versioning].ExtractedPath"]
+
+    #variables from the project
+    $octofrontApiKey = $OctopusParameters["OctofrontSoftwareProblemsAuthToken"]
+    $octofrontUrl = $OctopusParameters["OctofrontUrl"]
+    $octopusApiKey = $OctopusParameters["OctopusApiKey"]
+
+    # do the magic
+    Add-Type -Path "$octopusVersioningPath/lib/netstandard2.0/Octopus.Versioning.dll"
+
+    $progression = Get-FromApi "https://deploy.octopus.app/api/$spaceId/progression/$projectId"
+    $channels = Get-FromApi "https://deploy.octopus.app/api/$spaceId/projects/$projectId/channels"
+    $lifecycles = Get-FromApi "https://deploy.octopus.app/api/$spaceId/lifecycles/all"
+
+    $promotionCandidates = Get-PromotionCandidates -progression $progression -channels $channels -lifecycles $lifecycles
+
+    Promote-Releases $promotionCandidates
 }
 
 function Test-PipelineBlocked($release) {
@@ -57,10 +68,7 @@ function Get-AlreadyDeployedEnvironmentIds($release) {
   return @($release.Deployments.PSObject.Properties.Name)
 }
 
-function Get-DeploymentsToEnvironment {
-  [OutputType([object[]])]
-  Param($release, $environmentId)
-
+function Get-DeploymentsToEnvironment($release, $environmentId) {
   return (,($release.Deployments.PSObject.Properties | where-object { $_.Name -eq $environmentId }))
 }
 
@@ -194,34 +202,20 @@ function Get-PromotionCandidates($progression, $channels, $lifecycles) {
     return $promotionCandidates
 }
 
-function Main() {
-    Add-Type -Path "$octopusVersioningPath/lib/netstandard2.0/Octopus.Versioning.dll"
+function Get-FromApi($url) {
+    Write-Verbose "Getting response from $url"
+    $result = Invoke-restmethod -Uri $url -Headers @{ 'X-Octopus-ApiKey' = $octopusApiKey }
 
-    $progression = Invoke-restmethod -Uri "https://deploy.octopus.app/api/$spaceId/progression/$projectId" -Headers @{ 'X-Octopus-ApiKey' = $octopusApiKey }
+    # log out the  json, so we can diagnose what's happening / write a test for it
+    write-verbose "--------------------------------------------------------"
+    write-verbose "response:"
+    write-verbose "--------------------------------------------------------"
+    write-verbose ($result | ConvertTo-Json -depth 10)
+    write-verbose "--------------------------------------------------------"
+    return $result
+}
 
-    # log out the progression json, so we can diagnose what's happening / write a test for it
-    write-verbose "--------------------------------------------------------"
-    write-verbose "Progression response:"
-    write-verbose "--------------------------------------------------------"
-    write-verbose ($progression | ConvertTo-Json -depth 10)
-    write-verbose "--------------------------------------------------------"
-
-    $channels = Invoke-restmethod -Uri "https://deploy.octopus.app/api/$spaceId/projects/$projectId/channels" -Headers @{ 'X-Octopus-ApiKey' = $octopusApiKey }
-    write-verbose "--------------------------------------------------------"
-    write-verbose "Channels response:"
-    write-verbose "--------------------------------------------------------"
-    write-verbose ($channels | ConvertTo-Json -depth 10)
-    write-verbose "--------------------------------------------------------"
-
-    $lifecycles = Invoke-restmethod -Uri "https://deploy.octopus.app/api/$spaceId/lifecycles/all" -Headers @{ 'X-Octopus-ApiKey' = $octopusApiKey }
-    write-verbose "--------------------------------------------------------"
-    write-verbose "Lifecycles response:"
-    write-verbose "--------------------------------------------------------"
-    write-verbose ($lifecycles | ConvertTo-Json -depth 10)
-    write-verbose "--------------------------------------------------------"
-
-    $promotionCandidates = Get-PromotionCandidates -progression $progression -channels $channels -lifecycles $lifecycles
-
+function Promote-Releases($promotionCandidates) {
     write-host "--------------------------------------------------------"
     if ($promotionCandidates.Count -eq 0) {
         Write-Host "No promotion candidates found"
