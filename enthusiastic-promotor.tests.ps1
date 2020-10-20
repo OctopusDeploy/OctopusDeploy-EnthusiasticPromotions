@@ -24,12 +24,12 @@ Describe 'Enthusiastic promoter' {
     Mock Test-PipelineBlocked { return $false; }
     $progression = (Get-Content -Path "SampleData/sample1.json" -Raw) | ConvertFrom-Json
     $channels = (Get-Content -Path "SampleData/channels.json" -Raw) | ConvertFrom-Json
-    $lifecycles = (Get-Content -Path "SampleData/lifecycles.json" -Raw) | ConvertFrom-Json
     Mock Get-CurrentDate { return [System.DateTime]::Parse("19/Oct/2020 15:35:06") }
 
-    $result = $((Get-PromotionCandidates $progression $channels $lifecycles).Values) | sort-object -property Version
+    $result = $((Get-PromotionCandidates $progression $channels).Values) | sort-object -property Version
 
     $result.Count | should -be 4
+
 
     $result[0].Version | Should -be "2020.4.7"
     $result[0].EnvironmentName | Should -be "Stable"
@@ -58,10 +58,9 @@ Describe 'Enthusiastic promoter' {
     Mock Test-PipelineBlocked { return $false; }
     $progression = (Get-Content -Path "SampleData/sample2.json" -Raw) | ConvertFrom-Json
     $channels = (Get-Content -Path "SampleData/channels.json" -Raw) | ConvertFrom-Json
-    $lifecycles = (Get-Content -Path "SampleData/lifecycles.json" -Raw) | ConvertFrom-Json
     Mock Get-CurrentDate { return [System.DateTime]::Parse("19/Oct/2020 15:35:06") }
 
-    $result = $((Get-PromotionCandidates $progression $channels $lifecycles).Values) | sort-object -property Version
+    $result = $((Get-PromotionCandidates $progression $channels).Values) | sort-object -property Version
 
     $result.Count | Should -be 1
 
@@ -75,9 +74,8 @@ Describe 'Enthusiastic promoter' {
     Mock Get-CurrentDate { return [System.DateTime]::Parse("19/Oct/2020 15:35:06") }
     $progression = (Get-Content -Path "SampleData/sample3.json" -Raw) | ConvertFrom-Json
     $channels = (Get-Content -Path "SampleData/channels.json" -Raw) | ConvertFrom-Json
-    $lifecycles = (Get-Content -Path "SampleData/lifecycles.json" -Raw) | ConvertFrom-Json
 
-    $result = $((Get-PromotionCandidates $progression $channels $lifecycles).Values) | sort-object -property Version
+    $result = $((Get-PromotionCandidates $progression $channels).Values) | sort-object -property Version
 
     $result.Count | should -be 2
 
@@ -96,24 +94,22 @@ Describe 'Enthusiastic promoter' {
     Mock Test-PipelineBlocked { return $false; }
     $progression = (Get-Content -Path "SampleData/sample4.json" -Raw) | ConvertFrom-Json
     $channels = (Get-Content -Path "SampleData/channels.json" -Raw) | ConvertFrom-Json
-    $lifecycles = (Get-Content -Path "SampleData/lifecycles.json" -Raw) | ConvertFrom-Json
     Mock Get-CurrentDate { return [System.DateTime]::Parse("19/Oct/2020 15:35:06") }
 
-    $result = $((Get-PromotionCandidates $progression $channels $lifecycles).Values) | sort-object -property Version
+    $result = $((Get-PromotionCandidates $progression $channels).Values) | sort-object -property Version
 
     $result.Count | should -be 0
   }
 
   It 'should choose the stabilisation phase for channels using the Current Release (prior to going GA) lifecycle' {
     $channels = (Get-Content -Path "SampleData/channels.json" -Raw) | ConvertFrom-Json
-    $lifecycles = (Get-Content -Path "SampleData/lifecycles.json" -Raw) | ConvertFrom-Json
 
     $channelId = "Channels-4583" #'Latest Release - 2020.5', uses lifecycle Lifecycles-1667 'Current Release (prior to going GA)'
-    $result = Test-ReleaseInStabilizationPhase $channelId $channels $lifecycles
+    $result = Test-ReleaseInStabilizationPhase $channelId $channels
     $result | Should -be $true
 
     $channelId = "Channels-4449" #'Previous Release - 2020.4', uses lifecycle Lifecycles-1669 'Previous Release (prior to new release going GA)'
-    $result = Test-ReleaseInStabilizationPhase $channelId $channels $lifecycles
+    $result = Test-ReleaseInStabilizationPhase $channelId $channels
     $result | Should -be $false
   }
 }

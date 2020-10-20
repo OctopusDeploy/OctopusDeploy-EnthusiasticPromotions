@@ -112,14 +112,19 @@ function Get-MostRecentReleaseDeployedToEnvironment($progression, $release, $env
            | Select-Object -First 1
 }
 
-function Test-ReleaseInStabilizationPhase($channelId, $channels, $lifecycles) {
+function Test-ReleaseInStabilizationPhase($channelId, $channels) {
     $channel = $channels.Items | Where-Object { $_.Id -eq $channelId }
-    $lifecycle = $lifecycles | Where-Object { $_.Id -eq $channel.LifecycleId }
 
-    if ($lifecycle.Name -like '*prior to going GA*') {
-        return $true
+    switch ($channel.LifecycleId) {
+        "Lifecycles-1665" { return $false; } # Branch Builds
+        "Lifecycles-1670" { return $false; } # CI Builds
+        "Lifecycles-1666" { return $false; } # Current Release (after going GA)
+        "Lifecycles-1667" { return $true;  } # Current Release (prior to going GA)
+        "Lifecycles-1668" { return $false; } # LTS Release Branch
+        "Lifecycles-1669" { return $false; } # Previous Release (prior to new release going GA)
     }
-    return $false
+    # unknown lifecycle - let's default to slow... safe by default.
+    return $true;
 }
 
 function Get-PromotionCandidates($progression, $channels, $lifecycles) {
@@ -153,7 +158,7 @@ function Get-PromotionCandidates($progression, $channels, $lifecycles) {
                 $channelName = Get-ChannelName $channels $release.Release.ChannelId
                 Write-Host " - A newer release '$($mostRecentReleaseDeployedToNextEnvironment.Release.Version)' in channel '$channelName' has already been deployed to '$nextEnvironmentName'."
             } else {
-                if (Test-ReleaseInStabilizationPhase -channelId $release.Release.ChannelId -channels $channels -lifecycles $lifecycles) {
+                if (Test-ReleaseInStabilizationPhase -channelId $release.Release.ChannelId -channels $channels) {
                     Write-Host " - Release '$($release.Release.Version)' is in stabilization phase - allowing longer bake times"
                     $bakeTime = $waitTimeForEnvironmentLookup[$nextEnvironmentId].StabilizationPhaseBakeTime
                 } else {
