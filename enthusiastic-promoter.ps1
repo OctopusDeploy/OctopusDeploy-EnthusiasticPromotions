@@ -17,15 +17,15 @@ $octopusApiKey = $OctopusParameters["OctopusApiKey"]
 
 #lookup table for "how long the release needs to be in the specified environment, before allowing it to move on"
 $waitTimeForEnvironmentLookup = @{
-    "Environments-2583" = @{ "Name" = "Branch Instances (Staging)"; "BakeTime" = New-TimeSpan -Hours 2;   }
-    "Environments-2621" = @{ "Name" = "Octopus Cloud Tests";        "BakeTime" = New-TimeSpan -Minutes 0; }
-    "Environments-2601" = @{ "Name" = "Production";   				"BakeTime" = New-TimeSpan -Minutes 0; }
-    "Environments-2584" = @{ "Name" = "Branch Instances (Prod)";    "BakeTime" = New-TimeSpan -Days 1;    }
-    "Environments-2585" = @{ "Name" = "Staff";                      "BakeTime" = New-TimeSpan -Days 1;    }
-    "Environments-2586" = @{ "Name" = "Friends of Octopus";         "BakeTime" = New-TimeSpan -Days 1;    }
-    "Environments-2587" = @{ "Name" = "Early Adopters";             "BakeTime" = New-TimeSpan -Days 7;    }
-    "Environments-2588" = @{ "Name" = "Stable";                     "BakeTime" = New-TimeSpan -Days 7;    }
-    "Environments-2589" = @{ "Name" = "General Availablilty";       "BakeTime" = New-TimeSpan -Days 1;    }
+    "Environments-2583" = @{ "Name" = "Branch Instances (Staging)"; "BakeTime" = New-TimeSpan -Minutes 0; "StabilizationPhaseBakeTime" = New-TimeSpan -Hours 2; }
+    "Environments-2621" = @{ "Name" = "Octopus Cloud Tests";        "BakeTime" = New-TimeSpan -Minutes 0; "StabilizationPhaseBakeTime" = New-TimeSpan -Minutes 0;}
+    "Environments-2601" = @{ "Name" = "Production";   				"BakeTime" = New-TimeSpan -Minutes 0; "StabilizationPhaseBakeTime" = New-TimeSpan -Minutes 0;}
+    "Environments-2584" = @{ "Name" = "Branch Instances (Prod)";    "BakeTime" = New-TimeSpan -Days 1;    "StabilizationPhaseBakeTime" = New-TimeSpan -Days 1; }
+    "Environments-2585" = @{ "Name" = "Staff";                      "BakeTime" = New-TimeSpan -Minutes 0; "StabilizationPhaseBakeTime" = New-TimeSpan -Days 1; }
+    "Environments-2586" = @{ "Name" = "Friends of Octopus";         "BakeTime" = New-TimeSpan -Minutes 0; "StabilizationPhaseBakeTime" = New-TimeSpan -Days 1; }
+    "Environments-2587" = @{ "Name" = "Early Adopters";             "BakeTime" = New-TimeSpan -Minutes 0; "StabilizationPhaseBakeTime" = New-TimeSpan -Days 7; }
+    "Environments-2588" = @{ "Name" = "Stable";                     "BakeTime" = New-TimeSpan -Minutes 0; "StabilizationPhaseBakeTime" = New-TimeSpan -Days 7; }
+    "Environments-2589" = @{ "Name" = "General Availablilty";       "BakeTime" = New-TimeSpan -Minutes 0; "StabilizationPhaseBakeTime" = New-TimeSpan -Days 1; }
 }
 
 function Test-PipelineBlocked($release) {
@@ -112,7 +112,17 @@ function Get-MostRecentReleaseDeployedToEnvironment($progression, $release, $env
            | Select-Object -First 1
 }
 
-function Get-PromotionCandidates($progression) {
+function Test-ReleaseInStabilizationPhase($channelId, $channels, $lifecycles) {
+    $channel = $channels.Items | Where-Object { $_.Id -eq $channelId }
+    $lifecycle = $lifecycles | Where-Object { $_.Id -eq $channel.LifecycleId }
+
+    if ($lifecycle.Name -like '*prior to going GA*') {
+        return $true
+    }
+    return $false
+}
+
+function Get-PromotionCandidates($progression, $channels, $lifecycles) {
     $promotionCandidates = @{}
 
     Write-Host "Looking for possible releases to promote:"
@@ -143,7 +153,13 @@ function Get-PromotionCandidates($progression) {
                 $channelName = Get-ChannelName $channels $release.Release.ChannelId
                 Write-Host " - A newer release '$($mostRecentReleaseDeployedToNextEnvironment.Release.Version)' in channel '$channelName' has already been deployed to '$nextEnvironmentName'."
             } else {
-                $bakeTime = $waitTimeForEnvironmentLookup[$currentEnvironmentId].BakeTime
+                if (Test-ReleaseInStabilizationPhase -channelId $release.Release.ChannelId -channels $channels -lifecycles $lifecycles) {
+                    Write-Host " - Release '$($release.Release.Version)' is in stabilization phase - allowing longer bake times"
+                    $bakeTime = $waitTimeForEnvironmentLookup[$nextEnvironmentId].StabilizationPhaseBakeTime
+                } else {
+                    Write-Host " - Release '$($release.Release.Version)' is not in stabilization phase - using shorter bake times"
+                    $bakeTime = $waitTimeForEnvironmentLookup[$nextEnvironmentId].BakeTime
+                }
                 Write-Host " - Calculated the bake time that releases should stay in environment '$currentEnvironmentName' before being promoted to '$nextEnvironmentName' to be $bakeTime."
 
                 $deploymentsToCurrentEnvironment = Get-MostRecentDeploymentToEnvironment $release $currentEnvironmentId
@@ -155,7 +171,7 @@ function Get-PromotionCandidates($progression) {
                         # not sure this should ever happen
                         Write-Warning " - Bake time was ignored as there was no deployments to the environment $currentEnvironmentName"
                     } else {
-                        Write-Host " - Completion time of last deployment to $currentEnvironmentName was $($deploymentsToCurrentEnvironment[0].CompletedTime) (UTC)"
+                        Write-Host " - Completion time of last deployment to $currentEnvironmentName was $($deploymentsToCurrentEnvironment[0].CompletedTime) (UTC). Release has completed baking."
                     }
                     Write-Host " - Checking Andon cord to see if release pipeline is blocked..."
                     if (Test-PipelineBlocked $release) {
@@ -186,14 +202,20 @@ function Main() {
     write-verbose "--------------------------------------------------------"
 
     $channels = Invoke-restmethod -Uri "https://deploy.octopus.app/api/$spaceId/projects/$projectId/channels" -Headers @{ 'X-Octopus-ApiKey' = $octopusApiKey }
-    # log out the channels json, so we can diagnose what's happening / write a test for it
     write-verbose "--------------------------------------------------------"
     write-verbose "Channels response:"
     write-verbose "--------------------------------------------------------"
     write-verbose ($channels | ConvertTo-Json -depth 10)
     write-verbose "--------------------------------------------------------"
 
-    $promotionCandidates = Get-PromotionCandidates $progression $channels
+    $lifecycles = Invoke-restmethod -Uri "https://deploy.octopus.app/api/$spaceId/lifecycles/all" -Headers @{ 'X-Octopus-ApiKey' = $octopusApiKey }
+    write-verbose "--------------------------------------------------------"
+    write-verbose "Lifecycles response:"
+    write-verbose "--------------------------------------------------------"
+    write-verbose ($lifecycles | ConvertTo-Json -depth 10)
+    write-verbose "--------------------------------------------------------"
+
+    $promotionCandidates = Get-PromotionCandidates -progression $progression -channels $channels -lifecycles $lifecycles
 
     write-host "--------------------------------------------------------"
     if ($promotionCandidates.Count -eq 0) {

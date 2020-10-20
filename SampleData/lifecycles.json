@@ -1,0 +1,522 @@
+[
+    {
+      "Id": "Lifecycles-1665",
+      "SpaceId": "Spaces-622",
+      "Phases": [
+        {
+          "Id": "5637ea5e-6532-4576-977c-c17f40a22d40",
+          "Name": "Branch Instances",
+          "AutomaticDeploymentTargets": [
+            "Environments-2583"
+          ],
+          "OptionalDeploymentTargets": [],
+          "MinimumEnvironmentsBeforePromotion": 0,
+          "IsOptionalPhase": false,
+          "ReleaseRetentionPolicy": null,
+          "TentacleRetentionPolicy": null
+        }
+      ],
+      "Name": "Branch Builds",
+      "ReleaseRetentionPolicy": {
+        "Unit": "Days",
+        "QuantityToKeep": 30,
+        "ShouldKeepForever": false
+      },
+      "TentacleRetentionPolicy": {
+        "Unit": "Days",
+        "QuantityToKeep": 30,
+        "ShouldKeepForever": false
+      },
+      "Description": "",
+      "Links": {
+        "Self": "/api/Spaces-622/lifecycles/Lifecycles-1665",
+        "Preview": "/api/Spaces-622/lifecycles/Lifecycles-1665/preview",
+        "Projects": "/api/Spaces-622/lifecycles/Lifecycles-1665/projects"
+      }
+    },
+    {
+      "Id": "Lifecycles-1670",
+      "SpaceId": "Spaces-622",
+      "Phases": [
+        {
+          "Id": "1417ef06-7cef-4347-a811-376c2bcb462c",
+          "Name": "Staging",
+          "AutomaticDeploymentTargets": [
+            "Environments-2583"
+          ],
+          "OptionalDeploymentTargets": [],
+          "MinimumEnvironmentsBeforePromotion": 0,
+          "IsOptionalPhase": false,
+          "ReleaseRetentionPolicy": null,
+          "TentacleRetentionPolicy": null
+        },
+        {
+          "Id": "34f2906d-e911-4193-8db3-7e38ca176d77",
+          "Name": "Hosted E2E Tests",
+          "AutomaticDeploymentTargets": [],
+          "OptionalDeploymentTargets": [
+            "Environments-2621"
+          ],
+          "MinimumEnvironmentsBeforePromotion": 0,
+          "IsOptionalPhase": false,
+          "ReleaseRetentionPolicy": null,
+          "TentacleRetentionPolicy": null
+        },
+        {
+          "Id": "1a0f132d-388b-4033-a5d9-2a6d27c3b388",
+          "Name": "Octopus Cloud Production",
+          "AutomaticDeploymentTargets": [],
+          "OptionalDeploymentTargets": [
+            "Environments-2601"
+          ],
+          "MinimumEnvironmentsBeforePromotion": 0,
+          "IsOptionalPhase": false,
+          "ReleaseRetentionPolicy": null,
+          "TentacleRetentionPolicy": null
+        },
+        {
+          "Id": "60fa8792-7d9b-41c4-855b-f7b041c34944",
+          "Name": "Branch Instances (Prod)",
+          "AutomaticDeploymentTargets": [],
+          "OptionalDeploymentTargets": [
+            "Environments-2584"
+          ],
+          "MinimumEnvironmentsBeforePromotion": 0,
+          "IsOptionalPhase": false,
+          "ReleaseRetentionPolicy": null,
+          "TentacleRetentionPolicy": null
+        },
+        {
+          "Id": "bcbd8fc9-01e2-49b8-a24c-a4e9c8791e87",
+          "Name": "Staff",
+          "AutomaticDeploymentTargets": [],
+          "OptionalDeploymentTargets": [
+            "Environments-2585"
+          ],
+          "MinimumEnvironmentsBeforePromotion": 0,
+          "IsOptionalPhase": false,
+          "ReleaseRetentionPolicy": null,
+          "TentacleRetentionPolicy": null
+        }
+      ],
+      "Name": "CI Builds",
+      "ReleaseRetentionPolicy": {
+        "Unit": "Days",
+        "QuantityToKeep": 30,
+        "ShouldKeepForever": false
+      },
+      "TentacleRetentionPolicy": {
+        "Unit": "Days",
+        "QuantityToKeep": 30,
+        "ShouldKeepForever": false
+      },
+      "Description": "",
+      "Links": {
+        "Self": "/api/Spaces-622/lifecycles/Lifecycles-1670",
+        "Preview": "/api/Spaces-622/lifecycles/Lifecycles-1670/preview",
+        "Projects": "/api/Spaces-622/lifecycles/Lifecycles-1670/projects"
+      }
+    },
+    {
+      "Id": "Lifecycles-1666",
+      "SpaceId": "Spaces-622",
+      "Phases": [
+        {
+          "Id": "5cb1f6fa-7932-4bb3-bd50-20659ba404bc",
+          "Name": "Staging",
+          "AutomaticDeploymentTargets": [
+            "Environments-2583"
+          ],
+          "OptionalDeploymentTargets": [],
+          "MinimumEnvironmentsBeforePromotion": 0,
+          "IsOptionalPhase": false,
+          "ReleaseRetentionPolicy": null,
+          "TentacleRetentionPolicy": null
+        },
+        {
+          "Id": "bce93a2a-e254-464f-81fe-997655d2d1a7",
+          "Name": "Hosted E2E Tests",
+          "AutomaticDeploymentTargets": [],
+          "OptionalDeploymentTargets": [
+            "Environments-2621"
+          ],
+          "MinimumEnvironmentsBeforePromotion": 0,
+          "IsOptionalPhase": false,
+          "ReleaseRetentionPolicy": null,
+          "TentacleRetentionPolicy": null
+        },
+        {
+          "Id": "6a3c7b76-96fc-4986-b337-4136d0ddee38",
+          "Name": "Octopus Cloud Production",
+          "AutomaticDeploymentTargets": [],
+          "OptionalDeploymentTargets": [
+            "Environments-2601"
+          ],
+          "MinimumEnvironmentsBeforePromotion": 0,
+          "IsOptionalPhase": false,
+          "ReleaseRetentionPolicy": null,
+          "TentacleRetentionPolicy": null
+        },
+        {
+          "Id": "5d58e40b-4b5e-46f6-b782-3e2f6795c540",
+          "Name": "Branch Instances (Prod)",
+          "AutomaticDeploymentTargets": [],
+          "OptionalDeploymentTargets": [
+            "Environments-2584"
+          ],
+          "MinimumEnvironmentsBeforePromotion": 0,
+          "IsOptionalPhase": false,
+          "ReleaseRetentionPolicy": null,
+          "TentacleRetentionPolicy": null
+        },
+        {
+          "Id": "9d35f448-c18f-4a7c-a6de-dae9cae4f60b",
+          "Name": "Friends of Octopus",
+          "AutomaticDeploymentTargets": [],
+          "OptionalDeploymentTargets": [
+            "Environments-2586"
+          ],
+          "MinimumEnvironmentsBeforePromotion": 0,
+          "IsOptionalPhase": false,
+          "ReleaseRetentionPolicy": null,
+          "TentacleRetentionPolicy": null
+        },
+        {
+          "Id": "f41d41f7-33db-49c5-bf69-f8d48500cc3e",
+          "Name": "Early Adopters",
+          "AutomaticDeploymentTargets": [],
+          "OptionalDeploymentTargets": [
+            "Environments-2587"
+          ],
+          "MinimumEnvironmentsBeforePromotion": 0,
+          "IsOptionalPhase": false,
+          "ReleaseRetentionPolicy": null,
+          "TentacleRetentionPolicy": null
+        },
+        {
+          "Id": "f94610be-d93c-4e80-a4d5-7b52425d5db8",
+          "Name": "Stable",
+          "AutomaticDeploymentTargets": [],
+          "OptionalDeploymentTargets": [
+            "Environments-2588"
+          ],
+          "MinimumEnvironmentsBeforePromotion": 0,
+          "IsOptionalPhase": false,
+          "ReleaseRetentionPolicy": null,
+          "TentacleRetentionPolicy": null
+        },
+        {
+          "Id": "bf8b83cb-b6d1-493b-8233-6a62612b7d2e",
+          "Name": "General Availablilty",
+          "AutomaticDeploymentTargets": [],
+          "OptionalDeploymentTargets": [
+            "Environments-2589"
+          ],
+          "MinimumEnvironmentsBeforePromotion": 0,
+          "IsOptionalPhase": false,
+          "ReleaseRetentionPolicy": null,
+          "TentacleRetentionPolicy": null
+        }
+      ],
+      "Name": "Current Release (after going GA)",
+      "ReleaseRetentionPolicy": {
+        "Unit": "Days",
+        "QuantityToKeep": 30,
+        "ShouldKeepForever": false
+      },
+      "TentacleRetentionPolicy": {
+        "Unit": "Days",
+        "QuantityToKeep": 30,
+        "ShouldKeepForever": false
+      },
+      "Description": "",
+      "Links": {
+        "Self": "/api/Spaces-622/lifecycles/Lifecycles-1666",
+        "Preview": "/api/Spaces-622/lifecycles/Lifecycles-1666/preview",
+        "Projects": "/api/Spaces-622/lifecycles/Lifecycles-1666/projects"
+      }
+    },
+    {
+      "Id": "Lifecycles-1667",
+      "SpaceId": "Spaces-622",
+      "Phases": [
+        {
+          "Id": "da80487b-cb80-44c3-91dd-76071ff7ab14",
+          "Name": "Staging",
+          "AutomaticDeploymentTargets": [
+            "Environments-2583"
+          ],
+          "OptionalDeploymentTargets": [],
+          "MinimumEnvironmentsBeforePromotion": 0,
+          "IsOptionalPhase": false,
+          "ReleaseRetentionPolicy": null,
+          "TentacleRetentionPolicy": null
+        },
+        {
+          "Id": "867d97cc-e74f-4af2-938e-08279061728c",
+          "Name": "Hosted E2E Tests",
+          "AutomaticDeploymentTargets": [],
+          "OptionalDeploymentTargets": [
+            "Environments-2621"
+          ],
+          "MinimumEnvironmentsBeforePromotion": 0,
+          "IsOptionalPhase": false,
+          "ReleaseRetentionPolicy": null,
+          "TentacleRetentionPolicy": null
+        },
+        {
+          "Id": "b86b36da-41b4-4e55-93df-6540a4726405",
+          "Name": "Octopus Cloud Production",
+          "AutomaticDeploymentTargets": [],
+          "OptionalDeploymentTargets": [
+            "Environments-2601"
+          ],
+          "MinimumEnvironmentsBeforePromotion": 0,
+          "IsOptionalPhase": false,
+          "ReleaseRetentionPolicy": null,
+          "TentacleRetentionPolicy": null
+        },
+        {
+          "Id": "d9fe25d5-d81a-4ced-9cc1-f187f1c73b02",
+          "Name": "Branch Instances (Prod)",
+          "AutomaticDeploymentTargets": [],
+          "OptionalDeploymentTargets": [
+            "Environments-2584"
+          ],
+          "MinimumEnvironmentsBeforePromotion": 0,
+          "IsOptionalPhase": false,
+          "ReleaseRetentionPolicy": null,
+          "TentacleRetentionPolicy": null
+        },
+        {
+          "Id": "53062d42-14e8-4c52-a97b-73f2cdf6b552",
+          "Name": "Friends of Octopus",
+          "AutomaticDeploymentTargets": [],
+          "OptionalDeploymentTargets": [
+            "Environments-2586"
+          ],
+          "MinimumEnvironmentsBeforePromotion": 0,
+          "IsOptionalPhase": false,
+          "ReleaseRetentionPolicy": null,
+          "TentacleRetentionPolicy": null
+        },
+        {
+          "Id": "76af2cc2-cb93-4ba0-ad8b-43b015f6fa72",
+          "Name": "Early Adopters",
+          "AutomaticDeploymentTargets": [],
+          "OptionalDeploymentTargets": [
+            "Environments-2587"
+          ],
+          "MinimumEnvironmentsBeforePromotion": 0,
+          "IsOptionalPhase": false,
+          "ReleaseRetentionPolicy": null,
+          "TentacleRetentionPolicy": null
+        },
+        {
+          "Id": "26b776fc-9cea-4f70-969e-199171276c13",
+          "Name": "Stable",
+          "AutomaticDeploymentTargets": [],
+          "OptionalDeploymentTargets": [
+            "Environments-2588"
+          ],
+          "MinimumEnvironmentsBeforePromotion": 0,
+          "IsOptionalPhase": false,
+          "ReleaseRetentionPolicy": null,
+          "TentacleRetentionPolicy": null
+        }
+      ],
+      "Name": "Current Release (prior to going GA)",
+      "ReleaseRetentionPolicy": {
+        "Unit": "Days",
+        "QuantityToKeep": 30,
+        "ShouldKeepForever": false
+      },
+      "TentacleRetentionPolicy": {
+        "Unit": "Days",
+        "QuantityToKeep": 30,
+        "ShouldKeepForever": false
+      },
+      "Description": "",
+      "Links": {
+        "Self": "/api/Spaces-622/lifecycles/Lifecycles-1667",
+        "Preview": "/api/Spaces-622/lifecycles/Lifecycles-1667/preview",
+        "Projects": "/api/Spaces-622/lifecycles/Lifecycles-1667/projects"
+      }
+    },
+    {
+      "Id": "Lifecycles-1664",
+      "SpaceId": "Spaces-622",
+      "Phases": [],
+      "Name": "Default Lifecycle",
+      "ReleaseRetentionPolicy": {
+        "Unit": "Days",
+        "QuantityToKeep": 30,
+        "ShouldKeepForever": false
+      },
+      "TentacleRetentionPolicy": {
+        "Unit": "Items",
+        "QuantityToKeep": 0,
+        "ShouldKeepForever": true
+      },
+      "Description": null,
+      "Links": {
+        "Self": "/api/Spaces-622/lifecycles/Lifecycles-1664",
+        "Preview": "/api/Spaces-622/lifecycles/Lifecycles-1664/preview",
+        "Projects": "/api/Spaces-622/lifecycles/Lifecycles-1664/projects"
+      }
+    },
+    {
+      "Id": "Lifecycles-1668",
+      "SpaceId": "Spaces-622",
+      "Phases": [
+        {
+          "Id": "34a7919d-4bfd-4a46-9a3e-82ea8b5a68cc",
+          "Name": "Staging",
+          "AutomaticDeploymentTargets": [
+            "Environments-2583"
+          ],
+          "OptionalDeploymentTargets": [],
+          "MinimumEnvironmentsBeforePromotion": 0,
+          "IsOptionalPhase": false,
+          "ReleaseRetentionPolicy": null,
+          "TentacleRetentionPolicy": null
+        },
+        {
+          "Id": "3f0cc696-db56-4b77-a5fc-9a4122a371af",
+          "Name": "Octopus Cloud Production",
+          "AutomaticDeploymentTargets": [],
+          "OptionalDeploymentTargets": [
+            "Environments-2601"
+          ],
+          "MinimumEnvironmentsBeforePromotion": 0,
+          "IsOptionalPhase": false,
+          "ReleaseRetentionPolicy": null,
+          "TentacleRetentionPolicy": null
+        },
+        {
+          "Id": "0f0cf513-e6b1-4562-90e0-33b36284f5f5",
+          "Name": "General Availablilty",
+          "AutomaticDeploymentTargets": [],
+          "OptionalDeploymentTargets": [
+            "Environments-2589"
+          ],
+          "MinimumEnvironmentsBeforePromotion": 0,
+          "IsOptionalPhase": false,
+          "ReleaseRetentionPolicy": null,
+          "TentacleRetentionPolicy": null
+        }
+      ],
+      "Name": "LTS Release Branch",
+      "ReleaseRetentionPolicy": {
+        "Unit": "Days",
+        "QuantityToKeep": 30,
+        "ShouldKeepForever": false
+      },
+      "TentacleRetentionPolicy": {
+        "Unit": "Days",
+        "QuantityToKeep": 30,
+        "ShouldKeepForever": false
+      },
+      "Description": "",
+      "Links": {
+        "Self": "/api/Spaces-622/lifecycles/Lifecycles-1668",
+        "Preview": "/api/Spaces-622/lifecycles/Lifecycles-1668/preview",
+        "Projects": "/api/Spaces-622/lifecycles/Lifecycles-1668/projects"
+      }
+    },
+    {
+      "Id": "Lifecycles-1669",
+      "SpaceId": "Spaces-622",
+      "Phases": [
+        {
+          "Id": "0d81fb7f-540a-4485-a8fd-705ca971bdf4",
+          "Name": "Staging",
+          "AutomaticDeploymentTargets": [
+            "Environments-2583"
+          ],
+          "OptionalDeploymentTargets": [],
+          "MinimumEnvironmentsBeforePromotion": 0,
+          "IsOptionalPhase": false,
+          "ReleaseRetentionPolicy": null,
+          "TentacleRetentionPolicy": null
+        },
+        {
+          "Id": "bee67f46-6bc6-415d-96ab-19ba814d3e83",
+          "Name": "Octopus Cloud Production",
+          "AutomaticDeploymentTargets": [],
+          "OptionalDeploymentTargets": [
+            "Environments-2601"
+          ],
+          "MinimumEnvironmentsBeforePromotion": 0,
+          "IsOptionalPhase": false,
+          "ReleaseRetentionPolicy": null,
+          "TentacleRetentionPolicy": null
+        },
+        {
+          "Id": "948abdbc-642c-4043-b86a-efc134e69c2a",
+          "Name": "Friends of Octopus",
+          "AutomaticDeploymentTargets": [],
+          "OptionalDeploymentTargets": [
+            "Environments-2586"
+          ],
+          "MinimumEnvironmentsBeforePromotion": 0,
+          "IsOptionalPhase": false,
+          "ReleaseRetentionPolicy": null,
+          "TentacleRetentionPolicy": null
+        },
+        {
+          "Id": "40fdd48f-399f-4a49-9a89-66597809f50e",
+          "Name": "Early Adopters",
+          "AutomaticDeploymentTargets": [],
+          "OptionalDeploymentTargets": [
+            "Environments-2587"
+          ],
+          "MinimumEnvironmentsBeforePromotion": 0,
+          "IsOptionalPhase": false,
+          "ReleaseRetentionPolicy": null,
+          "TentacleRetentionPolicy": null
+        },
+        {
+          "Id": "c7a61962-474a-4691-9404-e5ac4362e9da",
+          "Name": "Stable",
+          "AutomaticDeploymentTargets": [],
+          "OptionalDeploymentTargets": [
+            "Environments-2588"
+          ],
+          "MinimumEnvironmentsBeforePromotion": 0,
+          "IsOptionalPhase": false,
+          "ReleaseRetentionPolicy": null,
+          "TentacleRetentionPolicy": null
+        },
+        {
+          "Id": "cbf075f2-5423-47d8-bfb5-7f0454e299cf",
+          "Name": "General Availablilty",
+          "AutomaticDeploymentTargets": [],
+          "OptionalDeploymentTargets": [
+            "Environments-2589"
+          ],
+          "MinimumEnvironmentsBeforePromotion": 0,
+          "IsOptionalPhase": false,
+          "ReleaseRetentionPolicy": null,
+          "TentacleRetentionPolicy": null
+        }
+      ],
+      "Name": "Previous Release (prior to new release going GA)",
+      "ReleaseRetentionPolicy": {
+        "Unit": "Days",
+        "QuantityToKeep": 30,
+        "ShouldKeepForever": false
+      },
+      "TentacleRetentionPolicy": {
+        "Unit": "Days",
+        "QuantityToKeep": 30,
+        "ShouldKeepForever": false
+      },
+      "Description": "",
+      "Links": {
+        "Self": "/api/Spaces-622/lifecycles/Lifecycles-1669",
+        "Preview": "/api/Spaces-622/lifecycles/Lifecycles-1669/preview",
+        "Projects": "/api/Spaces-622/lifecycles/Lifecycles-1669/projects"
+      }
+    }
+  ]
