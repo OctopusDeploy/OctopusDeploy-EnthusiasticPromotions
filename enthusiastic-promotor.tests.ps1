@@ -112,4 +112,16 @@ Describe 'Enthusiastic promoter' {
     $result = Test-ReleaseInStabilizationPhase $channelId $channels
     $result | Should -be $false
   }
+
+  It 'should handle a modified lifecycle where an earlier phase is added' {
+    # when an earlier phase is added, it means there are two candidates for deployment
+    Mock Test-PipelineBlocked { return $false; }
+    $progression = (Get-Content -Path "SampleData/sample5-modifiedlifecycle.json" -Raw) | ConvertFrom-Json
+    $channels = (Get-Content -Path "SampleData/channels.json" -Raw) | ConvertFrom-Json
+    Mock Get-CurrentDate { return [System.DateTime]::Parse("19/Oct/2020 15:35:06") }
+
+    $result = $((Get-PromotionCandidates $progression $channels).Values) | sort-object -property Version
+
+    $result.Count | should -be 0
+  }
 }

@@ -153,9 +153,9 @@ function Get-PromotionCandidates($progression, $channels, $lifecycles) {
         } else {
             if ($release.NextDeployments.length -gt 1) {
                 # this can happen if a lifecycle is modified and now there's now a gap in the progression
-                Write-Warning " - Unexpected number of NextDeployments - expected 1, but found $($release.NextDeployments.length)."
-                $release.NextDeployments | foreach-object { Write-Warning "   - $_" }
-                Write-Warning "   - Going to focus on $($release.NextDeployments[0]) for this run"
+                Write-Host " - Unexpected number of NextDeployments - expected 1, but found $($release.NextDeployments.length):"
+                $release.NextDeployments | foreach-object { Write-Host "   - $(Get-EnvironmentName $progression $_) ($_)" }
+                Write-Host " - Focusing on $(Get-EnvironmentName $progression $release.NextDeployments[0]) for this run"
             }
             $nextEnvironmentId = $release.NextDeployments[0]
             $nextEnvironmentName = Get-EnvironmentName $progression $nextEnvironmentId
