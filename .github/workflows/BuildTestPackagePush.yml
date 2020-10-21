@@ -33,11 +33,11 @@ jobs:
         
       - name: Install Pester
         id: install-pester
-        run: Install-Module "Pester" -Force
+        run: pwsh Install-Module "Pester" -Force
        
       - name: Run Pester Tests
         id: pester-tests
-        run: Invoke-Pester
+        run: pwsh Invoke-Pester
 
       - name: Set version
         id: set-version
