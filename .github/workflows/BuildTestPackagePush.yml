@@ -26,18 +26,16 @@ jobs:
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
-      
-      - name: Test PWSH
-        id: test-pwsh
-        run: pwsh -version
         
       - name: Install Pester
         id: install-pester
-        run: pwsh Install-Module "Pester" -Force
+        run: Install-Module "Pester" -Force
+        shell: pwsh
        
       - name: Run Pester Tests
         id: pester-tests
-        run: pwsh Invoke-Pester
+        run: Invoke-Pester
+        shell: pwsh
 
       - name: Set version
         id: set-version
