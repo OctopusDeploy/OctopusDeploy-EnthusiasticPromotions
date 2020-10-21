@@ -150,10 +150,13 @@ function Get-PromotionCandidates($progression, $channels, $lifecycles) {
 
         if ($release.NextDeployments.length -eq 0) {
             Write-Host " - Release has already progressed as far as it can."
-        } elseif ($release.NextDeployments.length -gt 1) {
-            Write-Warning " - Unexpected number of NextDeployments - expected 1, but found $($release.NextDeployments.length)."
-            exit 1
         } else {
+            if ($release.NextDeployments.length -gt 1) {
+                # this can happen if a lifecycle is modified and now there's now a gap in the progression
+                Write-Warning " - Unexpected number of NextDeployments - expected 1, but found $($release.NextDeployments.length)."
+                $release.NextDeployments | foreach-object { Write-Warning "   - $_" }
+                Write-Warning "   - Going to focus on $($release.NextDeployments[0]) for this run"
+            }
             $nextEnvironmentId = $release.NextDeployments[0]
             $nextEnvironmentName = Get-EnvironmentName $progression $nextEnvironmentId
             Write-Host " - Next environment is '$($nextEnvironmentName)'"
