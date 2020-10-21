@@ -42,11 +42,11 @@ jobs:
         run: echo "::set-env name=PACKAGE_VERSION::$PACKAGE_PREFIX.$GITHUB_RUN_NUMBER"
     
       - name: Make package directories
-        run: mkdir -p ./packagesoutput/    
+        run: mkdir -p ./packagesoutput/$OCTOPUS_PROJECT_NAME    
       
       - name: Move PS script to build folder
         id: move-ps-script-to-build-folder
-        run: cp .\enthusiastic-promoter.ps1 .\packagesoutput\$OCTOPUS_PROJECT_NAME
+        run: cp ./enthusiastic-promoter.ps1 ./packagesoutput/$OCTOPUS_PROJECT_NAME
     
       - name: Install Octopus CLI
         run: |
