@@ -27,19 +27,19 @@ jobs:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
         
-      - name: Install Pester
-        id: install-pester
-        run: Install-Module "Pester" -Force
-        shell: pwsh
+#       - name: Install Pester
+#         id: install-pester
+#         run: Install-Module "Pester" -Force
+#         shell: pwsh
        
-      - name: Run Pester Tests
-        id: pester-tests
-        run: |
-          Import-Module -Name "Pester"
-          $configuration = [PesterConfiguration]::Default
-          $configuration.Run.Exit = $true
-          Invoke-Pester -configuration $configuration
-        shell: pwsh
+#       - name: Run Pester Tests
+#         id: pester-tests
+#         run: |
+#           Import-Module -Name "Pester"
+#           $configuration = [PesterConfiguration]::Default
+#           $configuration.Run.Exit = $true
+#           Invoke-Pester -configuration $configuration
+#         shell: pwsh
 
       - name: Set version
         id: set-version
@@ -63,4 +63,4 @@ jobs:
         run: octo pack --id="$OCTOPUS_PACKAGE_NAME" --format="Zip" --version="$PACKAGE_VERSION" --basePath="./packagesoutput/$OCTOPUS_PACKAGE_NAME" --outFolder="./packages"
           
       - name: Push to Octopus
-        run: octo push --package="./packages/$OCTOPUS_PACKAGE_NAME.$PACKAGE_VERSION.zip" --server="${{ secrets.OCTOPUS_SERVER }}" --apiKey="${{ secrets.OCTOPUS_APIKEY }}" --space=$OCTOPUS_SPACE_NAME
+        run: octo push --package="./packages/$OCTOPUS_PACKAGE_NAME.$PACKAGE_VERSION.zip" --server="https://deploy.octopus.app" --apiKey="${{ secrets.OCTOPUS_APIKEY }}" --space=$OCTOPUS_SPACE_NAME
