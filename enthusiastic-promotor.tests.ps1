@@ -3,6 +3,12 @@ Describe 'Enthusiastic promoter' {
     if ($null -eq ("Octopus.Versioning.Semver.SemanticVersion" -as [type])) {
       $existing = Get-Package "Octopus.Versioning" -ErrorAction SilentlyContinue
       if ($null -eq $existing) {
+        $existing = Get-PSRepository -Name "NuGet" -ErrorAction SilentlyContinue
+        if (($null -eq $existing) -or ($existing.InstallationPolicy -ne "Trusted")) {
+          Register-PSRepository -Default -ErrorAction SilentlyContinue
+          Set-PSRepository -Name "NuGet" -InstallationPolicy "Trusted"
+        }
+      
         install-package "Octopus.Versioning" -source https://www.nuget.org/api/v2
       }
 
