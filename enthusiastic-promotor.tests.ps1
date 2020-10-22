@@ -3,7 +3,7 @@ Describe 'Enthusiastic promoter' {
     if ($null -eq ("Octopus.Versioning.Semver.SemanticVersion" -as [type])) {
       $existing = Get-Package "Octopus.Versioning" -ErrorAction SilentlyContinue
       if ($null -eq $existing) {
-        install-package "Octopus.Versioning" -source https://www.nuget.org/api/v2 -Force
+        install-package "Octopus.Versioning" -source https://www.nuget.org/api/v2 -Force -Scope CurrentUser
       }
 
       $zip = [System.IO.Compression.ZipFile]::Open((Get-Package "Octopus.Versioning").Source,"Read")
