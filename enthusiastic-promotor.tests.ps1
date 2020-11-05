@@ -124,4 +124,16 @@ Describe 'Enthusiastic promoter' {
 
     $result.Count | should -be 0
   }
+
+  It 'should handle a release that has not yet been deployed to the initial environment' {
+    # when an earlier phase is added, it means there are two candidates for deployment
+    Mock Test-PipelineBlocked { return $false; }
+    $progression = (Get-Content -Path "SampleData/sample5-release-created-but-no-deployments.json" -Raw) | ConvertFrom-Json
+    $channels = (Get-Content -Path "SampleData/channels.json" -Raw) | ConvertFrom-Json
+    Mock Get-CurrentDate { return [System.DateTime]::Parse("01/Nov/2020 8:52:17 AM") }
+
+    $result = $((Get-PromotionCandidates $progression $channels).Values) | sort-object -property Version
+
+    $result.Count | should -be 0
+  }
 }

@@ -115,12 +115,15 @@ function Get-PromotionCandidates($progression, $channels, $lifecycles) {
         write-host "--------------------------------------------------------"
         write-host " - Channel is $(Get-ChannelName $channels $release.Release.ChannelId)"
         $currentEnvironmentId = Get-CurrentEnvironment $progression $release
-        $currentEnvironmentName = Get-EnvironmentName $progression $currentEnvironmentId
-        Write-Host " - Current environment is '$($currentEnvironmentName)'"
 
         if ($release.NextDeployments.length -eq 0) {
             Write-Host " - Release has already progressed as far as it can."
+        } elseif ($null -eq $currentEnvironmentId) {
+            Write-Host " - Release has not yet been deployed to the first environment. Ignoring while we wait for the auto-deployment to the first environment to happen."
         } else {
+            $currentEnvironmentName = Get-EnvironmentName $progression $currentEnvironmentId
+            Write-Host " - Current environment is '$($currentEnvironmentName)'"
+
             if ($release.NextDeployments.length -gt 1) {
                 # this can happen if a lifecycle is modified and now there's now a gap in the progression
                 Write-Host " - Unexpected number of NextDeployments - expected 1, but found $($release.NextDeployments.length):"

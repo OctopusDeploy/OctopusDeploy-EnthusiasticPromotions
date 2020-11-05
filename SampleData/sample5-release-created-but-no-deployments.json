@@ -1,0 +1,420 @@
+{
+    "Environments": [
+      {
+        "Id": "Environments-2583",
+        "Name": "Branch Instances (Staging)"
+      },
+      {
+        "Id": "Environments-2621",
+        "Name": "Octopus Cloud Tests"
+      },
+      {
+        "Id": "Environments-2601",
+        "Name": "Production"
+      },
+      {
+        "Id": "Environments-2584",
+        "Name": "Branch Instances (Prod)"
+      },
+      {
+        "Id": "Environments-2585",
+        "Name": "Staff"
+      },
+      {
+        "Id": "Environments-2586",
+        "Name": "Friends of Octopus"
+      },
+      {
+        "Id": "Environments-2587",
+        "Name": "Early Adopters"
+      },
+      {
+        "Id": "Environments-2588",
+        "Name": "Stable"
+      },
+      {
+        "Id": "Environments-2589",
+        "Name": "General Availablilty"
+      }
+    ],
+    "ChannelEnvironments": {
+      "Channels-4447": [
+        {
+          "Id": "Environments-2583",
+          "Name": "Branch Instances (Staging)"
+        }
+      ],
+      "Channels-4448": [
+        {
+          "Id": "Environments-2583",
+          "Name": "Branch Instances (Staging)"
+        },
+        {
+          "Id": "Environments-2621",
+          "Name": "Octopus Cloud Tests"
+        },
+        {
+          "Id": "Environments-2601",
+          "Name": "Production"
+        },
+        {
+          "Id": "Environments-2584",
+          "Name": "Branch Instances (Prod)"
+        },
+        {
+          "Id": "Environments-2585",
+          "Name": "Staff"
+        }
+      ],
+      "Channels-4449": [
+        {
+          "Id": "Environments-2583",
+          "Name": "Branch Instances (Staging)"
+        },
+        {
+          "Id": "Environments-2621",
+          "Name": "Octopus Cloud Tests"
+        },
+        {
+          "Id": "Environments-2601",
+          "Name": "Production"
+        },
+        {
+          "Id": "Environments-2586",
+          "Name": "Friends of Octopus"
+        },
+        {
+          "Id": "Environments-2587",
+          "Name": "Early Adopters"
+        },
+        {
+          "Id": "Environments-2588",
+          "Name": "Stable"
+        },
+        {
+          "Id": "Environments-2589",
+          "Name": "General Availablilty"
+        }
+      ],
+      "Channels-4450": [
+        {
+          "Id": "Environments-2583",
+          "Name": "Branch Instances (Staging)"
+        },
+        {
+          "Id": "Environments-2601",
+          "Name": "Production"
+        },
+        {
+          "Id": "Environments-2589",
+          "Name": "General Availablilty"
+        }
+      ],
+      "Channels-4583": [
+        {
+          "Id": "Environments-2583",
+          "Name": "Branch Instances (Staging)"
+        },
+        {
+          "Id": "Environments-2621",
+          "Name": "Octopus Cloud Tests"
+        },
+        {
+          "Id": "Environments-2601",
+          "Name": "Production"
+        },
+        {
+          "Id": "Environments-2584",
+          "Name": "Branch Instances (Prod)"
+        },
+        {
+          "Id": "Environments-2586",
+          "Name": "Friends of Octopus"
+        },
+        {
+          "Id": "Environments-2587",
+          "Name": "Early Adopters"
+        },
+        {
+          "Id": "Environments-2588",
+          "Name": "Stable"
+        }
+      ]
+    },
+    "Releases": [
+      {
+        "Release": {
+          "Id": "Releases-75794",
+          "Version": "2020.6.0-shaun-nameOrIdAc0309",
+          "ChannelId": "Channels-4447",
+          "ReleaseNotes": "",
+          "ProjectDeploymentProcessSnapshotId": "deploymentprocess-Projects-4224-s-191-XCKP6",
+          "IgnoreChannelRules": false,
+          "BuildInformation": [
+            {
+              "PackageId": "Octopus.Installers",
+              "Version": "2020.6.0-shaun-nameOrIdAc0309",
+              "BuildEnvironment": "TeamCity",
+              "BuildNumber": "2020.6.0-shaun-nameOrIdAc0309",
+              "BuildUrl": "https://build.octopushq.com/viewLog.html?buildId=1712728",
+              "Branch": "pull/7530",
+              "VcsType": "Git",
+              "VcsRoot": "https://github.com/OctopusDeploy/OctopusDeploy",
+              "VcsCommitNumber": "c686eed0c2552c884a1051a20bf9f22e44a1cf77",
+              "VcsCommitUrl": "https://github.com/OctopusDeploy/OctopusDeploy/commit/c686eed0c2552c884a1051a20bf9f22e44a1cf77",
+              "IssueTrackerName": null,
+              "WorkItems": [],
+              "Commits": [
+                {
+                  "Id": "c686eed0c2552c884a1051a20bf9f22e44a1cf77",
+                  "LinkUrl": "https://github.com/OctopusDeploy/OctopusDeploy/commit/c686eed0c2552c884a1051a20bf9f22e44a1cf77",
+                  "Comment": "Merge branch 'master' of github.com:OctopusDeploy/OctopusDeploy into shaun/nameOrIdAccounts\n"
+                },
+                {
+                  "Id": "05d4f50451fb54d22ba21d4864add92f6f746a26",
+                  "LinkUrl": "https://github.com/OctopusDeploy/OctopusDeploy/commit/05d4f50451fb54d22ba21d4864add92f6f746a26",
+                  "Comment": "Add AccountSelectionSummary tests\n"
+                },
+                {
+                  "Id": "aacb0c56ff85ac3efb61aade0004cc5e2a711a7c",
+                  "LinkUrl": "https://github.com/OctopusDeploy/OctopusDeploy/commit/aacb0c56ff85ac3efb61aade0004cc5e2a711a7c",
+                  "Comment": "Update AccountSelectionSummary type for accountId to include null and undefined which reflects our usages in actions\n"
+                },
+                {
+                  "Id": "67d06fb804893d971d32bed861af2f2334c25a0f",
+                  "LinkUrl": "https://github.com/OctopusDeploy/OctopusDeploy/commit/67d06fb804893d971d32bed861af2f2334c25a0f",
+                  "Comment": "Add additional factory methods to testAccountFactory\n"
+                },
+                {
+                  "Id": "f00a99a79568daad009e71f3312febc4360dcd5f",
+                  "LinkUrl": "https://github.com/OctopusDeploy/OctopusDeploy/commit/f00a99a79568daad009e71f3312febc4360dcd5f",
+                  "Comment": "Fix jest snapshot tests for expandable since these are structurally sensitive\n"
+                },
+                {
+                  "Id": "e055dfec2f0788c3c03fed3ab6a86dd949d0f24e",
+                  "LinkUrl": "https://github.com/OctopusDeploy/OctopusDeploy/commit/e055dfec2f0788c3c03fed3ab6a86dd949d0f24e",
+                  "Comment": "Merge branch 'master' of github.com:OctopusDeploy/OctopusDeploy into shaun/nameOrIdAccounts\n"
+                },
+                {
+                  "Id": "c464aae329c46516522bde943bf000efedb79ab2",
+                  "LinkUrl": "https://github.com/OctopusDeploy/OctopusDeploy/commit/c464aae329c46516522bde943bf000efedb79ab2",
+                  "Comment": "Update Azure actions account summaries\n"
+                },
+                {
+                  "Id": "a41f6d279ceb7967327b70639bc2ccbfd8813ead",
+                  "LinkUrl": "https://github.com/OctopusDeploy/OctopusDeploy/commit/a41f6d279ceb7967327b70639bc2ccbfd8813ead",
+                  "Comment": "Update SummarySection to work better with ReactNode by making SummaryNodeProps optional and providing these props via expandable\n"
+                },
+                {
+                  "Id": "9bfd3937c7c0824ad3836e5ab377ee3d5dfbcd43",
+                  "LinkUrl": "https://github.com/OctopusDeploy/OctopusDeploy/commit/9bfd3937c7c0824ad3836e5ab377ee3d5dfbcd43",
+                  "Comment": "Add AccountSelectionSummary to isolate actions from needing to know about key id lookup details\n"
+                },
+                {
+                  "Id": "be1f99ff638b1fd01a4fb507b9b817dfeb932b4f",
+                  "LinkUrl": "https://github.com/OctopusDeploy/OctopusDeploy/commit/be1f99ff638b1fd01a4fb507b9b817dfeb932b4f",
+                  "Comment": "Update azure web app action to be name or id aware\n"
+                },
+                {
+                  "Id": "039243352ce7258685126e6e61b11b93688ce5f3",
+                  "LinkUrl": "https://github.com/OctopusDeploy/OctopusDeploy/commit/039243352ce7258685126e6e61b11b93688ce5f3",
+                  "Comment": "Update azure resource group action to be name or id aware\n"
+                },
+                {
+                  "Id": "63155ab77452ca1bc1a65542bcce48034a59f653",
+                  "LinkUrl": "https://github.com/OctopusDeploy/OctopusDeploy/commit/63155ab77452ca1bc1a65542bcce48034a59f653",
+                  "Comment": "Update azure powershell action to be name or id aware\n"
+                },
+                {
+                  "Id": "45ae31c53bc0aed759e36c5a7ac8668777cffb62",
+                  "LinkUrl": "https://github.com/OctopusDeploy/OctopusDeploy/commit/45ae31c53bc0aed759e36c5a7ac8668777cffb62",
+                  "Comment": "Update azure cloud service action to be id or name aware\n"
+                },
+                {
+                  "Id": "6320fd7781f84f3caf32bd135f4ccfb902dd7b0e",
+                  "LinkUrl": "https://github.com/OctopusDeploy/OctopusDeploy/commit/6320fd7781f84f3caf32bd135f4ccfb902dd7b0e",
+                  "Comment": "Update AccountSelect to be name or id aware\n"
+                }
+              ]
+            },
+            {
+              "PackageId": "OctopusDeploy",
+              "Version": "2020.6.0-shaun-nameOrIdAc0309",
+              "BuildEnvironment": "TeamCity",
+              "BuildNumber": "2020.6.0-shaun-nameOrIdAc0309",
+              "BuildUrl": "https://build.octopushq.com/viewLog.html?buildId=1712728",
+              "Branch": "pull/7530",
+              "VcsType": "Git",
+              "VcsRoot": "https://github.com/OctopusDeploy/OctopusDeploy",
+              "VcsCommitNumber": "c686eed0c2552c884a1051a20bf9f22e44a1cf77",
+              "VcsCommitUrl": "https://github.com/OctopusDeploy/OctopusDeploy/commit/c686eed0c2552c884a1051a20bf9f22e44a1cf77",
+              "IssueTrackerName": null,
+              "WorkItems": [],
+              "Commits": [
+                {
+                  "Id": "c686eed0c2552c884a1051a20bf9f22e44a1cf77",
+                  "LinkUrl": "https://github.com/OctopusDeploy/OctopusDeploy/commit/c686eed0c2552c884a1051a20bf9f22e44a1cf77",
+                  "Comment": "Merge branch 'master' of github.com:OctopusDeploy/OctopusDeploy into shaun/nameOrIdAccounts\n"
+                },
+                {
+                  "Id": "05d4f50451fb54d22ba21d4864add92f6f746a26",
+                  "LinkUrl": "https://github.com/OctopusDeploy/OctopusDeploy/commit/05d4f50451fb54d22ba21d4864add92f6f746a26",
+                  "Comment": "Add AccountSelectionSummary tests\n"
+                },
+                {
+                  "Id": "aacb0c56ff85ac3efb61aade0004cc5e2a711a7c",
+                  "LinkUrl": "https://github.com/OctopusDeploy/OctopusDeploy/commit/aacb0c56ff85ac3efb61aade0004cc5e2a711a7c",
+                  "Comment": "Update AccountSelectionSummary type for accountId to include null and undefined which reflects our usages in actions\n"
+                },
+                {
+                  "Id": "67d06fb804893d971d32bed861af2f2334c25a0f",
+                  "LinkUrl": "https://github.com/OctopusDeploy/OctopusDeploy/commit/67d06fb804893d971d32bed861af2f2334c25a0f",
+                  "Comment": "Add additional factory methods to testAccountFactory\n"
+                },
+                {
+                  "Id": "f00a99a79568daad009e71f3312febc4360dcd5f",
+                  "LinkUrl": "https://github.com/OctopusDeploy/OctopusDeploy/commit/f00a99a79568daad009e71f3312febc4360dcd5f",
+                  "Comment": "Fix jest snapshot tests for expandable since these are structurally sensitive\n"
+                },
+                {
+                  "Id": "e055dfec2f0788c3c03fed3ab6a86dd949d0f24e",
+                  "LinkUrl": "https://github.com/OctopusDeploy/OctopusDeploy/commit/e055dfec2f0788c3c03fed3ab6a86dd949d0f24e",
+                  "Comment": "Merge branch 'master' of github.com:OctopusDeploy/OctopusDeploy into shaun/nameOrIdAccounts\n"
+                },
+                {
+                  "Id": "c464aae329c46516522bde943bf000efedb79ab2",
+                  "LinkUrl": "https://github.com/OctopusDeploy/OctopusDeploy/commit/c464aae329c46516522bde943bf000efedb79ab2",
+                  "Comment": "Update Azure actions account summaries\n"
+                },
+                {
+                  "Id": "a41f6d279ceb7967327b70639bc2ccbfd8813ead",
+                  "LinkUrl": "https://github.com/OctopusDeploy/OctopusDeploy/commit/a41f6d279ceb7967327b70639bc2ccbfd8813ead",
+                  "Comment": "Update SummarySection to work better with ReactNode by making SummaryNodeProps optional and providing these props via expandable\n"
+                },
+                {
+                  "Id": "9bfd3937c7c0824ad3836e5ab377ee3d5dfbcd43",
+                  "LinkUrl": "https://github.com/OctopusDeploy/OctopusDeploy/commit/9bfd3937c7c0824ad3836e5ab377ee3d5dfbcd43",
+                  "Comment": "Add AccountSelectionSummary to isolate actions from needing to know about key id lookup details\n"
+                },
+                {
+                  "Id": "be1f99ff638b1fd01a4fb507b9b817dfeb932b4f",
+                  "LinkUrl": "https://github.com/OctopusDeploy/OctopusDeploy/commit/be1f99ff638b1fd01a4fb507b9b817dfeb932b4f",
+                  "Comment": "Update azure web app action to be name or id aware\n"
+                },
+                {
+                  "Id": "039243352ce7258685126e6e61b11b93688ce5f3",
+                  "LinkUrl": "https://github.com/OctopusDeploy/OctopusDeploy/commit/039243352ce7258685126e6e61b11b93688ce5f3",
+                  "Comment": "Update azure resource group action to be name or id aware\n"
+                },
+                {
+                  "Id": "63155ab77452ca1bc1a65542bcce48034a59f653",
+                  "LinkUrl": "https://github.com/OctopusDeploy/OctopusDeploy/commit/63155ab77452ca1bc1a65542bcce48034a59f653",
+                  "Comment": "Update azure powershell action to be name or id aware\n"
+                },
+                {
+                  "Id": "45ae31c53bc0aed759e36c5a7ac8668777cffb62",
+                  "LinkUrl": "https://github.com/OctopusDeploy/OctopusDeploy/commit/45ae31c53bc0aed759e36c5a7ac8668777cffb62",
+                  "Comment": "Update azure cloud service action to be id or name aware\n"
+                },
+                {
+                  "Id": "6320fd7781f84f3caf32bd135f4ccfb902dd7b0e",
+                  "LinkUrl": "https://github.com/OctopusDeploy/OctopusDeploy/commit/6320fd7781f84f3caf32bd135f4ccfb902dd7b0e",
+                  "Comment": "Update AccountSelect to be name or id aware\n"
+                }
+              ]
+            }
+          ],
+          "Assembled": "2020-10-30T01:56:46.184+00:00",
+          "ProjectId": "Projects-4224",
+          "LibraryVariableSetSnapshotIds": [
+            "variableset-LibraryVariableSets-921-s-2-VPUL3"
+          ],
+          "SelectedPackages": [
+            {
+              "StepName": "Upload Windows Installers to S3 for direct download",
+              "ActionName": "Upload Windows Installers to S3 for direct download",
+              "Version": "2020.6.0-shaun-nameOrIdAc0309",
+              "PackageReferenceName": "S3SourcePackage"
+            },
+            {
+              "StepName": "Push package to Chocolatey",
+              "ActionName": "Push package to Chocolatey",
+              "Version": "2020.6.0-shaun-nameOrIdAc0309",
+              "PackageReferenceName": "NuGetPush.Source.Package"
+            }
+          ],
+          "ProjectVariableSetSnapshotId": "variableset-Projects-4224-s-43-GR34G",
+          "VersionControlReference": {
+            "GitRef": null,
+            "GitCommit": null
+          },
+          "SpaceId": "Spaces-622",
+          "Links": {
+            "Self": "/api/Spaces-622/releases/Releases-75794",
+            "Project": "/api/Spaces-622/projects/Projects-4224",
+            "Progression": "/api/Spaces-622/releases/Releases-75794/progression",
+            "Deployments": "/api/Spaces-622/releases/Releases-75794/deployments{?skip,take}",
+            "DeploymentTemplate": "/api/Spaces-622/releases/Releases-75794/deployments/template",
+            "Artifacts": "/api/Spaces-622/artifacts?regarding=Releases-75794",
+            "ProjectVariableSnapshot": "/api/Spaces-622/variables/variableset-Projects-4224-s-43-GR34G",
+            "ProjectDeploymentProcessSnapshot": "/api/Spaces-622/deploymentprocesses/deploymentprocess-Projects-4224-s-191-XCKP6",
+            "Web": "/app#/Spaces-622/releases/Releases-75794",
+            "SnapshotVariables": "/api/Spaces-622/releases/Releases-75794/snapshot-variables",
+            "Defects": "/api/Spaces-622/releases/Releases-75794/defects",
+            "ReportDefect": "/api/Spaces-622/releases/Releases-75794/defects",
+            "ResolveDefect": "/api/Spaces-622/releases/Releases-75794/defects/resolve",
+            "DeploymentPreviews": "/api/Spaces-622/releases/Releases-75794/deployments/previews/"
+          }
+        },
+        "Channel": {
+          "Id": "Channels-4447",
+          "Name": "Branch Builds",
+          "Description": "eg:\n`2020.5.0-bug-cloudservice0001`\n`2020.5.0-mergebot-from-re031`\n`2020.5.0-pr6834-0286`\n`2020.5.0-beta0652`",
+          "ProjectId": "Projects-4224",
+          "LifecycleId": "Lifecycles-1665",
+          "IsDefault": false,
+          "Rules": [
+            {
+              "Id": "bfe53c6a-6e6c-46c2-8a2f-d7dee7dd1709",
+              "VersionRange": "",
+              "Tag": "^((?!(ci|rc)).)+$",
+              "ActionPackages": [
+                {
+                  "DeploymentAction": "Push package to Chocolatey",
+                  "PackageReference": "NuGetPush.Source.Package"
+                }
+              ],
+              "Links": {},
+              "Actions": ["Push package to Chocolatey"]
+            },
+            {
+              "Id": "bbb6f565-7ff3-4911-bda3-b9cfa2632e3c",
+              "VersionRange": "",
+              "Tag": "^((?!(ci|rc)).)+$",
+              "ActionPackages": [
+                {
+                  "DeploymentAction": "Upload Windows Installers to S3 for direct download",
+                  "PackageReference": "S3SourcePackage"
+                }
+              ],
+              "Links": {},
+              "Actions": ["Upload Windows Installers to S3 for direct download"]
+            }
+          ],
+          "TenantTags": [],
+          "SpaceId": "Spaces-622",
+          "Links": {
+            "Self": "/api/Spaces-622/channels/Channels-4447",
+            "Releases": "/api/Spaces-622/channels/Channels-4447/releases{?skip,take,searchByVersion}",
+            "Project": "/api/Spaces-622/projects/Projects-4224"
+          }
+        },
+        "Deployments": {},
+        "NextDeployments": ["Environments-2583"],
+        "HasUnresolvedDefect": false,
+        "ReleaseRetentionPeriod": null,
+        "TentacleRetentionPeriod": null
+      }
+    ],
+    "Links": {}
+  }
