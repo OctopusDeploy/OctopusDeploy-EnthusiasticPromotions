@@ -24,7 +24,7 @@ Describe 'Enthusiastic promoter' {
     Mock Test-PipelineBlocked { return $false; }
     $progression = (Get-Content -Path "SampleData/sample1.json" -Raw) | ConvertFrom-Json
     $channels = (Get-Content -Path "SampleData/channels.json" -Raw) | ConvertFrom-Json
-    Mock Get-CurrentDate { return [System.DateTime]::Parse("19/Oct/2020 15:35:06") }
+    Mock Get-CurrentDate { return [System.DateTime]::Parse("20/Oct/2020 15:35:06") }
 
     $result = $((Get-PromotionCandidates $progression $channels).Values) | sort-object -property Version
 
@@ -58,7 +58,7 @@ Describe 'Enthusiastic promoter' {
     Mock Test-PipelineBlocked { return $false; }
     $progression = (Get-Content -Path "SampleData/sample2.json" -Raw) | ConvertFrom-Json
     $channels = (Get-Content -Path "SampleData/channels.json" -Raw) | ConvertFrom-Json
-    Mock Get-CurrentDate { return [System.DateTime]::Parse("19/Oct/2020 15:35:06") }
+    Mock Get-CurrentDate { return [System.DateTime]::Parse("20/Oct/2020 15:35:06") }
 
     $result = $((Get-PromotionCandidates $progression $channels).Values) | sort-object -property Version
 
@@ -71,7 +71,7 @@ Describe 'Enthusiastic promoter' {
 
   It 'should promote 2020.6.0-ci0003 as it is the latest in the CI Builds channel' {
     Mock Test-PipelineBlocked { return $false; }
-    Mock Get-CurrentDate { return [System.DateTime]::Parse("19/Oct/2020 15:35:06") }
+    Mock Get-CurrentDate { return [System.DateTime]::Parse("20/Oct/2020 15:35:06") }
     $progression = (Get-Content -Path "SampleData/sample3.json" -Raw) | ConvertFrom-Json
     $channels = (Get-Content -Path "SampleData/channels.json" -Raw) | ConvertFrom-Json
 
@@ -94,7 +94,7 @@ Describe 'Enthusiastic promoter' {
     Mock Test-PipelineBlocked { return $false; }
     $progression = (Get-Content -Path "SampleData/sample4.json" -Raw) | ConvertFrom-Json
     $channels = (Get-Content -Path "SampleData/channels.json" -Raw) | ConvertFrom-Json
-    Mock Get-CurrentDate { return [System.DateTime]::Parse("19/Oct/2020 15:35:06") }
+    Mock Get-CurrentDate { return [System.DateTime]::Parse("20/Oct/2020 15:35:06") }
 
     $result = $((Get-PromotionCandidates $progression $channels).Values) | sort-object -property Version
 
@@ -118,7 +118,7 @@ Describe 'Enthusiastic promoter' {
     Mock Test-PipelineBlocked { return $false; }
     $progression = (Get-Content -Path "SampleData/sample5-modifiedlifecycle.json" -Raw) | ConvertFrom-Json
     $channels = (Get-Content -Path "SampleData/channels.json" -Raw) | ConvertFrom-Json
-    Mock Get-CurrentDate { return [System.DateTime]::Parse("19/Oct/2020 15:35:06") }
+    Mock Get-CurrentDate { return [System.DateTime]::Parse("20/Oct/2020 15:35:06") }
 
     $result = $((Get-PromotionCandidates $progression $channels).Values) | sort-object -property Version
 
