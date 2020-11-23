@@ -7,8 +7,8 @@ $waitTimeForEnvironmentLookup = @{
     "Environments-2584" = @{ "Name" = "Branch Instances (Prod)";    "BakeTime" = New-TimeSpan -Days 1;    "StabilizationPhaseBakeTime" = New-TimeSpan -Days 1;    }
     "Environments-2585" = @{ "Name" = "Staff";                      "BakeTime" = New-TimeSpan -Minutes 0; "StabilizationPhaseBakeTime" = New-TimeSpan -Days 1;    }
     "Environments-2586" = @{ "Name" = "Friends of Octopus";         "BakeTime" = New-TimeSpan -Minutes 0; "StabilizationPhaseBakeTime" = New-TimeSpan -Days 1;    }
-    "Environments-2587" = @{ "Name" = "Early Adopters";             "BakeTime" = New-TimeSpan -Minutes 0; "StabilizationPhaseBakeTime" = New-TimeSpan -Days 5;    }
-    "Environments-2588" = @{ "Name" = "Stable";                     "BakeTime" = New-TimeSpan -Minutes 0; "StabilizationPhaseBakeTime" = New-TimeSpan -Days 5;    }
+    "Environments-2587" = @{ "Name" = "Early Adopters";             "BakeTime" = New-TimeSpan -Minutes 0; "StabilizationPhaseBakeTime" = New-TimeSpan -Days 7;    }
+    "Environments-2588" = @{ "Name" = "Stable";                     "BakeTime" = New-TimeSpan -Minutes 0; "StabilizationPhaseBakeTime" = New-TimeSpan -Days 7;    }
     "Environments-2589" = @{ "Name" = "General Availablilty";       "BakeTime" = New-TimeSpan -Minutes 0; "StabilizationPhaseBakeTime" = New-TimeSpan -Minutes 0; }
 }
 
