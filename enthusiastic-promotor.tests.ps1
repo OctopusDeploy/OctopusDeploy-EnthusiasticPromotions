@@ -136,4 +136,41 @@ Describe 'Enthusiastic promoter' {
 
     $result.Count | should -be 0
   }
+
+  It 'should not promote during weekend period' {
+    Mock Test-PipelineBlocked { $false }
+    Mock Get-CurrentDate { return [System.TimeZoneInfo]::ConvertTimeBySystemTimeZoneId(([System.DateTime]::Parse("20/Nov/2020 16:00:00")), 'E. Australia Standard Time') } # Friday 4pm
+
+    $progression = (Get-Content -Path "SampleData/sample3.json" -Raw) | ConvertFrom-Json
+    $channels = (Get-Content -Path "SampleData/channels.json" -Raw) | ConvertFrom-Json
+
+    $result = $((Get-PromotionCandidates $progression $channels).Values) | sort-object -property Version
+    $result.Count | should -be 0
+
+    Mock Get-CurrentDate { return [System.TimeZoneInfo]::ConvertTimeBySystemTimeZoneId(([System.DateTime]::Parse("21/Nov/2020 01:21:55")), 'E. Australia Standard Time') } # Saturday
+
+    $result = $((Get-PromotionCandidates $progression $channels).Values) | sort-object -property Version
+    $result.Count | should -be 0
+
+    Mock Get-CurrentDate { return [System.TimeZoneInfo]::ConvertTimeBySystemTimeZoneId(([System.DateTime]::Parse("23/Nov/2020 7:59:59")), 'E. Australia Standard Time') } # Monday 07:59:59am
+
+    $result = $((Get-PromotionCandidates $progression $channels).Values) | sort-object -property Version
+    $result.Count | should -be 0
+  }
+
+  It 'should promote during working weekday periods' {
+    Mock Test-PipelineBlocked { $false }
+    Mock Get-CurrentDate { return [System.TimeZoneInfo]::ConvertTimeBySystemTimeZoneId(([System.DateTime]::Parse("20/Nov/2020 3:59:59")), 'E. Australia Standard Time') } # Monday 08:00:00am
+
+    $progression = (Get-Content -Path "SampleData/sample3.json" -Raw) | ConvertFrom-Json
+    $channels = (Get-Content -Path "SampleData/channels.json" -Raw) | ConvertFrom-Json
+
+    $result = $((Get-PromotionCandidates $progression $channels).Values) | sort-object -property Version
+    $result.Count | should -be 2
+
+    Mock Get-CurrentDate { return [System.TimeZoneInfo]::ConvertTimeBySystemTimeZoneId(([System.DateTime]::Parse("23/Nov/2020 8:00:00")), 'E. Australia Standard Time') } # Monday 08:00:00am
+
+    $result = $((Get-PromotionCandidates $progression $channels).Values) | sort-object -property Version
+    $result.Count | should -be 2
+  }
 }

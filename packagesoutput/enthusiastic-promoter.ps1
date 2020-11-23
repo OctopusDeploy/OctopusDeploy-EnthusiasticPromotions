@@ -1,20 +1,39 @@
+if (-not (Test-Path variable:OctopusParameters)) {
+    $OctopusParameters = New-Object 'System.Collections.Generic.Dictionary[String,String]'
+}
+#automatically provided variables
+$projectName = $OctopusParameters["Octopus.Project.Name"]
+$spaceId = $OctopusParameters["Octopus.Space.Id"]
+$projectId = $OctopusParameters["Octopus.Project.Id"]
+
+#variables provided from additional packages
+$octopusToolsPath = $OctopusParameters["Octopus.Action.Package[OctopusTools].ExtractedPath"]
+$octopusVersioningPath = $OctopusParameters["Octopus.Action.Package[Octopus.Versioning].ExtractedPath"]
+
+#variables from the project
+$octofrontApiKey = $OctopusParameters["OctofrontSoftwareProblemsAuthToken"]
+$octofrontUrl = $OctopusParameters["OctofrontUrl"]
+$octopusApiKey = $OctopusParameters["OctopusApiKey"]
 
 #lookup table for "how long the release needs to be in the specified environment, before allowing it to move on"
 $waitTimeForEnvironmentLookup = @{
-    "Environments-2583" = @{ "Name" = "Branch Instances (Staging)"; "BakeTime" = New-TimeSpan -Minutes 0; "StabilizationPhaseBakeTime" = New-TimeSpan -Hours 2;   }
-    "Environments-2621" = @{ "Name" = "Octopus Cloud Tests";        "BakeTime" = New-TimeSpan -Minutes 0; "StabilizationPhaseBakeTime" = New-TimeSpan -Minutes 0; }
-    "Environments-2601" = @{ "Name" = "Production";                 "BakeTime" = New-TimeSpan -Minutes 0; "StabilizationPhaseBakeTime" = New-TimeSpan -Minutes 0; }
-    "Environments-2584" = @{ "Name" = "Branch Instances (Prod)";    "BakeTime" = New-TimeSpan -Days 1;    "StabilizationPhaseBakeTime" = New-TimeSpan -Days 1;    }
-    "Environments-2585" = @{ "Name" = "Staff";                      "BakeTime" = New-TimeSpan -Minutes 0; "StabilizationPhaseBakeTime" = New-TimeSpan -Days 1;    }
-    "Environments-2586" = @{ "Name" = "Friends of Octopus";         "BakeTime" = New-TimeSpan -Minutes 0; "StabilizationPhaseBakeTime" = New-TimeSpan -Days 1;    }
-    "Environments-2587" = @{ "Name" = "Early Adopters";             "BakeTime" = New-TimeSpan -Minutes 0; "StabilizationPhaseBakeTime" = New-TimeSpan -Days 7;    }
-    "Environments-2588" = @{ "Name" = "Stable";                     "BakeTime" = New-TimeSpan -Minutes 0; "StabilizationPhaseBakeTime" = New-TimeSpan -Days 7;    }
+    "Environments-2583" = @{ "Name" = "Branch Instances (Staging)"; "BakeTime" = New-TimeSpan -Minutes 0; "StabilizationPhaseBakeTime" = New-TimeSpan -Hours 2; }
+    "Environments-2621" = @{ "Name" = "Octopus Cloud Tests";        "BakeTime" = New-TimeSpan -Minutes 0; "StabilizationPhaseBakeTime" = New-TimeSpan -Minutes 0;}
+    "Environments-2601" = @{ "Name" = "Production";   				"BakeTime" = New-TimeSpan -Minutes 0; "StabilizationPhaseBakeTime" = New-TimeSpan -Minutes 0;}
+    "Environments-2584" = @{ "Name" = "Branch Instances (Prod)";    "BakeTime" = New-TimeSpan -Days 1;    "StabilizationPhaseBakeTime" = New-TimeSpan -Days 1; }
+    "Environments-2585" = @{ "Name" = "Staff";                      "BakeTime" = New-TimeSpan -Minutes 0; "StabilizationPhaseBakeTime" = New-TimeSpan -Days 1; }
+    "Environments-2586" = @{ "Name" = "Friends of Octopus";         "BakeTime" = New-TimeSpan -Minutes 0; "StabilizationPhaseBakeTime" = New-TimeSpan -Days 1; }
+    "Environments-2587" = @{ "Name" = "Early Adopters";             "BakeTime" = New-TimeSpan -Minutes 0; "StabilizationPhaseBakeTime" = New-TimeSpan -Days 7; }
+    "Environments-2588" = @{ "Name" = "Stable";                     "BakeTime" = New-TimeSpan -Minutes 0; "StabilizationPhaseBakeTime" = New-TimeSpan -Days 7; }
     "Environments-2589" = @{ "Name" = "General Availablilty";       "BakeTime" = New-TimeSpan -Minutes 0; "StabilizationPhaseBakeTime" = New-TimeSpan -Minutes 0; }
 }
 
 function Test-PipelineBlocked($release) {
-
-    $activeProblems =  (Invoke-restmethod -Uri "$octofrontUrl/api/Problem/ActiveProblems/OctopusServer/$($release.Release.Version)" -Headers @{ 'Authorization' = "Bearer $($octofrontApiKey)"}).ActiveProblems
+    $body = @{
+        Product = "OctopusServer";
+        Version = $release.Release.Version
+    }
+    $activeProblems =  (Invoke-restmethod -Uri "$octofrontUrl/api/Problem/ActiveProblems" -Headers @{ 'Authorization' = "Bearer $($octofrontApiKey)"} -Method POST -Body ($body | ConvertTo-Json)).ActiveProblems
 
     return $activeProblems.Count -gt 0
 }
@@ -38,7 +57,10 @@ function Get-AlreadyDeployedEnvironmentIds($release) {
   return @($release.Deployments.PSObject.Properties.Name)
 }
 
-function Get-DeploymentsToEnvironment($release, $environmentId) {
+function Get-DeploymentsToEnvironment {
+  [OutputType([object[]])]
+  Param($release, $environmentId)
+
   return (,($release.Deployments.PSObject.Properties | where-object { $_.Name -eq $environmentId }))
 }
 
@@ -115,21 +137,15 @@ function Get-PromotionCandidates($progression, $channels, $lifecycles) {
         write-host "--------------------------------------------------------"
         write-host " - Channel is $(Get-ChannelName $channels $release.Release.ChannelId)"
         $currentEnvironmentId = Get-CurrentEnvironment $progression $release
+        $currentEnvironmentName = Get-EnvironmentName $progression $currentEnvironmentId
+        Write-Host " - Current environment is '$($currentEnvironmentName)'"
 
         if ($release.NextDeployments.length -eq 0) {
             Write-Host " - Release has already progressed as far as it can."
-        } elseif ($null -eq $currentEnvironmentId) {
-            Write-Host " - Release has not yet been deployed to the first environment. Ignoring while we wait for the auto-deployment to the first environment to happen."
+        } elseif ($release.NextDeployments.length -gt 1) {
+            Write-Warning " - Unexpected number of NextDeployments - expected 1, but found $($release.NextDeployments.length)."
+            exit 1
         } else {
-            $currentEnvironmentName = Get-EnvironmentName $progression $currentEnvironmentId
-            Write-Host " - Current environment is '$($currentEnvironmentName)'"
-
-            if ($release.NextDeployments.length -gt 1) {
-                # this can happen if a lifecycle is modified and now there's now a gap in the progression
-                Write-Host " - Unexpected number of NextDeployments - expected 1, but found $($release.NextDeployments.length):"
-                $release.NextDeployments | foreach-object { Write-Host "   - $(Get-EnvironmentName $progression $_) ($_)" }
-                Write-Host " - Focusing on $(Get-EnvironmentName $progression $release.NextDeployments[0]) for this run"
-            }
             $nextEnvironmentId = $release.NextDeployments[0]
             $nextEnvironmentName = Get-EnvironmentName $progression $nextEnvironmentId
             Write-Host " - Next environment is '$($nextEnvironmentName)'"
@@ -156,17 +172,6 @@ function Get-PromotionCandidates($progression, $channels, $lifecycles) {
                     Write-Host " - Completion time of last deployment to $currentEnvironmentName was $($deploymentsToCurrentEnvironment.CompletedTime) (UTC)"
                     Write-Host " - This release is still baking. Will try again later after $($deploymentsToCurrentEnvironment.CompletedTime.Add($bakeTime)) (UTC)."
                 } else {
-                    # Don't promote after 4pm Friday and 8am Monday morning
-                    $dateAEST = [System.TimeZoneInfo]::ConvertTimeBySystemTimeZoneId((Get-CurrentDate), 'E. Australia Standard Time')
-                    Write-Host " - DAY OF WEEK $($dateAEST.DayOfWeek)"
-                    if( ($dateAEST.DayOfWeek -eq "Friday" -and $dateAEST.Hour -ge 16) -or
-                         $dateAEST.DayOfWeek -eq "Saturday" -or
-                         $dateAEST.DayOfWeek -eq "Sunday" -or
-                        ($dateAEST.DayOfWeek -eq "Monday" -and $dateAEST.Hour -lt 8))
-                    {
-                        Write-Host " - Bake time is complete but skipping promotion as we don't want to promote releases between 4pm Friday AEST and 8am Monday AEST."
-                        return;
-                    }
                     if ($null -eq $deploymentsToCurrentEnvironment) {
                         # not sure this should ever happen
                         Write-Warning " - Bake time was ignored as there was no deployments to the environment $currentEnvironmentName"
@@ -189,20 +194,34 @@ function Get-PromotionCandidates($progression, $channels, $lifecycles) {
     return $promotionCandidates
 }
 
-function Get-FromApi($url) {
-    Write-Verbose "Getting response from $url"
-    $result = Invoke-restmethod -Uri $url -Headers @{ 'X-Octopus-ApiKey' = $octopusApiKey }
+function Main() {
+    Add-Type -Path "$octopusVersioningPath/lib/netstandard2.0/Octopus.Versioning.dll"
 
-    # log out the  json, so we can diagnose what's happening / write a test for it
-    write-verbose "--------------------------------------------------------"
-    write-verbose "response:"
-    write-verbose "--------------------------------------------------------"
-    write-verbose ($result | ConvertTo-Json -depth 10)
-    write-verbose "--------------------------------------------------------"
-    return $result
-}
+    $progression = Invoke-restmethod -Uri "https://deploy.octopus.app/api/$spaceId/progression/$projectId" -Headers @{ 'X-Octopus-ApiKey' = $octopusApiKey }
 
-function Promote-Releases($promotionCandidates) {
+    # log out the progression json, so we can diagnose what's happening / write a test for it
+    write-verbose "--------------------------------------------------------"
+    write-verbose "Progression response:"
+    write-verbose "--------------------------------------------------------"
+    write-verbose ($progression | ConvertTo-Json -depth 10)
+    write-verbose "--------------------------------------------------------"
+
+    $channels = Invoke-restmethod -Uri "https://deploy.octopus.app/api/$spaceId/projects/$projectId/channels" -Headers @{ 'X-Octopus-ApiKey' = $octopusApiKey }
+    write-verbose "--------------------------------------------------------"
+    write-verbose "Channels response:"
+    write-verbose "--------------------------------------------------------"
+    write-verbose ($channels | ConvertTo-Json -depth 10)
+    write-verbose "--------------------------------------------------------"
+
+    $lifecycles = Invoke-restmethod -Uri "https://deploy.octopus.app/api/$spaceId/lifecycles/all" -Headers @{ 'X-Octopus-ApiKey' = $octopusApiKey }
+    write-verbose "--------------------------------------------------------"
+    write-verbose "Lifecycles response:"
+    write-verbose "--------------------------------------------------------"
+    write-verbose ($lifecycles | ConvertTo-Json -depth 10)
+    write-verbose "--------------------------------------------------------"
+
+    $promotionCandidates = Get-PromotionCandidates -progression $progression -channels $channels -lifecycles $lifecycles
+
     write-host "--------------------------------------------------------"
     if ($promotionCandidates.Count -eq 0) {
         Write-Host "No promotion candidates found"
@@ -217,31 +236,4 @@ function Promote-Releases($promotionCandidates) {
         }
     }
     write-host "--------------------------------------------------------"
-}
-
-if (Test-Path variable:OctopusParameters) {
-    #automatically provided variables
-    $projectName = $OctopusParameters["Octopus.Project.Name"]
-    $spaceId = $OctopusParameters["Octopus.Space.Id"]
-    $projectId = $OctopusParameters["Octopus.Project.Id"]
-
-    #variables provided from additional packages
-    $octopusToolsPath = $OctopusParameters["Octopus.Action.Package[OctopusTools].ExtractedPath"]
-    $octopusVersioningPath = $OctopusParameters["Octopus.Action.Package[Octopus.Versioning].ExtractedPath"]
-
-    #variables from the project
-    $octofrontApiKey = $OctopusParameters["OctofrontSoftwareProblemsAuthToken"]
-    $octofrontUrl = $OctopusParameters["OctofrontUrl"]
-    $octopusApiKey = $OctopusParameters["OctopusApiKey"]
-
-    $candidates = Get-ChildItem -recurse -filter "Octopus.Versioning.dll"
-    Add-Type -Path $candidates[-1].FullName
-
-    $progression = Get-FromApi "https://deploy.octopus.app/api/$spaceId/progression/$projectId"
-    $channels = Get-FromApi "https://deploy.octopus.app/api/$spaceId/projects/$projectId/channels"
-    $lifecycles = Get-FromApi "https://deploy.octopus.app/api/$spaceId/lifecycles/all"
-
-    $promotionCandidates = Get-PromotionCandidates -progression $progression -channels $channels -lifecycles $lifecycles
-
-    Promote-Releases $promotionCandidates
 }
