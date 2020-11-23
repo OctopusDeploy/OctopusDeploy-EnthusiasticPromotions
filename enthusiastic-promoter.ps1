@@ -158,7 +158,6 @@ function Get-PromotionCandidates($progression, $channels, $lifecycles) {
                 } else {
                     # Don't promote after 4pm Friday and 8am Monday morning
                     $dateAEST = [System.TimeZoneInfo]::ConvertTimeBySystemTimeZoneId((Get-CurrentDate), 'E. Australia Standard Time')
-                    Write-Host " - DAY OF WEEK $($dateAEST.DayOfWeek)"
                     if( ($dateAEST.DayOfWeek -eq "Friday" -and $dateAEST.Hour -ge 16) -or
                          $dateAEST.DayOfWeek -eq "Saturday" -or
                          $dateAEST.DayOfWeek -eq "Sunday" -or
