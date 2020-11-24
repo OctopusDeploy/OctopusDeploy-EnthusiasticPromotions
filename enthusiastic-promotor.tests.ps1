@@ -137,17 +137,17 @@ Describe 'Enthusiastic promoter' {
   }
 
   It 'should not promote during weekend period' -TestCases @( # All written in AEST times
-    @{ datetime = '20/Nov/2020 16:00:00'; expectedResults = 0} #Friday 4pm
-    @{ datetime = '20/Nov/2020 15:59:59'; expectedResults = 2} #Friday 3:59pm
-    @{ datetime = '21/Nov/2020 00:00:00'; expectedResults = 0} #Saturday
-    @{ datetime = '22/Nov/2020 00:00:00'; expectedResults = 0} #Sunday
-    @{ datetime = '23/Nov/2020 07:59:59'; expectedResults = 0} #Monday 7:59am
-    @{ datetime = '23/Nov/2020 08:00:00'; expectedResults = 2} #Monday 8:00am
+    @{ datetime = '20/Nov/2020 16:00:00'; shouldPromote = $false} #Friday 4pm
+    @{ datetime = '20/Nov/2020 15:59:59'; shouldPromote = $true} #Friday 3:59pm
+    @{ datetime = '21/Nov/2020 00:00:00'; shouldPromote = $false} #Saturday
+    @{ datetime = '22/Nov/2020 00:00:00'; shouldPromote = $false} #Sunday
+    @{ datetime = '23/Nov/2020 07:59:59'; shouldPromote = $false} #Monday 7:59am
+    @{ datetime = '23/Nov/2020 08:00:00'; shouldPromote = $true} #Monday 8:00am
   ) {
     param
     (
       [string] $dateTime,
-      [Int] $expectedResults
+      [Int] $shouldPromote
     )
 
     $timezone = "E. Australia Standard Time";
@@ -163,6 +163,12 @@ Describe 'Enthusiastic promoter' {
     $channels = (Get-Content -Path "SampleData/channels.json" -Raw) | ConvertFrom-Json
 
     $result = $((Get-PromotionCandidates $progression $channels).Values) | sort-object -property Version
-    $result.Count | should -be $expectedResults
+
+    if($shouldPromote) {
+      $result.Count | should -BeGreaterThan 0
+    } else {
+      $result.Count | should -Be 0
+    }
+
   }
 }
