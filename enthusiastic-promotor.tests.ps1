@@ -24,12 +24,11 @@ Describe 'Enthusiastic promoter' {
     Mock Test-PipelineBlocked { return $false; }
     $progression = (Get-Content -Path "SampleData/sample1.json" -Raw) | ConvertFrom-Json
     $channels = (Get-Content -Path "SampleData/channels.json" -Raw) | ConvertFrom-Json
-    Mock Get-CurrentDate { return [System.DateTime]::Parse("20/Oct/2020 15:35:06") }
+    Mock Get-CurrentDate { return [System.DateTime]::Parse("19/Oct/2020 15:35:06") }
 
     $result = $((Get-PromotionCandidates $progression $channels).Values) | sort-object -property Version
 
     $result.Count | should -be 4
-
 
     $result[0].Version | Should -be "2020.4.7"
     $result[0].EnvironmentName | Should -be "Stable"
@@ -58,7 +57,7 @@ Describe 'Enthusiastic promoter' {
     Mock Test-PipelineBlocked { return $false; }
     $progression = (Get-Content -Path "SampleData/sample2.json" -Raw) | ConvertFrom-Json
     $channels = (Get-Content -Path "SampleData/channels.json" -Raw) | ConvertFrom-Json
-    Mock Get-CurrentDate { return [System.DateTime]::Parse("20/Oct/2020 15:35:06") }
+    Mock Get-CurrentDate { return [System.DateTime]::Parse("19/Oct/2020 15:35:06") }
 
     $result = $((Get-PromotionCandidates $progression $channels).Values) | sort-object -property Version
 
@@ -71,7 +70,7 @@ Describe 'Enthusiastic promoter' {
 
   It 'should promote 2020.6.0-ci0003 as it is the latest in the CI Builds channel' {
     Mock Test-PipelineBlocked { return $false; }
-    Mock Get-CurrentDate { return [System.DateTime]::Parse("20/Oct/2020 15:35:06") }
+    Mock Get-CurrentDate { return [System.DateTime]::Parse("19/Oct/2020 15:35:06") }
     $progression = (Get-Content -Path "SampleData/sample3.json" -Raw) | ConvertFrom-Json
     $channels = (Get-Content -Path "SampleData/channels.json" -Raw) | ConvertFrom-Json
 
@@ -94,7 +93,7 @@ Describe 'Enthusiastic promoter' {
     Mock Test-PipelineBlocked { return $false; }
     $progression = (Get-Content -Path "SampleData/sample4.json" -Raw) | ConvertFrom-Json
     $channels = (Get-Content -Path "SampleData/channels.json" -Raw) | ConvertFrom-Json
-    Mock Get-CurrentDate { return [System.DateTime]::Parse("20/Oct/2020 15:35:06") }
+    Mock Get-CurrentDate { return [System.DateTime]::Parse("19/Oct/2020 15:35:06") }
 
     $result = $((Get-PromotionCandidates $progression $channels).Values) | sort-object -property Version
 
@@ -118,7 +117,7 @@ Describe 'Enthusiastic promoter' {
     Mock Test-PipelineBlocked { return $false; }
     $progression = (Get-Content -Path "SampleData/sample5-modifiedlifecycle.json" -Raw) | ConvertFrom-Json
     $channels = (Get-Content -Path "SampleData/channels.json" -Raw) | ConvertFrom-Json
-    Mock Get-CurrentDate { return [System.DateTime]::Parse("20/Oct/2020 15:35:06") }
+    Mock Get-CurrentDate { return [System.DateTime]::Parse("19/Oct/2020 15:35:06") }
 
     $result = $((Get-PromotionCandidates $progression $channels).Values) | sort-object -property Version
 
@@ -137,7 +136,7 @@ Describe 'Enthusiastic promoter' {
     $result.Count | should -be 0
   }
 
-  It 'should not promote during weekend period' -TestCases @(
+  It 'should not promote during weekend period' -TestCases @( # All written in AEST times
     @{ datetime = '20/Nov/2020 16:00:00'; expectedResults = 0} #Friday 4pm
     @{ datetime = '20/Nov/2020 15:59:59'; expectedResults = 2} #Friday 3:59pm
     @{ datetime = '21/Nov/2020 00:00:00'; expectedResults = 0} #Saturday
@@ -157,7 +156,8 @@ Describe 'Enthusiastic promoter' {
     }
 
     Mock Test-PipelineBlocked { $false }
-    Mock Get-CurrentDate { return [System.TimeZoneInfo]::ConvertTimeBySystemTimeZoneId(([System.DateTime]::Parse($dateTime)), $timezone) }
+    Mock Get-CurrentTimezone { return Get-TimeZone -Id $timezone }
+    Mock Get-CurrentDate { return [System.DateTime]::Parse($dateTime) }
 
     $progression = (Get-Content -Path "SampleData/sample3.json" -Raw) | ConvertFrom-Json
     $channels = (Get-Content -Path "SampleData/channels.json" -Raw) | ConvertFrom-Json
