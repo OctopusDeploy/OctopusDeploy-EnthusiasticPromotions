@@ -180,10 +180,8 @@ function Get-PromotionCandidates($progression, $channels, $lifecycles) {
                     Write-Host " - This release is still baking. Will try again later after $($deploymentsToCurrentEnvironment.CompletedTime.Add($bakeTime)) (UTC)."
                 } elseif(Test-IsWeekendAEST) {
                     # Don't promote after 4pm Friday and 8am Monday morning AEST
-                    Write-Host " - Bake time is complete but we aren't going to promote it as it's between 4pm Friday AEST and 8am Monday AEST to avoid potential issues with rolling out to more customers over the weekend when a large marjority of our team will be unavailable to assist with fixes."
-                    return;
-                }
-                else {
+                    Write-Host " - Bake time is complete but we aren't going to promote it as it's between 4pm Friday AEST and 8am Monday AEST. This helps us avoid potential issues with rolling out to lots of customers over the weekend when a large majority of our team is unavailable to assist if something goes wrong."
+                } else {
                     if ($null -eq $deploymentsToCurrentEnvironment) {
                         # not sure this should ever happen
                         Write-Warning " - Bake time was ignored as there was no deployments to the environment $currentEnvironmentName"
