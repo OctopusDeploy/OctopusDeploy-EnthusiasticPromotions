@@ -51,6 +51,22 @@ function Get-CurrentDate {
   return Get-Date
 }
 
+function Get-BrisbaneTimezone {
+    if($IsLinux) {
+        return "Australia/Brisbane"
+    }
+
+    return "E. Australia Standard Time"
+}
+
+function Test-IsWeekend {
+    $dateAEST = [System.TimeZoneInfo]::ConvertTimeBySystemTimeZoneId((Get-CurrentDate), (Get-BrisbaneTimezone))
+    return ($dateAEST.DayOfWeek -eq "Friday" -and $dateAEST.Hour -ge 16) -or
+            $dateAEST.DayOfWeek -eq "Saturday" -or
+            $dateAEST.DayOfWeek -eq "Sunday" -or
+            ($dateAEST.DayOfWeek -eq "Monday" -and $dateAEST.Hour -lt 8)
+}
+
 function Get-MostRecentDeploymentToEnvironment ($release, $environmentId) {
     $alreadyDeployedEnvironments = [array](Get-AlreadyDeployedEnvironmentIds $release)
     if ($alreadyDeployedEnvironments.Contains($environmentId)) {
@@ -155,17 +171,12 @@ function Get-PromotionCandidates($progression, $channels, $lifecycles) {
                 if (($null -ne $deploymentsToCurrentEnvironment) -and ($deploymentsToCurrentEnvironment.CompletedTime.Add($bakeTime) -gt (Get-CurrentDate))) {
                     Write-Host " - Completion time of last deployment to $currentEnvironmentName was $($deploymentsToCurrentEnvironment.CompletedTime) (UTC)"
                     Write-Host " - This release is still baking. Will try again later after $($deploymentsToCurrentEnvironment.CompletedTime.Add($bakeTime)) (UTC)."
-                } else {
-                    # Don't promote after 4pm Friday and 8am Monday morning
-                    $dateAEST = [System.TimeZoneInfo]::ConvertTimeBySystemTimeZoneId((Get-CurrentDate), 'E. Australia Standard Time')
-                    if( ($dateAEST.DayOfWeek -eq "Friday" -and $dateAEST.Hour -ge 16) -or
-                         $dateAEST.DayOfWeek -eq "Saturday" -or
-                         $dateAEST.DayOfWeek -eq "Sunday" -or
-                        ($dateAEST.DayOfWeek -eq "Monday" -and $dateAEST.Hour -lt 8))
-                    {
-                        Write-Host " - Bake time is complete but skipping promotion as we don't want to promote releases between 4pm Friday AEST and 8am Monday AEST."
-                        return;
-                    }
+                } elseif(Test-IsWeekend) {
+                    # Don't promote after 4pm Friday and 8am Monday morning AEST
+                    Write-Host " - Bake time is complete but we aren't going to promote it as it's between 4pm Friday AEST and 8am Monday AEST to avoid potential issues with rolling out to more customers over the weekend when a large marjority of our team will be unavailable to assist with fixes."
+                    return;
+                }
+                else {
                     if ($null -eq $deploymentsToCurrentEnvironment) {
                         # not sure this should ever happen
                         Write-Warning " - Bake time was ignored as there was no deployments to the environment $currentEnvironmentName"
