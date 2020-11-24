@@ -1,0 +1,29 @@
+# Action that is used for PRs to main branch
+# It installs pester and runs the pester tests only
+
+name: CI
+
+on:
+  pull_request:
+    branches: [ main ]
+    
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+        
+      - name: Install Pester
+        id: install-pester
+        run: Install-Module "Pester" -Force
+        shell: pwsh
+       
+      - name: Run Pester Tests
+        id: pester-tests
+        run: |
+          Import-Module -Name "Pester"
+          $configuration = [PesterConfiguration]::Default
+          $configuration.Run.Exit = $true
+          Invoke-Pester -configuration $configuration
+        shell: pwsh
