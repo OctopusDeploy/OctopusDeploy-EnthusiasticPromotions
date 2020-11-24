@@ -147,7 +147,7 @@ Describe 'Enthusiastic promoter' {
     param
     (
       [string] $dateTime,
-      [Int] $shouldPromote
+      [boolean] $shouldPromote
     )
 
     $timezone = "E. Australia Standard Time";
@@ -164,11 +164,7 @@ Describe 'Enthusiastic promoter' {
 
     $result = $((Get-PromotionCandidates $progression $channels).Values) | sort-object -property Version
 
-    if($shouldPromote) {
-      $result.Count | should -BeGreaterThan 0
-    } else {
-      $result.Count | should -Be 0
-    }
+    ($result.Count -gt 0) | should -be $shouldPromote
 
   }
 }
