@@ -137,40 +137,32 @@ Describe 'Enthusiastic promoter' {
     $result.Count | should -be 0
   }
 
-  It 'should not promote during weekend period' {
+  It 'should not promote during weekend period' -TestCases @(
+    @{ datetime = '20/Nov/2020 16:00:00'; expectedResults = 0} #Friday 4pm
+    @{ datetime = '20/Nov/2020 15:59:59'; expectedResults = 2} #Friday 3:59pm
+    @{ datetime = '21/Nov/2020 00:00:00'; expectedResults = 0} #Saturday
+    @{ datetime = '22/Nov/2020 00:00:00'; expectedResults = 0} #Sunday
+    @{ datetime = '23/Nov/2020 07:59:59'; expectedResults = 0} #Monday 7:59am
+    @{ datetime = '23/Nov/2020 08:00:00'; expectedResults = 2} #Monday 8:00am
+  ) {
+    param
+    (
+      [string] $dateTime,
+      [Int] $expectedResults
+    )
+
+    $timezone = "E. Australia Standard Time";
+    if($IsLinux) {
+      $timezone = "Australia/Brisbane"
+    }
+
     Mock Test-PipelineBlocked { $false }
-    Mock Get-CurrentDate { return [System.TimeZoneInfo]::ConvertTimeBySystemTimeZoneId(([System.DateTime]::Parse("20/Nov/2020 16:00:00")), 'E. Australia Standard Time') } # Friday 4pm
+    Mock Get-CurrentDate { return [System.TimeZoneInfo]::ConvertTimeBySystemTimeZoneId(([System.DateTime]::Parse($dateTime)), $timezone) }
 
     $progression = (Get-Content -Path "SampleData/sample3.json" -Raw) | ConvertFrom-Json
     $channels = (Get-Content -Path "SampleData/channels.json" -Raw) | ConvertFrom-Json
 
     $result = $((Get-PromotionCandidates $progression $channels).Values) | sort-object -property Version
-    $result.Count | should -be 0
-
-    Mock Get-CurrentDate { return [System.TimeZoneInfo]::ConvertTimeBySystemTimeZoneId(([System.DateTime]::Parse("21/Nov/2020 01:21:55")), 'E. Australia Standard Time') } # Saturday
-
-    $result = $((Get-PromotionCandidates $progression $channels).Values) | sort-object -property Version
-    $result.Count | should -be 0
-
-    Mock Get-CurrentDate { return [System.TimeZoneInfo]::ConvertTimeBySystemTimeZoneId(([System.DateTime]::Parse("23/Nov/2020 7:59:59")), 'E. Australia Standard Time') } # Monday 07:59:59am
-
-    $result = $((Get-PromotionCandidates $progression $channels).Values) | sort-object -property Version
-    $result.Count | should -be 0
-  }
-
-  It 'should promote during working weekday periods' {
-    Mock Test-PipelineBlocked { $false }
-    Mock Get-CurrentDate { return [System.TimeZoneInfo]::ConvertTimeBySystemTimeZoneId(([System.DateTime]::Parse("20/Nov/2020 3:59:59")), 'E. Australia Standard Time') } # Monday 08:00:00am
-
-    $progression = (Get-Content -Path "SampleData/sample3.json" -Raw) | ConvertFrom-Json
-    $channels = (Get-Content -Path "SampleData/channels.json" -Raw) | ConvertFrom-Json
-
-    $result = $((Get-PromotionCandidates $progression $channels).Values) | sort-object -property Version
-    $result.Count | should -be 2
-
-    Mock Get-CurrentDate { return [System.TimeZoneInfo]::ConvertTimeBySystemTimeZoneId(([System.DateTime]::Parse("23/Nov/2020 8:00:00")), 'E. Australia Standard Time') } # Monday 08:00:00am
-
-    $result = $((Get-PromotionCandidates $progression $channels).Values) | sort-object -property Version
-    $result.Count | should -be 2
+    $result.Count | should -be $expectedResults
   }
 }
