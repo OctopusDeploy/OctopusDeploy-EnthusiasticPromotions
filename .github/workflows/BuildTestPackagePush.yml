@@ -43,7 +43,7 @@ jobs:
 
       - name: Set version
         id: set-version
-        run: echo "::set-env name=PACKAGE_VERSION::$PACKAGE_PREFIX.$GITHUB_RUN_NUMBER"
+        run: echo "PACKAGE_VERSION=$PACKAGE_PREFIX.$GITHUB_RUN_NUMBER" >> $GITHUB_ENV
     
       - name: Make package directories
         run: mkdir -p ./packagesoutput/$OCTOPUS_PACKAGE_NAME    
