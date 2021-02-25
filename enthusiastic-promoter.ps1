@@ -23,11 +23,12 @@ function Get-CurrentEnvironment($progression, $release) {
     $nextEnvironmentId = $release.NextDeployments[0]
     $channelId = $release.Release.ChannelId
     $channelEnvironments = ((,$progression.ChannelEnvironments.PSObject.Properties | where-object { $_.Name -eq $channelId }).Value)
+    $selectedEnvironmentId = $null
     foreach($environment in $channelEnvironments) {
         if ($environment.Id -eq $nextEnvironmentId) { break; }
-        $currentEnvironmentId = $environment.Id
+        $selectedEnvironmentId = $environment.Id
     }
-    return $currentEnvironmentId
+    return $selectedEnvironmentId
 }
 
 function Get-EnvironmentName($progression, $environmentId) {

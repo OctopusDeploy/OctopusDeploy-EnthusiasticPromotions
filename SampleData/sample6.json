@@ -1,0 +1,374 @@
+{
+  "Environments": [
+    {
+      "Id": "Environments-2583",
+      "Name": "Branch Instances (Staging)"
+    },
+    {
+      "Id": "Environments-2621",
+      "Name": "Octopus Cloud Tests"
+    },
+    {
+      "Id": "Environments-2601",
+      "Name": "Production"
+    },
+    {
+      "Id": "Environments-2584",
+      "Name": "Branch Instances (Prod)"
+    },
+    {
+      "Id": "Environments-2585",
+      "Name": "Staff"
+    },
+    {
+      "Id": "Environments-2586",
+      "Name": "Friends of Octopus"
+    },
+    {
+      "Id": "Environments-2587",
+      "Name": "Early Adopters"
+    },
+    {
+      "Id": "Environments-2588",
+      "Name": "Stable"
+    },
+    {
+      "Id": "Environments-2589",
+      "Name": "General Availablilty"
+    }
+  ],
+  "ChannelEnvironments": {
+    "Channels-4447": [
+      {
+        "Id": "Environments-2583",
+        "Name": "Branch Instances (Staging)"
+      }
+    ],
+    "Channels-4448": [
+      {
+        "Id": "Environments-2583",
+        "Name": "Branch Instances (Staging)"
+      },
+      {
+        "Id": "Environments-2621",
+        "Name": "Octopus Cloud Tests"
+      },
+      {
+        "Id": "Environments-2601",
+        "Name": "Production"
+      },
+      {
+        "Id": "Environments-2584",
+        "Name": "Branch Instances (Prod)"
+      },
+      {
+        "Id": "Environments-2585",
+        "Name": "Staff"
+      }
+    ],
+    "Channels-4449": [
+      {
+        "Id": "Environments-2583",
+        "Name": "Branch Instances (Staging)"
+      },
+      {
+        "Id": "Environments-2601",
+        "Name": "Production"
+      },
+      {
+        "Id": "Environments-2589",
+        "Name": "General Availablilty"
+      }
+    ],
+    "Channels-4583": [
+      {
+        "Id": "Environments-2583",
+        "Name": "Branch Instances (Staging)"
+      },
+      {
+        "Id": "Environments-2601",
+        "Name": "Production"
+      },
+      {
+        "Id": "Environments-2589",
+        "Name": "General Availablilty"
+      }
+    ],
+    "Channels-4847": [
+      {
+        "Id": "Environments-2583",
+        "Name": "Branch Instances (Staging)"
+      },
+      {
+        "Id": "Environments-2621",
+        "Name": "Octopus Cloud Tests"
+      },
+      {
+        "Id": "Environments-2601",
+        "Name": "Production"
+      },
+      {
+        "Id": "Environments-2584",
+        "Name": "Branch Instances (Prod)"
+      },
+      {
+        "Id": "Environments-2586",
+        "Name": "Friends of Octopus"
+      },
+      {
+        "Id": "Environments-2587",
+        "Name": "Early Adopters"
+      },
+      {
+        "Id": "Environments-2588",
+        "Name": "Stable"
+      }
+    ]
+  },
+  "Releases": [
+    {
+      "Release": {
+        "Id": "Releases-83203",
+        "Version": "2020.5.9",
+        "ChannelId": "Channels-4583",
+        "ReleaseNotes": "",
+        "ProjectDeploymentProcessSnapshotId": "deploymentprocess-Projects-4224-s-200-75TDK",
+        "IgnoreChannelRules": false,
+        "Assembled": "2021-02-25Thh:mm:ss.81+00:00",
+        "ProjectId": "Projects-4224",
+        "LibraryVariableSetSnapshotIds": [
+          "variableset-LibraryVariableSets-921-s-2-VPUL3"
+        ],
+        "SelectedPackages": [
+          {
+            "StepName": "Upload Windows Installers to S3 for direct download",
+            "ActionName": "Upload Windows Installers to S3 for direct download",
+            "Version": "2020.5.9",
+            "PackageReferenceName": "S3SourcePackage"
+          },
+          {
+            "StepName": "Push package to Chocolatey",
+            "ActionName": "Push package to Chocolatey",
+            "Version": "2020.5.9",
+            "PackageReferenceName": "NuGetPush.Source.Package"
+          }
+        ],
+        "ProjectVariableSetSnapshotId": "variableset-Projects-4224-s-46-4H8JM",
+        "VersionControlReference": {
+          "GitRef": null,
+          "GitCommit": null
+        },
+        "SpaceId": "Spaces-622",
+        "Links": {
+          "Self": "/api/Spaces-622/releases/Releases-83203",
+          "Project": "/api/Spaces-622/projects/Projects-4224",
+          "Progression": "/api/Spaces-622/releases/Releases-83203/progression",
+          "Deployments": "/api/Spaces-622/releases/Releases-83203/deployments{?skip,take}",
+          "DeploymentTemplate": "/api/Spaces-622/releases/Releases-83203/deployments/template",
+          "Artifacts": "/api/Spaces-622/artifacts?regarding=Releases-83203",
+          "ProjectVariableSnapshot": "/api/Spaces-622/variables/variableset-Projects-4224-s-46-4H8JM",
+          "ProjectDeploymentProcessSnapshot": "/api/Spaces-622/deploymentprocesses/deploymentprocess-Projects-4224-s-200-75TDK",
+          "Web": "/app#/Spaces-622/releases/Releases-83203",
+          "SnapshotVariables": "/api/Spaces-622/releases/Releases-83203/snapshot-variables",
+          "Defects": "/api/Spaces-622/releases/Releases-83203/defects",
+          "ReportDefect": "/api/Spaces-622/releases/Releases-83203/defects",
+          "ResolveDefect": "/api/Spaces-622/releases/Releases-83203/defects/resolve",
+          "DeploymentPreviews": "/api/Spaces-622/releases/Releases-83203/deployments/previews/"
+        }
+      },
+      "Channel": {
+        "Id": "Channels-4583",
+        "Name": "Previous Release - 2020.5",
+        "Description": "eg\n`2020.5.0-rc0003`\n`2020.5.0`",
+        "ProjectId": "Projects-4224",
+        "LifecycleId": "Lifecycles-1668",
+        "IsDefault": false,
+        "Rules": [
+          {
+            "Id": "2cd84d29-23d9-4f8f-9035-6e54a9041fa7",
+            "VersionRange": "[2020.5.0-a,2020.5.99999)",
+            "Tag": "^rc\\d*$|^$",
+            "ActionPackages": [
+              {
+                "DeploymentAction": "Push package to Chocolatey",
+                "PackageReference": "NuGetPush.Source.Package"
+              }
+            ],
+            "Links": {},
+            "Actions": [
+              "Push package to Chocolatey"
+            ]
+          },
+          {
+            "Id": "71275451-9c17-472d-9ea5-53a3568cf603",
+            "VersionRange": "[2020.5.0-a,2020.5.99999)",
+            "Tag": "^rc\\d*$|^$",
+            "ActionPackages": [
+              {
+                "DeploymentAction": "Upload Windows Installers to S3 for direct download",
+                "PackageReference": "S3SourcePackage"
+              }
+            ],
+            "Links": {},
+            "Actions": [
+              "Upload Windows Installers to S3 for direct download"
+            ]
+          }
+        ],
+        "TenantTags": [],
+        "SpaceId": "Spaces-622",
+        "Links": {
+          "Self": "/api/Spaces-622/channels/Channels-4583",
+          "Releases": "/api/Spaces-622/channels/Channels-4583/releases{?skip,take,searchByVersion}",
+          "Project": "/api/Spaces-622/projects/Projects-4224"
+        }
+      },
+      "Deployments": {
+        "Environments-2583": [
+          {
+            "Id": "Deployments-101965",
+            "ProjectId": "Projects-4224",
+            "EnvironmentId": "Environments-2583",
+            "ReleaseId": "Releases-83203",
+            "DeploymentId": "Deployments-101965",
+            "TaskId": "ServerTasks-1296561",
+            "TenantId": null,
+            "ChannelId": "Channels-4583",
+            "ReleaseVersion": "2020.5.9",
+            "Created": "2021-02-25Thh:mm:ss.235+00:00",
+            "QueueTime": "2021-02-25Thh:mm:ss.236+00:00",
+            "StartTime": "2021-02-25Thh:mm:ss.657+00:00",
+            "CompletedTime": "2021-02-25Thh:mm:ss.219+00:00",
+            "State": "Success",
+            "HasPendingInterruptions": false,
+            "HasWarningsOrErrors": true,
+            "ErrorMessage": "",
+            "Duration": "19 minutes",
+            "IsCurrent": true,
+            "IsPrevious": false,
+            "IsCompleted": true,
+            "Links": {
+              "Self": "/api/Spaces-622/deployments/Deployments-101965",
+              "Release": "/api/Spaces-622/releases/Releases-83203",
+              "Tenant": "/api/Spaces-622/tenants/",
+              "Task": "/api/tasks/ServerTasks-1296561"
+            }
+          }
+        ]
+      },
+      "NextDeployments": [
+        "Environments-2601"
+      ],
+      "HasUnresolvedDefect": false,
+      "ReleaseRetentionPeriod": null,
+      "TentacleRetentionPeriod": null
+    },
+    {
+      "Release": {
+        "Id": "Releases-83007",
+        "Version": "2020.6.4594-escape-release-3",
+        "ChannelId": "Channels-4447",
+        "ReleaseNotes": "",
+        "ProjectDeploymentProcessSnapshotId": "deploymentprocess-Projects-4224-s-200-75TDK",
+        "IgnoreChannelRules": false,
+        "BuildInformation": [],
+        "Assembled": "2021-02-22Thh:mm:ss.889+00:00",
+        "ProjectId": "Projects-4224",
+        "LibraryVariableSetSnapshotIds": [
+          "variableset-LibraryVariableSets-921-s-2-VPUL3"
+        ],
+        "SelectedPackages": [
+          {
+            "StepName": "Upload Windows Installers to S3 for direct download",
+            "ActionName": "Upload Windows Installers to S3 for direct download",
+            "Version": "2020.6.4594-escape-release-3",
+            "PackageReferenceName": "S3SourcePackage"
+          },
+          {
+            "StepName": "Push package to Chocolatey",
+            "ActionName": "Push package to Chocolatey",
+            "Version": "2020.6.4594-escape-release-3",
+            "PackageReferenceName": "NuGetPush.Source.Package"
+          }
+        ],
+        "ProjectVariableSetSnapshotId": "variableset-Projects-4224-s-45-Z995K",
+        "VersionControlReference": {
+          "GitRef": null,
+          "GitCommit": null
+        },
+        "SpaceId": "Spaces-622",
+        "Links": {
+          "Self": "/api/Spaces-622/releases/Releases-83007",
+          "Project": "/api/Spaces-622/projects/Projects-4224",
+          "Progression": "/api/Spaces-622/releases/Releases-83007/progression",
+          "Deployments": "/api/Spaces-622/releases/Releases-83007/deployments{?skip,take}",
+          "DeploymentTemplate": "/api/Spaces-622/releases/Releases-83007/deployments/template",
+          "Artifacts": "/api/Spaces-622/artifacts?regarding=Releases-83007",
+          "ProjectVariableSnapshot": "/api/Spaces-622/variables/variableset-Projects-4224-s-45-Z995K",
+          "ProjectDeploymentProcessSnapshot": "/api/Spaces-622/deploymentprocesses/deploymentprocess-Projects-4224-s-200-75TDK",
+          "Web": "/app#/Spaces-622/releases/Releases-83007",
+          "SnapshotVariables": "/api/Spaces-622/releases/Releases-83007/snapshot-variables",
+          "Defects": "/api/Spaces-622/releases/Releases-83007/defects",
+          "ReportDefect": "/api/Spaces-622/releases/Releases-83007/defects",
+          "ResolveDefect": "/api/Spaces-622/releases/Releases-83007/defects/resolve",
+          "DeploymentPreviews": "/api/Spaces-622/releases/Releases-83007/deployments/previews/"
+        }
+      },
+      "Channel": {
+        "Id": "Channels-4447",
+        "Name": "Branch Builds",
+        "Description": "eg:\n`2020.5.0-bug-cloudservice0001`\n`2020.5.0-mergebot-from-re031`\n`2020.5.0-pr6834-0286`\n`2020.5.0-beta0652`",
+        "ProjectId": "Projects-4224",
+        "LifecycleId": "Lifecycles-1665",
+        "IsDefault": false,
+        "Rules": [
+          {
+            "Id": "bfe53c6a-6e6c-46c2-8a2f-d7dee7dd1709",
+            "VersionRange": "",
+            "Tag": "^.+$",
+            "ActionPackages": [
+              {
+                "DeploymentAction": "Push package to Chocolatey",
+                "PackageReference": "NuGetPush.Source.Package"
+              }
+            ],
+            "Links": {},
+            "Actions": [
+              "Push package to Chocolatey"
+            ]
+          },
+          {
+            "Id": "bbb6f565-7ff3-4911-bda3-b9cfa2632e3c",
+            "VersionRange": "",
+            "Tag": "^.+$",
+            "ActionPackages": [
+              {
+                "DeploymentAction": "Upload Windows Installers to S3 for direct download",
+                "PackageReference": "S3SourcePackage"
+              }
+            ],
+            "Links": {},
+            "Actions": [
+              "Upload Windows Installers to S3 for direct download"
+            ]
+          }
+        ],
+        "TenantTags": [],
+        "SpaceId": "Spaces-622",
+        "Links": {
+          "Self": "/api/Spaces-622/channels/Channels-4447",
+          "Releases": "/api/Spaces-622/channels/Channels-4447/releases{?skip,take,searchByVersion}",
+          "Project": "/api/Spaces-622/projects/Projects-4224"
+        }
+      },
+      "Deployments": {},
+      "NextDeployments": [
+        "Environments-2583"
+      ],
+      "HasUnresolvedDefect": false,
+      "ReleaseRetentionPeriod": null,
+      "TentacleRetentionPeriod": null
+    }
+  ],
+  "Links": {}
+}

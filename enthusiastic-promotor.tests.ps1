@@ -124,8 +124,7 @@ Describe 'Enthusiastic promoter' {
     $result.Count | should -be 0
   }
 
-  It 'should handle a release that has not yet been deployed to the initial environment' {
-    # when an earlier phase is added, it means there are two candidates for deployment
+  It 'should handle a release that has not yet been deployed to the initial environment (for as single release) ' {
     Mock Test-PipelineBlocked { return $false; }
     $progression = (Get-Content -Path "SampleData/sample5-release-created-but-no-deployments.json" -Raw) | ConvertFrom-Json
     $channels = (Get-Content -Path "SampleData/channels.json" -Raw) | ConvertFrom-Json
@@ -134,6 +133,21 @@ Describe 'Enthusiastic promoter' {
     $result = $((Get-PromotionCandidates $progression $channels).Values) | sort-object -property Version
 
     $result.Count | should -be 0
+  }
+
+  It 'should handle a release that has not yet been deployed to the initial environment (with multiple releases)' {
+    Mock Test-PipelineBlocked { return $false; }
+    $progression = (Get-Content -Path "SampleData/sample6.json" -Raw) | ConvertFrom-Json
+    $channels = (Get-Content -Path "SampleData/channels.json" -Raw) | ConvertFrom-Json
+    Mock Get-CurrentDate { return [System.DateTime]::Parse("05/Feb/2021 1:08:20 AM") }
+
+    $result = $((Get-PromotionCandidates $progression $channels).Values) | sort-object -property Version
+
+    $result.Count | should -be 1
+
+    $result[0].Version | Should -be "2020.5.9"
+    $result[0].EnvironmentName | Should -be "Production"
+    $result[0].ChannelName | Should -be "Latest Release - 2020.5"
   }
 
   It 'should not promote during weekend period' -TestCases @( # All written in AEST times
