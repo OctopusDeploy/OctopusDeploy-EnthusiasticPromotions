@@ -13,9 +13,17 @@ $waitTimeForEnvironmentLookup = @{
 }
 
 function Test-PipelineBlocked($release) {
+    $url = "$octofrontUrl/api/Problem/ActiveProblems/OctopusServer/$($release.Release.Version)"
+    Write-Verbose "Getting response from $url"
+    $activeProblems =  (Invoke-restmethod -Uri $url -Headers @{ 'Authorization' = "Bearer $($octofrontApiKey)"}).ActiveProblems
 
-    $activeProblems =  (Invoke-restmethod -Uri "$octofrontUrl/api/Problem/ActiveProblems/OctopusServer/$($release.Release.Version)" -Headers @{ 'Authorization' = "Bearer $($octofrontApiKey)"}).ActiveProblems
-
+    # log out the  json, so we can diagnose what's happening / write a test for it
+    write-verbose "--------------------------------------------------------"
+    write-verbose "response:"
+    write-verbose "--------------------------------------------------------"
+    write-verbose ($activeProblems | ConvertTo-Json -depth 10)
+    write-verbose "--------------------------------------------------------"
+    
     return $activeProblems.Count -gt 0
 }
 
