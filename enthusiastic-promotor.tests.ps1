@@ -181,7 +181,7 @@ Describe 'Enthusiastic promoter' {
     ($result.Count -gt 0) | should -be $shouldPromote
   }
 
-  It 'should throw when octofront is down' {
+  It 'should retry when octofront is unavailable' {
 
     $script:mockHasMockedOctofrontBeingDown = $false
 
