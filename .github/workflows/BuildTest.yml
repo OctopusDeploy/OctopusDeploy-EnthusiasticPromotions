@@ -11,8 +11,6 @@ env:
     PACKAGE_PREFIX: 1
     OCTOPUS_PACKAGE_NAME: "EnthisuasticPromotions"
     OCTOPUS_SPACE_NAME: "Octopus Server"
-    OCTOPUS_PROJECT_NAME: "Octopus Server"
-    OCTOPUS_ENTHUSIASTIC_PROMOTIONS_RUNBOOK_NAME: "Enthusiastic Promotions"
 
 jobs:
   build:
@@ -33,8 +31,4 @@ jobs:
           $configuration = [PesterConfiguration]::Default
           $configuration.Run.Exit = $true
           Invoke-Pester -configuration $configuration
-        shell: pwsh
-
-      - name: Publish Runbook
-        run: ./Build/UpdateRunbook.ps1 -octopusURL "${{ secrets.OCTOPUS_SERVER }}" -octopusAPIKey "${{ secrets.OCTOPUS_APIKEY }}" -spaceName "$OCTOPUS_SPACE_NAME" -projectName "$OCTOPUS_PROJECT_NAME" -runbookName "$OCTOPUS_ENTHUSIASTIC_PROMOTIONS_RUNBOOK_NAME"
         shell: pwsh
