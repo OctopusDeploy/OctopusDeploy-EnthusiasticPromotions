@@ -181,27 +181,47 @@ Describe 'Enthusiastic promoter' {
     ($result.Count -gt 0) | should -be $shouldPromote
   }
 
-  It 'should retry when octofront is unavailable' {
+  Describe 'Invoke-WithRetry' {
+    It 'It stops retries'  {
+      $script:counter = 0
+      {
+          Invoke-WithRetry -ScriptBlock {
+            $script:counter++;
+            throw "Test error"
+          } -MaxRetries 2 -InitialBackoffInMs 1
+      } | Should -Throw
 
-    $script:mockHasMockedOctofrontBeingDown = $false
-
-    Mock Get-SleepTime { return 0 }
-    Mock Test-GetActiveProblems {
-      if($global:mockHasMockedOctofrontBeingDown -eq $false) {
-        $global:mockHasMockedOctofrontBeingDown = $true
-        throw "Error"
-      }
-
-      return {
-        ActiveProblems: [{}]
-      }
+      $script:counter | Should -be 3
     }
-    Mock Write-Warning {}
 
-    $progression = (Get-Content -Path "SampleData/sample6.json" -Raw) | ConvertFrom-Json
-    $release = $progression.Releases[0]
+    It "Does not retry" {
+      $script:counter = 0;
+      {
+          Invoke-WithRetry {
+          $script:counter++;
+          throw "Test exception"
+          } -MaxRetries 0
+      } | Should -Throw
 
-    Test-PipelineBlocked($release) | Should -be 1
-    Assert-MockCalled Write-Warning -Times 1
+      $script:counter | Should -be 1
+    }
+
+    It "Works with blocks that do not return value" {
+      $script:counter = 0
+      Invoke-WithRetry {
+          $script:counter++;
+          Write-Host "Test"
+      }
+
+      $script:counter | Should -be 1
+    }
+
+    It "Works with blocks that return value" {
+      $value = 12345;
+      $returnValue = Invoke-WithRetry {
+          return $value;
+      }
+      $returnValue | Should -be $value
+    }
   }
 }

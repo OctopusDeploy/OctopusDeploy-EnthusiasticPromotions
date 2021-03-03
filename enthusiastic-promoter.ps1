@@ -12,48 +12,75 @@ $waitTimeForEnvironmentLookup = @{
     "Environments-2589" = @{ "Name" = "General Availablilty";       "BakeTime" = New-TimeSpan -Minutes 0; "StabilizationPhaseBakeTime" = New-TimeSpan -Minutes 0; }
 }
 
-function Test-PipelineBlocked($release) {
-    $attempts = 0
-    $maxAttempts = 5
-    do {
-        Write-Host "Attempt $attempts to get active problems for release $($release.Release.Version)"
+function Invoke-WithRetry {
+    [CmdletBinding()]
+    param(
+        [scriptblock]$ScriptBlock,
+        [int]$MaxRetries = 10,
+        [int]$InitialBackoffInMs = 500
+    )
+
+    $backoff = $InitialBackoffInMs
+    $retrycount = -1
+    $returnvalue = $null
+    $success = $false;
+
+    Write-Host "MaxRetries: $MaxRetries"
+    Write-Host "InitialBackoffInMs: $InitialBackoffInMs"
+
+    while($success -eq $false) {
         try {
-            $activeProblems = Test-GetActiveProblems($release)
-            return $activeProblems.Count -gt 0
+            $retrycount++
+            $success = $true;
+            $returnvalue = Invoke-Command $ScriptBlock
         }
-        catch {
-            Write-Warning $_.Exception.Message
-        }
-        $attempts++
-
-        if($attempts -lt $maxAttempts)
+        catch
         {
-            $sleepTime = Get-SleepTime($attempts)
-            Write-Host "Sleeping for $sleepTime seconds before attempting to check active problems again"
-            Start-Sleep -Seconds $sleepTime
+            $success = $false;
+            $message = If ($null -ne $_.Exception) { $_.Exception.ToString() } Else { $error | Select-Object -first 1 }
+            Write-Host "Command failed: $message"
+
+            if (
+                    ($null -ne $_.Exception) -and
+                    ([bool]($_.Exception.PSobject.Properties.name -match "Response")) -and
+                    ($null -ne $_.Exception.Response)
+                ) {
+                $result = $_.Exception.Response.GetResponseStream()
+                $reader = New-Object System.IO.StreamReader($result)
+                $reader.BaseStream.Position = 0
+                $reader.DiscardBufferedData()
+                $responseBody = $reader.ReadToEnd();
+                Write-Host $responseBody
+            }
+
+            if($retrycount -eq $MaxRetries)
+            {
+                Write-Host "All $retrycount retires have failed."
+                throw $_;
+            }
+
+            $backoff = $backoff + $backoff
+            Write-Host "Invoking a backoff: $backoff [ms]. We have tried $retrycount times"
+            Start-Sleep -MilliSeconds $backoff
         }
-    } while($attempts -lt $maxAttempts)
-    throw "Failed to check active problems for release $($release.Release.Version)"
+    }
+
+    return $returnvalue
 }
 
-function Test-GetActiveProblems($release)
-{
-    $url = "$octofrontUrl/api/Problem/ActiveProblems/OctopusServer/$($release.Release.Version)"
-    Write-Verbose "Getting response from $url"
-    $activeProblems =  (Invoke-restmethod -Uri $url -Headers @{ 'Authorization' = "Bearer $($octofrontApiKey)"}).ActiveProblems
+function Test-PipelineBlocked($release) {
+    Invoke-WithRetry -ScriptBlock {
+        $url = "$octofrontUrl/api/Problem/ActiveProblems/OctopusServer/$($release.Release.Version)"
+        Write-Verbose "Getting response from $url"
+        $activeProblems =  (Invoke-restmethod -Uri $url -Headers @{ 'Authorization' = "Bearer $($octofrontApiKey)"}).ActiveProblems
 
-    # log out the  json, so we can diagnose what's happening / write a test for it
-    write-verbose "--------------------------------------------------------"
-    write-verbose "response:"
-    write-verbose "--------------------------------------------------------"
-    write-verbose ($activeProblems | ConvertTo-Json -depth 10)
-    write-verbose "--------------------------------------------------------"
-}
-
-# Put in method to mock in tests
-function Get-SleepTime($attemptNumber)
-{
-    return 10 * $attemptNumber
+        # log out the  json, so we can diagnose what's happening / write a test for it
+        write-verbose "--------------------------------------------------------"
+        write-verbose "response:"
+        write-verbose "--------------------------------------------------------"
+        write-verbose ($activeProblems | ConvertTo-Json -depth 10)
+        write-verbose "--------------------------------------------------------"
+    }
 }
 
 function Get-CurrentEnvironment($progression, $release) {
