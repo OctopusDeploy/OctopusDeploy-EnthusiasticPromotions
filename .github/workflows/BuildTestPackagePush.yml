@@ -61,5 +61,10 @@ jobs:
         run: octo push --package="./packages/$OCTOPUS_PACKAGE_NAME.$PACKAGE_VERSION.zip" --server="${{ secrets.OCTOPUS_SERVER }}" --apiKey="${{ secrets.OCTOPUS_APIKEY }}" --space="$OCTOPUS_SPACE_NAME"
 
       - name: Publish Runbook
-        run: ./Build/UpdateRunbook.ps1 -octopusURL "${{ secrets.OCTOPUS_SERVER }}" -octopusAPIKey "${{ secrets.OCTOPUS_APIKEY }}" -spaceName $OCTOPUS_SPACE_NAME -projectName $OCTOPUS_PROJECT_NAME -runbookName $OCTOPUS_ENTHUSIASTIC_PROMOTIONS_RUNBOOK_NAME
+        run: | 
+          Write-Host "Package name: $OCTOPUS_PACKAGE_NAME"
+          Write-Host "Package name env: ${{ env.OCTOPUS_PACKAGE_NAME }}"
+          Write-Host "Space name: $OCTOPUS_SPACE_NAME"
+          Write-Host "Space name env: ${{ env.OCTOPUS_SPACE_NAME }}"
+          ./Build/UpdateRunbook.ps1 -octopusURL "${{ secrets.OCTOPUS_SERVER }}" -octopusAPIKey "${{ secrets.OCTOPUS_APIKEY }}" -spaceName "$OCTOPUS_SPACE_NAME" -projectName "$OCTOPUS_PROJECT_NAME" -runbookName "$OCTOPUS_ENTHUSIASTIC_PROMOTIONS_RUNBOOK_NAME"
         shell: pwsh
