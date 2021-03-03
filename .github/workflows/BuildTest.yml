@@ -36,5 +36,5 @@ jobs:
         shell: pwsh
 
       - name: Publish Runbook
-        run: ./Build/UpdateRunbook.ps1 -octopusURL="${{ secrets.OCTOPUS_SERVER }}" -octopusAPIKey="${{ secrets.OCTOPUS_APIKEY }}" -spaceName="$OCTOPUS_SPACE_NAME" -projectName="$OCTOPUS_PROJECT_NAME" -runbookName="$OCTOPUS_ENTHUSIASTIC_PROMOTIONS_RUNBOOK_NAME"
+        run: ./Build/UpdateRunbook.ps1 -octopusURL "${{ secrets.OCTOPUS_SERVER }}" -octopusAPIKey "${{ secrets.OCTOPUS_APIKEY }}" -spaceName "$OCTOPUS_SPACE_NAME" -projectName "$OCTOPUS_PROJECT_NAME" -runbookName "$OCTOPUS_ENTHUSIASTIC_PROMOTIONS_RUNBOOK_NAME"
         shell: pwsh

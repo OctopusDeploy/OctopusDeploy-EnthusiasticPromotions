@@ -1,15 +1,17 @@
 param (
-    [string]$octopusURL,
-    [string]$octopusAPIKey,
-    [string]$spaceName,
-    [string]$projectName,
-    [string]$runbookName
+    [Parameter(Mandatory=$true)][string]$octopusURL,
+    [Parameter(Mandatory=$true)][string]$octopusAPIKey,
+    [Parameter(Mandatory=$true)][string]$spaceName,
+    [Parameter(Mandatory=$true)][string]$projectName,
+    [Parameter(Mandatory=$true)][string]$runbookName
 )
 
 $ErrorActionPreference = "Stop";
 
 # Define working variables
 $header = @{ "X-Octopus-ApiKey" = $octopusAPIKey }
+
+Write-Host "Server name $octopusURL"
 
 # Get space
 $spaces = Invoke-RestMethod -Uri "$octopusURL/api/spaces?partialName=$([uri]::EscapeDataString($spaceName))&skip=0&take=100" -Headers $header 
