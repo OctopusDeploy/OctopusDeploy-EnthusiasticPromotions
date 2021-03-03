@@ -7,12 +7,23 @@ on:
   pull_request:
     branches: [ main ]
 
+env:
+    PACKAGE_PREFIX: 1
+    OCTOPUS_PACKAGE_NAME: EnthisuasticPromotions
+    OCTOPUS_SPACE_NAME: "Octopus Server"
+    OCTOPUS_PROJECT_NAME: "Octopus Server"
+    OCTOPUS_ENTHUSIASTIC_PROMOTIONS_RUNBOOK_NAME: "Enthusiastic Promotions"
+    
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
       - uses: actions/checkout@v2
+
+      - name: Publish Runbook
+        run: ./Build/UpdateRunbook.ps1 -octopusURL "${{ secrets.OCTOPUS_SERVER }}" -octopusAPIKey "${{ secrets.OCTOPUS_APIKEY }}" -spaceName "${{ env.OCTOPUS_SPACE_NAME }}" -projectName "${{ env.OCTOPUS_PROJECT_NAME }} " -runbookName "${{ env.OCTOPUS_ENTHUSIASTIC_PROMOTIONS_RUNBOOK_NAME }}"
+        shell: pwsh
         
       - name: Install Pester
         id: install-pester
