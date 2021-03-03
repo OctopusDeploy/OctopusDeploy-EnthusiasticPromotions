@@ -13,6 +13,31 @@ $waitTimeForEnvironmentLookup = @{
 }
 
 function Test-PipelineBlocked($release) {
+    $attempts = 0
+    $maxAttempts = 5
+    do {
+        Write-Host "Attempt $attempts to get active problems for release $($release.Release.Version)"
+        try {
+            $activeProblems = Test-GetActiveProblems($release)
+            return $activeProblems.Count -gt 0
+        }
+        catch {
+            Write-Warning $_.Exception.Message
+        }
+        $attempts++
+
+        if($attempts -lt $maxAttempts)
+        {
+            $sleepTime = Get-SleepTime($attempts)
+            Write-Host "Sleeping for $sleepTime seconds before attempting to check active problems again"
+            Start-Sleep -Seconds $sleepTime
+        }
+    } while($attempts -lt $maxAttempts)
+    throw "Failed to check active problems for release $($release.Release.Version)"
+}
+
+function Test-GetActiveProblems($release)
+{
     $url = "$octofrontUrl/api/Problem/ActiveProblems/OctopusServer/$($release.Release.Version)"
     Write-Verbose "Getting response from $url"
     $activeProblems =  (Invoke-restmethod -Uri $url -Headers @{ 'Authorization' = "Bearer $($octofrontApiKey)"}).ActiveProblems
@@ -23,8 +48,12 @@ function Test-PipelineBlocked($release) {
     write-verbose "--------------------------------------------------------"
     write-verbose ($activeProblems | ConvertTo-Json -depth 10)
     write-verbose "--------------------------------------------------------"
-    
-    return $activeProblems.Count -gt 0
+}
+
+# Put in method to mock in tests
+function Get-SleepTime($attemptNumber)
+{
+    return 10 * $attemptNumber
 }
 
 function Get-CurrentEnvironment($progression, $release) {
