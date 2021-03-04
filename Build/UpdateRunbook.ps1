@@ -15,18 +15,36 @@ Write-Verbose "Getting Spaces"
 # Get space
 $spaces = Invoke-RestMethod -Uri "$octopusURL/api/spaces?partialName=$([uri]::EscapeDataString($spaceName))&skip=0&take=100" -Headers $header
 $space = $spaces.Items | Where-Object { $_.Name -eq $spaceName }
+
+if([string]::IsNullOrEmpty($space))
+{
+    Write-Error "Failed to find the space with name $spaceName"
+    throw
+}
 Write-Verbose "Selected space with id $($space.Id)"
 
 Write-Verbose "Getting Projects"
 # Get project
 $projects = Invoke-RestMethod -Uri "$octopusURL/api/$($space.Id)/projects?partialName=$([uri]::EscapeDataString($projectName))&skip=0&take=100" -Headers $header
 $project = $projects.Items | Where-Object { $_.Name -eq $projectName }
+
+if([string]::IsNullOrEmpty($project))
+{
+    Write-Error "Failed to find the project with name $projectName"
+    throw
+}
 Write-Verbose "Selected project with id $($project.Id)"
 
 Write-Verbose "Getting Runbooks"
 # Get runbook
 $runbooks = Invoke-RestMethod -Uri "$octopusURL/api/$($space.Id)/projects/$($project.Id)/runbooks?partialName=$([uri]::EscapeDataString($runbookName))&skip=0&take=100" -Headers $header
 $runbook = $runbooks.Items | Where-Object { $_.Name -eq $runbookName }
+
+if([string]::IsNullOrEmpty($runbook))
+{
+    Write-Error "Failed to find the runbook with name $runbookName"
+    throw
+}
 Write-Verbose "Selected runbook with id $($runbook.id)"
 
 # Get a runbook snapshot template
