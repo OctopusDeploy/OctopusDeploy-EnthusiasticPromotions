@@ -1,15 +1,15 @@
 
 #lookup table for "how long the release needs to be in the specified environment, before allowing it to move on"
 $waitTimeForEnvironmentLookup = @{
-    "Environments-2583" = @{ "Name" = "Branch Instances (Staging)"; "BakeTime" = New-TimeSpan -Minutes 0; "StabilizationPhaseBakeTime" = New-TimeSpan -Hours 2;   }
-    "Environments-2621" = @{ "Name" = "Octopus Cloud Tests";        "BakeTime" = New-TimeSpan -Minutes 0; "StabilizationPhaseBakeTime" = New-TimeSpan -Minutes 0; }
-    "Environments-2601" = @{ "Name" = "Production";                 "BakeTime" = New-TimeSpan -Minutes 0; "StabilizationPhaseBakeTime" = New-TimeSpan -Minutes 0; }
-    "Environments-2584" = @{ "Name" = "Branch Instances (Prod)";    "BakeTime" = New-TimeSpan -Days 1;    "StabilizationPhaseBakeTime" = New-TimeSpan -Days 1;    }
-    "Environments-2585" = @{ "Name" = "Staff";                      "BakeTime" = New-TimeSpan -Minutes 0; "StabilizationPhaseBakeTime" = New-TimeSpan -Days 1;    }
-    "Environments-2586" = @{ "Name" = "Friends of Octopus";         "BakeTime" = New-TimeSpan -Minutes 0; "StabilizationPhaseBakeTime" = New-TimeSpan -Days 1;    }
-    "Environments-2587" = @{ "Name" = "Early Adopters";             "BakeTime" = New-TimeSpan -Minutes 0; "StabilizationPhaseBakeTime" = New-TimeSpan -Days 7;    }
-    "Environments-2588" = @{ "Name" = "Stable";                     "BakeTime" = New-TimeSpan -Minutes 0; "StabilizationPhaseBakeTime" = New-TimeSpan -Days 7;    }
-    "Environments-2589" = @{ "Name" = "General Availablilty";       "BakeTime" = New-TimeSpan -Minutes 0; "StabilizationPhaseBakeTime" = New-TimeSpan -Minutes 0; }
+    "Environments-2583" = @{ "Name" = "Branch Instances (Staging)"; "BakeTime" = New-TimeSpan -Minutes 0; "StabilizationPhaseBakeTime" = New-TimeSpan -Hours 2;   "MinimumTimeBetweenDeployments" = New-TimeSpan -Minutes 0; }
+    "Environments-2621" = @{ "Name" = "Octopus Cloud Tests";        "BakeTime" = New-TimeSpan -Minutes 0; "StabilizationPhaseBakeTime" = New-TimeSpan -Minutes 0; "MinimumTimeBetweenDeployments" = New-TimeSpan -Minutes 0; }
+    "Environments-2601" = @{ "Name" = "Production";                 "BakeTime" = New-TimeSpan -Minutes 0; "StabilizationPhaseBakeTime" = New-TimeSpan -Minutes 0; "MinimumTimeBetweenDeployments" = New-TimeSpan -Minutes 0; }
+    "Environments-2584" = @{ "Name" = "Branch Instances (Prod)";    "BakeTime" = New-TimeSpan -Days 1;    "StabilizationPhaseBakeTime" = New-TimeSpan -Days 1;    "MinimumTimeBetweenDeployments" = New-TimeSpan -Minutes 0; }
+    "Environments-2585" = @{ "Name" = "Staff";                      "BakeTime" = New-TimeSpan -Minutes 0; "StabilizationPhaseBakeTime" = New-TimeSpan -Days 1;    "MinimumTimeBetweenDeployments" = New-TimeSpan -Minutes 0; }
+    "Environments-2586" = @{ "Name" = "Friends of Octopus";         "BakeTime" = New-TimeSpan -Minutes 0; "StabilizationPhaseBakeTime" = New-TimeSpan -Days 1;    "MinimumTimeBetweenDeployments" = New-TimeSpan -Hours 12; }
+    "Environments-2587" = @{ "Name" = "Early Adopters";             "BakeTime" = New-TimeSpan -Minutes 0; "StabilizationPhaseBakeTime" = New-TimeSpan -Days 7;    "MinimumTimeBetweenDeployments" = New-TimeSpan -Days 3; }
+    "Environments-2588" = @{ "Name" = "Stable";                     "BakeTime" = New-TimeSpan -Minutes 0; "StabilizationPhaseBakeTime" = New-TimeSpan -Days 7;    "MinimumTimeBetweenDeployments" = New-TimeSpan -Days 7; }
+    "Environments-2589" = @{ "Name" = "General Availablilty";       "BakeTime" = New-TimeSpan -Minutes 0; "StabilizationPhaseBakeTime" = New-TimeSpan -Minutes 0; "MinimumTimeBetweenDeployments" = New-TimeSpan -Minutes 0; }
 }
 
 function Invoke-WithRetry {
@@ -84,6 +84,7 @@ function Test-PipelineBlocked($release) {
 }
 
 function Get-CurrentEnvironment($progression, $release) {
+    if ($release.NextDeployments.Length -eq 0) { return $null }
     $nextEnvironmentId = $release.NextDeployments[0]
     $channelId = $release.Release.ChannelId
     $channelEnvironments = ((,$progression.ChannelEnvironments.PSObject.Properties | where-object { $_.Name -eq $channelId }).Value)
@@ -193,6 +194,17 @@ function Test-ReleaseInStabilizationPhase($channelId, $channels) {
     return $true;
 }
 
+# Upgrades at the moment take the instance down, so we dont want to cause an outage every day
+# Once we have 0-downtime upgrades for Octopus Cloud, we can remove this
+function Test-ShouldLimitDeploymentsToEnvironment($nextEnvironmentId, $mostRecentReleaseDeployedToNextEnvironment) {
+    if ($null -eq $mostRecentReleaseDeployedToNextEnvironment) {
+        return $false;
+    }
+    $minimumTimeBetweenDeployments = $waitTimeForEnvironmentLookup[$nextEnvironmentId].MinimumTimeBetweenDeployments
+    $mostRecentDeploymentToNextEnvironment = Get-MostRecentDeploymentToEnvironment $mostRecentReleaseDeployedToNextEnvironment $nextEnvironmentId
+    return ($mostRecentDeploymentToNextEnvironment.CompletedTime.Add($minimumTimeBetweenDeployments) -gt (Get-CurrentDate))
+}
+
 function Get-PromotionCandidates($progression, $channels, $lifecycles) {
     $promotionCandidates = @{}
 
@@ -229,6 +241,10 @@ function Get-PromotionCandidates($progression, $channels, $lifecycles) {
             } elseif (($null -ne $mostRecentReleaseDeployedToNextEnvironment) -and ((New-Object Octopus.Versioning.Semver.SemanticVersion $mostRecentReleaseDeployedToNextEnvironment.Release.Version) -gt (New-Object Octopus.Versioning.Semver.SemanticVersion $release.Release.Version))) {
                 $channelName = Get-ChannelName $channels $release.Release.ChannelId
                 Write-Host " - A newer release '$($mostRecentReleaseDeployedToNextEnvironment.Release.Version)' in channel '$channelName' has already been deployed to '$nextEnvironmentName'."
+            } elseif (Test-ShouldLimitDeploymentsToEnvironment -nextEnvironmentId $nextEnvironmentId -mostRecentReleaseDeployedToNextEnvironment $mostRecentReleaseDeployedToNextEnvironment) {
+                $minimumTimeBetweenDeployments = $waitTimeForEnvironmentLookup[$nextEnvironmentId].MinimumTimeBetweenDeployments
+                $mostRecentDeploymentToNextEnvironment = Get-MostRecentDeploymentToEnvironment $mostRecentReleaseDeployedToNextEnvironment $nextEnvironmentId
+                Write-Host " - Release '$($release.Release.Version)' is valid for deployment, but '$($mostRecentReleaseDeployedToNextEnvironment.Release.Version)' was deployed recently (within the last $minimumTimeBetweenDeployments). Will try again later after $($mostRecentDeploymentToNextEnvironment.CompletedTime.Add($minimumTimeBetweenDeployments)) (UTC)."
             } else {
                 if (Test-ReleaseInStabilizationPhase -channelId $release.Release.ChannelId -channels $channels) {
                     Write-Host " - Release '$($release.Release.Version)' is in stabilization phase - allowing longer bake times"
