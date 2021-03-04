@@ -13,7 +13,7 @@ env:
     OCTOPUS_SPACE_NAME: "Octopus Server"
     OCTOPUS_PROJECT_NAME: "Octopus Server"
     OCTOPUS_ENTHUSIASTIC_PROMOTIONS_RUNBOOK_NAME: "Enthusiastic Promotions"
-    
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -22,7 +22,7 @@ jobs:
       - uses: actions/checkout@v2
 
       - name: Publish Runbook
-        run: ./Build/UpdateRunbook.ps1 -octopusURL "${{ secrets.OCTOPUS_SERVER }}" -octopusAPIKey "${{ secrets.OCTOPUS_APIKEY }}" -spaceName "${{ env.OCTOPUS_SPACE_NAME }}" -projectName "${{ env.OCTOPUS_PROJECT_NAME }} " -runbookName "${{ env.OCTOPUS_ENTHUSIASTIC_PROMOTIONS_RUNBOOK_NAME }}"
+        run: ./Build/UpdateRunbook.ps1 -octopusURL "${{ secrets.OCTOPUS_SERVER }}" -octopusAPIKey "${{ secrets.OCTOPUS_APIKEY }}" -spaceName "${{ env.OCTOPUS_SPACE_NAME }}" -projectName "${{ env.OCTOPUS_PROJECT_NAME }}" -runbookName "${{ env.OCTOPUS_ENTHUSIASTIC_PROMOTIONS_RUNBOOK_NAME }}"
         shell: pwsh
         
       - name: Install Pester

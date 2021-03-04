@@ -15,21 +15,13 @@ $header = @{ "X-Octopus-ApiKey" = $octopusAPIKey }
 $spaces = Invoke-RestMethod -Uri "$octopusURL/api/spaces?partialName=$([uri]::EscapeDataString($spaceName))&skip=0&take=100" -Headers $header 
 $space = $spaces.Items | Where-Object { $_.Name -eq $spaceName }
 
-Write-Host "Space id $($space.Id)"
-
 # Get project
-$projectsUrl = "$octopusURL/api/$($space.Id)/projects?partialName=$([uri]::EscapeDataString($projectName))&skip=0&take=100"
-Write-Host $projectsUrl
 $projects = Invoke-RestMethod -Uri $projectsUrl -Headers $header
 $project = $projects.Items | Where-Object { $_.Name -eq $projectName }
-
-Write-Host "Project id $($project.Id)"
 
 # Get runbook
 $runbooks = Invoke-RestMethod -Uri "$octopusURL/api/$($space.Id)/projects/$($project.Id)/runbooks?partialName=$([uri]::EscapeDataString($runbookName))&skip=0&take=100" -Headers $header 
 $runbook = $runbooks.Items | Where-Object { $_.Name -eq $runbookName }
-
-Write-Host "Runbook id $($runbook.Id)"
 
 # Get a runbook snapshot template
 $runbookSnapshotTemplate = Invoke-RestMethod -Uri "$octopusURL/api/$($space.Id)/runbookProcesses/$($runbook.RunbookProcessId)/runbookSnapshotTemplate" -Headers $header 
