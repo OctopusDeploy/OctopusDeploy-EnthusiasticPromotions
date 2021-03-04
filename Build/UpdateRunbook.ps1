@@ -12,19 +12,19 @@ $ErrorActionPreference = "Stop";
 $header = @{ "X-Octopus-ApiKey" = $octopusAPIKey }
 
 # Get space
-$spaces = Invoke-RestMethod -Uri "$octopusURL/api/spaces?partialName=$([uri]::EscapeDataString($spaceName))&skip=0&take=100" -Headers $header 
+$spaces = Invoke-RestMethod -Uri "$octopusURL/api/spaces?partialName=$([uri]::EscapeDataString($spaceName))&skip=0&take=100" -Headers $header
 $space = $spaces.Items | Where-Object { $_.Name -eq $spaceName }
 
 # Get project
-$projects = Invoke-RestMethod -Uri $projectsUrl -Headers $header
+$projects = Invoke-RestMethod -Uri "$octopusURL/api/$($space.Id)/projects?partialName=$([uri]::EscapeDataString($projectName))&skip=0&take=100" -Headers $header
 $project = $projects.Items | Where-Object { $_.Name -eq $projectName }
 
 # Get runbook
-$runbooks = Invoke-RestMethod -Uri "$octopusURL/api/$($space.Id)/projects/$($project.Id)/runbooks?partialName=$([uri]::EscapeDataString($runbookName))&skip=0&take=100" -Headers $header 
+$runbooks = Invoke-RestMethod -Uri "$octopusURL/api/$($space.Id)/projects/$($project.Id)/runbooks?partialName=$([uri]::EscapeDataString($runbookName))&skip=0&take=100" -Headers $header
 $runbook = $runbooks.Items | Where-Object { $_.Name -eq $runbookName }
 
 # Get a runbook snapshot template
-$runbookSnapshotTemplate = Invoke-RestMethod -Uri "$octopusURL/api/$($space.Id)/runbookProcesses/$($runbook.RunbookProcessId)/runbookSnapshotTemplate" -Headers $header 
+$runbookSnapshotTemplate = Invoke-RestMethod -Uri "$octopusURL/api/$($space.Id)/runbookProcesses/$($runbook.RunbookProcessId)/runbookSnapshotTemplate" -Headers $header
 
 # Create a runbook snapshot
 $body = @{
@@ -40,7 +40,7 @@ foreach($package in $runbookSnapshotTemplate.Packages)
 {
     if($package.FeedId -eq "feeds-builtin") {
         # Get latest package version
-        $packages = Invoke-RestMethod -Uri "$octopusURL/api/$($space.Id)/feeds/feeds-builtin/packages/versions?packageId=$($package.PackageId)&take=1" -Headers $header 
+        $packages = Invoke-RestMethod -Uri "$octopusURL/api/$($space.Id)/feeds/feeds-builtin/packages/versions?packageId=$($package.PackageId)&take=1" -Headers $header
         $latestPackage = $packages.Items | Select-Object -First 1
         $package = @{
             ActionName = $package.ActionName
