@@ -63,7 +63,7 @@ Describe 'Enthusiastic promoter' {
 
     $result = $((Get-PromotionCandidates $progression $channels).Values) | sort-object -property Version
 
-    $result.Count | Should -be 0
+    $result | Should -be $null
   }
 
   It 'should promote 2020.6.0-ci0003 as it is the latest in the CI Builds channel' {
