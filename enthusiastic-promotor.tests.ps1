@@ -1,3 +1,8 @@
+Set-StrictMode -Version "Latest";
+$ErrorActionPreference = "Stop";
+$ConfirmPreference = "None";
+trap { Write-Error $_ -ErrorAction Continue; exit 1 }
+
 Describe 'Enthusiastic promoter' {
   BeforeAll {
     if ($null -eq ("Octopus.Versioning.Semver.SemanticVersion" -as [type])) {
@@ -87,7 +92,7 @@ Describe 'Enthusiastic promoter' {
 
     $result = $((Get-PromotionCandidates $progression $channels).Values) | sort-object -property Version
 
-    $result.Count | should -be 0
+    $result | should -be $null
   }
 
   It 'should choose the stabilisation phase for channels using the Current Release (prior to going GA) lifecycle' {
@@ -111,7 +116,7 @@ Describe 'Enthusiastic promoter' {
 
     $result = $((Get-PromotionCandidates $progression $channels).Values) | sort-object -property Version
 
-    $result.Count | should -be 0
+    $result | should -be $null
   }
 
   It 'should handle a release that has not yet been deployed to the initial environment (for as single release) ' {
@@ -122,7 +127,7 @@ Describe 'Enthusiastic promoter' {
 
     $result = $((Get-PromotionCandidates $progression $channels).Values) | sort-object -property Version
 
-    $result.Count | should -be 0
+    $result | should -be $null
   }
 
   It 'should handle a release that has not yet been deployed to the initial environment (with multiple releases)' {
@@ -168,7 +173,7 @@ Describe 'Enthusiastic promoter' {
 
     $result = $((Get-PromotionCandidates $progression $channels).Values) | sort-object -property Version
 
-    ($result.Count -gt 0) | should -be $shouldPromote
+    ($null -ne $result) | should -be $shouldPromote
   }
 
   Describe 'Invoke-WithRetry' {

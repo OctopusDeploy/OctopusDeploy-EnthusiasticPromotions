@@ -1,4 +1,9 @@
 
+Set-StrictMode -Version "Latest";
+$ErrorActionPreference = "Stop";
+$ConfirmPreference = "None";
+trap { Write-Error $_ -ErrorAction Continue; exit 1 }
+
 #lookup table for "how long the release needs to be in the specified environment, before allowing it to move on"
 $waitTimeForEnvironmentLookup = @{
     "Environments-2583" = @{ "Name" = "Branch Instances (Staging)"; "BakeTime" = New-TimeSpan -Minutes 0; "StabilizationPhaseBakeTime" = New-TimeSpan -Hours 2;   "MinimumTimeBetweenDeployments" = New-TimeSpan -Minutes 0; }
