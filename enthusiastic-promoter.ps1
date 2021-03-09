@@ -156,7 +156,18 @@ function Get-MostRecentDeploymentToEnvironment ($release, $environmentId) {
     return $null
 }
 
-function Add-PromotionCandidate($promotionCandidates, $release, $nextEnvironmentId) {
+function Add-PromotionCandidate {
+    [CmdletBinding()]
+    param (
+        [Parameter(Mandatory)]
+        $promotionCandidates,
+        [Parameter(Mandatory)]
+        $release,
+        [Parameter(Mandatory)]
+        $nextEnvironmentId,
+        [Parameter(Mandatory)]
+        $nextEnvironmentName
+    )
     $key = $release.Release.ChannelId + "|" + $nextEnvironmentId
     $semanticVersion = New-Object Octopus.Versioning.Semver.SemanticVersion $release.Release.Version
     if ($promotionCandidates.ContainsKey($key)) {
@@ -164,6 +175,8 @@ function Add-PromotionCandidate($promotionCandidates, $release, $nextEnvironment
         if ($existing.Version -lt $semanticVersion) {
             Write-Host " - This is a newer version than the previous promotion candidate ($($existing.Version)). Overriding promotion candidate to this version."
             $existing.Version = $semanticVersion
+        } else {
+            Write-Host " - This is an older version than the current promotion candidate ($($existing.Version)). Ignoring this promotion candidate."
         }
     } else {
         $promotionCandidates.Add($key, [PSCustomObject]@{
@@ -210,81 +223,111 @@ function Test-ShouldLimitDeploymentsToEnvironment($nextEnvironmentId, $mostRecen
     return ($mostRecentDeploymentToNextEnvironment.CompletedTime.Add($minimumTimeBetweenDeployments) -gt (Get-CurrentDate))
 }
 
+class PromotionCandidateResult {
+    [bool]$IsCandidate = $false
+    [string]$NextEnvironmentId
+    [string]$NextEnvironmentName
+}
+
+function Test-IsPromotionCandidate {
+    [OutputType([System.Collections.Hashtable])]
+    param ($release, $progression, $channels)
+    write-host "--------------------------------------------------------"
+    Write-Host "Evaluating candidate release $($release.Release.Version):"
+    write-host "--------------------------------------------------------"
+    write-host " - Channel is $(Get-ChannelName $channels $release.Release.ChannelId)"
+    $currentEnvironmentId = Get-CurrentEnvironment $progression $release
+    $nonCandidateResult = [PromotionCandidateResult]::new()
+
+    if ($release.NextDeployments.length -eq 0) {
+        Write-Host " - Release has already progressed as far as it can."
+        return $nonCandidateResult
+    }
+    if ($null -eq $currentEnvironmentId) {
+        Write-Host " - Release has not yet been deployed to the first environment. Ignoring while we wait for the auto-deployment to the first environment to happen."
+        return $nonCandidateResult
+    }
+
+    $currentEnvironmentName = Get-EnvironmentName $progression $currentEnvironmentId
+    Write-Host " - Current environment is '$($currentEnvironmentName)'"
+
+    if ($release.NextDeployments.length -gt 1) {
+        # this can happen if a lifecycle is modified and now there's now a gap in the progression
+        Write-Host " - Unexpected number of NextDeployments - expected 1, but found $($release.NextDeployments.length):"
+        $release.NextDeployments | foreach-object { Write-Host "   - $(Get-EnvironmentName $progression $_) ($_)" }
+        Write-Host " - Focusing on $(Get-EnvironmentName $progression $release.NextDeployments[0]) for this run"
+    }
+    $nextEnvironmentId = $release.NextDeployments[0]
+    $nextEnvironmentName = Get-EnvironmentName $progression $nextEnvironmentId
+    Write-Host " - Next environment is '$($nextEnvironmentName)'"
+
+    $mostRecentDeploymentToNextEnvironment = Get-MostRecentDeploymentToEnvironment $release $nextEnvironmentId
+    $mostRecentReleaseDeployedToNextEnvironment = Get-MostRecentReleaseDeployedToEnvironment -progression $progression -release $release -environmentId $nextEnvironmentId
+    if ($null -ne $mostRecentDeploymentToNextEnvironment) {
+        Write-Host " - Deployment to '$nextEnvironmentName' already exists in state $($mostRecentDeploymentToNextEnvironment[0].State)."
+        return $nonCandidateResult
+    }
+    if (($null -ne $mostRecentReleaseDeployedToNextEnvironment) -and ((New-Object Octopus.Versioning.Semver.SemanticVersion $mostRecentReleaseDeployedToNextEnvironment.Release.Version) -gt (New-Object Octopus.Versioning.Semver.SemanticVersion $release.Release.Version))) {
+        $channelName = Get-ChannelName $channels $release.Release.ChannelId
+        Write-Host " - A newer release '$($mostRecentReleaseDeployedToNextEnvironment.Release.Version)' in channel '$channelName' has already been deployed to '$nextEnvironmentName'."
+        return $nonCandidateResult
+    }
+    if (Test-ShouldLimitDeploymentsToEnvironment -nextEnvironmentId $nextEnvironmentId -mostRecentReleaseDeployedToNextEnvironment $mostRecentReleaseDeployedToNextEnvironment) {
+        $minimumTimeBetweenDeployments = $waitTimeForEnvironmentLookup[$nextEnvironmentId].MinimumTimeBetweenDeployments
+        $mostRecentDeploymentToNextEnvironment = Get-MostRecentDeploymentToEnvironment $mostRecentReleaseDeployedToNextEnvironment $nextEnvironmentId
+        Write-Host " - Release '$($release.Release.Version)' is valid for deployment, but '$($mostRecentReleaseDeployedToNextEnvironment.Release.Version)' was deployed recently (within the last $minimumTimeBetweenDeployments). Will try again later after $($mostRecentDeploymentToNextEnvironment.CompletedTime.Add($minimumTimeBetweenDeployments)) (UTC)."
+        return $nonCandidateResult
+    }
+
+    if (Test-ReleaseInStabilizationPhase -channelId $release.Release.ChannelId -channels $channels) {
+        Write-Host " - Release '$($release.Release.Version)' is in stabilization phase - allowing longer bake times"
+        $bakeTime = $waitTimeForEnvironmentLookup[$nextEnvironmentId].StabilizationPhaseBakeTime
+    } else {
+        Write-Host " - Release '$($release.Release.Version)' is not in stabilization phase - using shorter bake times"
+        $bakeTime = $waitTimeForEnvironmentLookup[$nextEnvironmentId].BakeTime
+    }
+    Write-Host " - Calculated the bake time that releases should stay in environment '$currentEnvironmentName' before being promoted to '$nextEnvironmentName' to be $bakeTime."
+
+    $deploymentsToCurrentEnvironment = Get-MostRecentDeploymentToEnvironment $release $currentEnvironmentId
+    if (($null -ne $deploymentsToCurrentEnvironment) -and ($deploymentsToCurrentEnvironment.CompletedTime.Add($bakeTime) -gt (Get-CurrentDate))) {
+        Write-Host " - Completion time of last deployment to $currentEnvironmentName was $($deploymentsToCurrentEnvironment.CompletedTime) (UTC)"
+        Write-Host " - This release is still baking. Will try again later after $($deploymentsToCurrentEnvironment.CompletedTime.Add($bakeTime)) (UTC)."
+        return $nonCandidateResult
+    }
+    if (Test-IsWeekendAEST) {
+        # Don't promote after 4pm Friday and 8am Monday morning AEST
+        Write-Host " - Bake time is complete but we aren't going to promote it as it's between 4pm Friday AEST and 8am Monday AEST. This helps us avoid potential issues with rolling out to lots of customers over the weekend when a large majority of our team is unavailable to assist if something goes wrong."
+        return $nonCandidateResult
+    }
+
+    if ($null -eq $deploymentsToCurrentEnvironment) {
+        # not sure this should ever happen
+        Write-Warning " - Bake time was ignored as there was no deployments to the environment $currentEnvironmentName"
+    } else {
+        Write-Host " - Completion time of last deployment to $currentEnvironmentName was $($deploymentsToCurrentEnvironment[0].CompletedTime) (UTC). Release has completed baking."
+    }
+    Write-Host " - Checking Andon cord to see if release pipeline is blocked..."
+    if (Test-PipelineBlocked $release) {
+        Write-Host " - Release pipeline is currently blocked with problems. Release will not be promoted."
+        return $nonCandidateResult
+    }
+    Write-Host " - Release pipeline doesn't currently have any blocking problems. Release can be promoted."
+    Write-Host " - Found candidate for promotion - release $($release.Release.Version) to '$nextEnvironmentName' ($nextEnvironmentId)."
+    $candidateResult = [PromotionCandidateResult]::new()
+    $candidateResult.IsCandidate = $true
+    $candidateResult.NextEnvironmentId = $nextEnvironmentId
+    $candidateResult.NextEnvironmentName = $nextEnvironmentName
+    return $candidateResult
+}
+
 function Get-PromotionCandidates($progression, $channels, $lifecycles) {
     $promotionCandidates = @{}
 
     Write-Host "Looking for possible releases to promote:"
     foreach ($release in $progression.Releases) {
-        write-host "--------------------------------------------------------"
-        Write-Host "Evaluating candidate release $($release.Release.Version):"
-        write-host "--------------------------------------------------------"
-        write-host " - Channel is $(Get-ChannelName $channels $release.Release.ChannelId)"
-        $currentEnvironmentId = Get-CurrentEnvironment $progression $release
-
-        if ($release.NextDeployments.length -eq 0) {
-            Write-Host " - Release has already progressed as far as it can."
-        } elseif ($null -eq $currentEnvironmentId) {
-            Write-Host " - Release has not yet been deployed to the first environment. Ignoring while we wait for the auto-deployment to the first environment to happen."
-        } else {
-            $currentEnvironmentName = Get-EnvironmentName $progression $currentEnvironmentId
-            Write-Host " - Current environment is '$($currentEnvironmentName)'"
-
-            if ($release.NextDeployments.length -gt 1) {
-                # this can happen if a lifecycle is modified and now there's now a gap in the progression
-                Write-Host " - Unexpected number of NextDeployments - expected 1, but found $($release.NextDeployments.length):"
-                $release.NextDeployments | foreach-object { Write-Host "   - $(Get-EnvironmentName $progression $_) ($_)" }
-                Write-Host " - Focusing on $(Get-EnvironmentName $progression $release.NextDeployments[0]) for this run"
-            }
-            $nextEnvironmentId = $release.NextDeployments[0]
-            $nextEnvironmentName = Get-EnvironmentName $progression $nextEnvironmentId
-            Write-Host " - Next environment is '$($nextEnvironmentName)'"
-
-            $mostRecentDeploymentToNextEnvironment = Get-MostRecentDeploymentToEnvironment $release $nextEnvironmentId
-            $mostRecentReleaseDeployedToNextEnvironment = Get-MostRecentReleaseDeployedToEnvironment -progression $progression -release $release -environmentId $nextEnvironmentId
-            if ($null -ne $mostRecentDeploymentToNextEnvironment) {
-                Write-Host " - Deployment to '$nextEnvironmentName' already exists in state $($mostRecentDeploymentToNextEnvironment[0].State)."
-            } elseif (($null -ne $mostRecentReleaseDeployedToNextEnvironment) -and ((New-Object Octopus.Versioning.Semver.SemanticVersion $mostRecentReleaseDeployedToNextEnvironment.Release.Version) -gt (New-Object Octopus.Versioning.Semver.SemanticVersion $release.Release.Version))) {
-                $channelName = Get-ChannelName $channels $release.Release.ChannelId
-                Write-Host " - A newer release '$($mostRecentReleaseDeployedToNextEnvironment.Release.Version)' in channel '$channelName' has already been deployed to '$nextEnvironmentName'."
-            } elseif (Test-ShouldLimitDeploymentsToEnvironment -nextEnvironmentId $nextEnvironmentId -mostRecentReleaseDeployedToNextEnvironment $mostRecentReleaseDeployedToNextEnvironment) {
-                $minimumTimeBetweenDeployments = $waitTimeForEnvironmentLookup[$nextEnvironmentId].MinimumTimeBetweenDeployments
-                $mostRecentDeploymentToNextEnvironment = Get-MostRecentDeploymentToEnvironment $mostRecentReleaseDeployedToNextEnvironment $nextEnvironmentId
-                Write-Host " - Release '$($release.Release.Version)' is valid for deployment, but '$($mostRecentReleaseDeployedToNextEnvironment.Release.Version)' was deployed recently (within the last $minimumTimeBetweenDeployments). Will try again later after $($mostRecentDeploymentToNextEnvironment.CompletedTime.Add($minimumTimeBetweenDeployments)) (UTC)."
-            } else {
-                if (Test-ReleaseInStabilizationPhase -channelId $release.Release.ChannelId -channels $channels) {
-                    Write-Host " - Release '$($release.Release.Version)' is in stabilization phase - allowing longer bake times"
-                    $bakeTime = $waitTimeForEnvironmentLookup[$nextEnvironmentId].StabilizationPhaseBakeTime
-                } else {
-                    Write-Host " - Release '$($release.Release.Version)' is not in stabilization phase - using shorter bake times"
-                    $bakeTime = $waitTimeForEnvironmentLookup[$nextEnvironmentId].BakeTime
-                }
-                Write-Host " - Calculated the bake time that releases should stay in environment '$currentEnvironmentName' before being promoted to '$nextEnvironmentName' to be $bakeTime."
-
-                $deploymentsToCurrentEnvironment = Get-MostRecentDeploymentToEnvironment $release $currentEnvironmentId
-                if (($null -ne $deploymentsToCurrentEnvironment) -and ($deploymentsToCurrentEnvironment.CompletedTime.Add($bakeTime) -gt (Get-CurrentDate))) {
-                    Write-Host " - Completion time of last deployment to $currentEnvironmentName was $($deploymentsToCurrentEnvironment.CompletedTime) (UTC)"
-                    Write-Host " - This release is still baking. Will try again later after $($deploymentsToCurrentEnvironment.CompletedTime.Add($bakeTime)) (UTC)."
-                } elseif(Test-IsWeekendAEST) {
-                    # Don't promote after 4pm Friday and 8am Monday morning AEST
-                    Write-Host " - Bake time is complete but we aren't going to promote it as it's between 4pm Friday AEST and 8am Monday AEST. This helps us avoid potential issues with rolling out to lots of customers over the weekend when a large majority of our team is unavailable to assist if something goes wrong."
-                } else {
-                    if ($null -eq $deploymentsToCurrentEnvironment) {
-                        # not sure this should ever happen
-                        Write-Warning " - Bake time was ignored as there was no deployments to the environment $currentEnvironmentName"
-                    } else {
-                        Write-Host " - Completion time of last deployment to $currentEnvironmentName was $($deploymentsToCurrentEnvironment[0].CompletedTime) (UTC). Release has completed baking."
-                    }
-                    Write-Host " - Checking Andon cord to see if release pipeline is blocked..."
-                    if (Test-PipelineBlocked $release) {
-                        Write-Host " - Release pipeline is currently blocked with problems. Release will not be promoted."
-                    } else {
-                        Write-Host " - Release pipeline doesn't currently have any blocking problems. Release can be promoted."
-                        Write-Host " - Found candidate for promotion - release $($release.Release.Version) to '$nextEnvironmentName' ($nextEnvironmentId)."
-
-                        Add-PromotionCandidate -promotionCandidates $promotionCandidates -release $release -nextEnvironmentId $nextEnvironmentId
-                    }
-                }
-            }
+        $result = [PromotionCandidateResult](Test-IsPromotionCandidate -release $release -progression $progression -channels $channels)
+        if ($result.IsCandidate) {
+            Add-PromotionCandidate -promotionCandidates $promotionCandidates -release $release -nextEnvironmentId $result.NextEnvironmentId -nextEnvironmentName $result.nextEnvironmentName
         }
     }
     return $promotionCandidates
