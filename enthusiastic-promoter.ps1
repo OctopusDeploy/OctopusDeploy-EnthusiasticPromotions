@@ -94,8 +94,8 @@ function Test-PipelineBlocked($release) {
         return $activeProblemsCount -gt 0
 
     } catch {
-        Write-Error "Unable to reach $url to check if there are any active problems - aborting promotion to be safe. Please investigate as to why Octofront is uncontactable."
-        Write-Error $_.Exception.ToString() 
+        Write-Error "Unable to reach $url to check if there are any active problems - aborting promotion to be safe. Please investigate as to why Octofront is uncontactable." -ErrorAction Continue
+        Write-Error $_.Exception.ToString()  -ErrorAction Continue
     }
 
     return $true
