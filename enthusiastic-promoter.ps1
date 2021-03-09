@@ -74,18 +74,31 @@ function Invoke-WithRetry {
 }
 
 function Test-PipelineBlocked($release) {
-    Invoke-WithRetry -ScriptBlock {
-        $url = "$octofrontUrl/api/Problem/ActiveProblems/OctopusServer/$($release.Release.Version)"
-        Write-Verbose "Getting response from $url"
-        $activeProblems =  (Invoke-restmethod -Uri $url -Headers @{ 'Authorization' = "Bearer $($octofrontApiKey)"}).ActiveProblems
+    $url = "$octofrontUrl/api/Problem/ActiveProblems/OctopusServer/$($release.Release.Version)"
+    try
+    {
+        $activeProblemsCount = Invoke-WithRetry -ScriptBlock {
+            Write-Verbose "Getting response from $url"
+            $activeProblems =  (Invoke-restmethod -Uri $url -Headers @{ 'Authorization' = "Bearer $($octofrontApiKey)"}).ActiveProblems
 
-        # log out the  json, so we can diagnose what's happening / write a test for it
-        write-verbose "--------------------------------------------------------"
-        write-verbose "response:"
-        write-verbose "--------------------------------------------------------"
-        write-verbose ($activeProblems | ConvertTo-Json -depth 10)
-        write-verbose "--------------------------------------------------------"
+            # log out the  json, so we can diagnose what's happening / write a test for it
+            write-verbose "--------------------------------------------------------"
+            write-verbose "response:"
+            write-verbose "--------------------------------------------------------"
+            write-verbose ($activeProblems | ConvertTo-Json -depth 10)
+            write-verbose "--------------------------------------------------------"
+
+            return $activeProblems.Count
+        }
+
+        return $activeProblemsCount -gt 0
+
+    } catch {
+        Write-Error "Unable to reach $url to check if there are any active problems - aborting promotion to be safe. Please investigate as to why Octofront is uncontactable."
+        Write-Error $_.Exception.ToString() 
     }
+
+    return $true
 }
 
 function Get-CurrentEnvironment($progression, $release) {
