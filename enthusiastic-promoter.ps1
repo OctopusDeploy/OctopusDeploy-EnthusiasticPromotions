@@ -96,9 +96,10 @@ function Test-PipelineBlocked($release) {
     } catch {
         Write-Error "Unable to reach $url to check if there are any active problems - aborting promotion to be safe. Please investigate as to why Octofront is uncontactable." -ErrorAction Continue
         Write-Error $_.Exception.ToString()  -ErrorAction Continue
+
+        return $true
     }
 
-    return $true
 }
 
 function Get-CurrentEnvironment($progression, $release) {
