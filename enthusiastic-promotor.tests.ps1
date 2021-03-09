@@ -25,7 +25,7 @@ Describe 'Enthusiastic promoter' {
     . (Join-Path -Path $PSScriptRoot -ChildPath "enthusiastic-promoter.ps1")
   }
 
-  It 'scenario 1' {
+  It 'should promote available releases' {
     Mock Test-PipelineBlocked { return $false; }
     $progression = (Get-Content -Path "SampleData/sample1.json" -Raw) | ConvertFrom-Json
     $channels = (Get-Content -Path "SampleData/channels.json" -Raw) | ConvertFrom-Json
@@ -48,7 +48,7 @@ Describe 'Enthusiastic promoter' {
     $result[2].ChannelName | Should -be "CI Builds"
   }
 
-  It 'scenario 2' {
+  It 'should not promote anything as no releases are available to promote' {
     # everything is either:
     # * delayed to avoid too much downtime on octopus cloud (2020.4.7)
     # * progressed as far as it can (2020.3.8, 2020.3.9, 2020.4.5, 2020.4.6, 2020.5.0-ci0969, 2020.5.0-ci0986,  2020.5.0-pr7455-1007,  2020.5.0-pr7455-1008)
