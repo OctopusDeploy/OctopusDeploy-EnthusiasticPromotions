@@ -234,6 +234,9 @@ function Test-ShouldLimitDeploymentsToEnvironment($nextEnvironmentId, $mostRecen
     }
     $minimumTimeBetweenDeployments = $waitTimeForEnvironmentLookup[$nextEnvironmentId].MinimumTimeBetweenDeployments
     $mostRecentDeploymentToNextEnvironment = Get-MostRecentDeploymentToEnvironment $mostRecentReleaseDeployedToNextEnvironment $nextEnvironmentId
+    if ($null -eq $mostRecentDeploymentToNextEnvironment.CompletedTime) {
+        return $true
+    }
     return ($mostRecentDeploymentToNextEnvironment.CompletedTime.Add($minimumTimeBetweenDeployments) -gt (Get-CurrentDate))
 }
 
@@ -289,7 +292,11 @@ function Test-IsPromotionCandidate {
     if (Test-ShouldLimitDeploymentsToEnvironment -nextEnvironmentId $nextEnvironmentId -mostRecentReleaseDeployedToNextEnvironment $mostRecentReleaseDeployedToNextEnvironment) {
         $minimumTimeBetweenDeployments = $waitTimeForEnvironmentLookup[$nextEnvironmentId].MinimumTimeBetweenDeployments
         $mostRecentDeploymentToNextEnvironment = Get-MostRecentDeploymentToEnvironment $mostRecentReleaseDeployedToNextEnvironment $nextEnvironmentId
-        Write-Host " - Release '$($release.Release.Version)' is valid for deployment, but '$($mostRecentReleaseDeployedToNextEnvironment.Release.Version)' was deployed recently (within the last $minimumTimeBetweenDeployments). Will try again later after $($mostRecentDeploymentToNextEnvironment.CompletedTime.Add($minimumTimeBetweenDeployments)) (UTC)."
+        if ($null -eq $mostRecentDeploymentToNextEnvironment.CompletedTime) {
+            Write-Host " - Release '$($release.Release.Version)' is valid for deployment, but '$($mostRecentReleaseDeployedToNextEnvironment.Release.Version)' has not yet completed. Will try again later."
+        } else {
+            Write-Host " - Release '$($release.Release.Version)' is valid for deployment, but '$($mostRecentReleaseDeployedToNextEnvironment.Release.Version)' was deployed recently (within the last $minimumTimeBetweenDeployments). Will try again later after $($mostRecentDeploymentToNextEnvironment.CompletedTime.Add($minimumTimeBetweenDeployments)) (UTC)."
+        }
         return $nonCandidateResult
     }
 

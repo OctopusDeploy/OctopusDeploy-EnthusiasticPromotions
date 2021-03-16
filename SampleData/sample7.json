@@ -1,0 +1,667 @@
+{
+  "Environments": [
+    {
+      "Id": "Environments-2583",
+      "Name": "Branch Instances (Staging)"
+    },
+    {
+      "Id": "Environments-2621",
+      "Name": "Octopus Cloud Tests"
+    },
+    {
+      "Id": "Environments-2601",
+      "Name": "Production"
+    },
+    {
+      "Id": "Environments-2584",
+      "Name": "Branch Instances (Prod)"
+    },
+    {
+      "Id": "Environments-2585",
+      "Name": "Staff"
+    },
+    {
+      "Id": "Environments-2586",
+      "Name": "Friends of Octopus"
+    },
+    {
+      "Id": "Environments-2587",
+      "Name": "Early Adopters"
+    },
+    {
+      "Id": "Environments-2588",
+      "Name": "Stable"
+    },
+    {
+      "Id": "Environments-2589",
+      "Name": "General Availablilty"
+    }
+  ],
+  "ChannelEnvironments": {
+    "Channels-4447": [
+      {
+        "Id": "Environments-2583",
+        "Name": "Branch Instances (Staging)"
+      }
+    ],
+    "Channels-4448": [
+      {
+        "Id": "Environments-2583",
+        "Name": "Branch Instances (Staging)"
+      },
+      {
+        "Id": "Environments-2621",
+        "Name": "Octopus Cloud Tests"
+      },
+      {
+        "Id": "Environments-2601",
+        "Name": "Production"
+      },
+      {
+        "Id": "Environments-2584",
+        "Name": "Branch Instances (Prod)"
+      },
+      {
+        "Id": "Environments-2586",
+        "Name": "Friends of Octopus"
+      },
+      {
+        "Id": "Environments-2587",
+        "Name": "Early Adopters"
+      },
+      {
+        "Id": "Environments-2588",
+        "Name": "Stable"
+      }
+    ],
+    "Channels-4449": [
+      {
+        "Id": "Environments-2583",
+        "Name": "Branch Instances (Staging)"
+      },
+      {
+        "Id": "Environments-2601",
+        "Name": "Production"
+      },
+      {
+        "Id": "Environments-2589",
+        "Name": "General Availablilty"
+      }
+    ],
+    "Channels-4583": [
+      {
+        "Id": "Environments-2583",
+        "Name": "Branch Instances (Staging)"
+      },
+      {
+        "Id": "Environments-2601",
+        "Name": "Production"
+      },
+      {
+        "Id": "Environments-2589",
+        "Name": "General Availablilty"
+      }
+    ],
+    "Channels-4847": [
+      {
+        "Id": "Environments-2583",
+        "Name": "Branch Instances (Staging)"
+      },
+      {
+        "Id": "Environments-2621",
+        "Name": "Octopus Cloud Tests"
+      },
+      {
+        "Id": "Environments-2601",
+        "Name": "Production"
+      },
+      {
+        "Id": "Environments-2586",
+        "Name": "Friends of Octopus"
+      },
+      {
+        "Id": "Environments-2587",
+        "Name": "Early Adopters"
+      },
+      {
+        "Id": "Environments-2588",
+        "Name": "Stable"
+      },
+      {
+        "Id": "Environments-2589",
+        "Name": "General Availablilty"
+      }
+    ],
+    "Channels-4946": [
+      {
+        "Id": "Environments-2583",
+        "Name": "Branch Instances (Staging)"
+      },
+      {
+        "Id": "Environments-2621",
+        "Name": "Octopus Cloud Tests"
+      },
+      {
+        "Id": "Environments-2601",
+        "Name": "Production"
+      },
+      {
+        "Id": "Environments-2584",
+        "Name": "Branch Instances (Prod)"
+      },
+      {
+        "Id": "Environments-2585",
+        "Name": "Staff"
+      }
+    ]
+  },
+  "Releases": [
+    {
+      "Release": {
+        "Id": "Releases-84631",
+        "Version": "2021.2.366",
+        "ChannelId": "Channels-4946",
+        "ReleaseNotes": "",
+        "ProjectDeploymentProcessSnapshotId": "deploymentprocess-Projects-4224-s-202-RED6U",
+        "IgnoreChannelRules": false,
+        "BuildInformation": [],
+        "Assembled": "2021-03-15T04:14:34.583+00:00",
+        "ProjectId": "Projects-4224",
+        "LibraryVariableSetSnapshotIds": [
+          "variableset-LibraryVariableSets-921-s-2-VPUL3"
+        ],
+        "SelectedPackages": [
+          {
+            "StepName": "Upload Windows Installers to S3 for direct download",
+            "ActionName": "Upload Windows Installers to S3 for direct download",
+            "Version": "2021.2.366",
+            "PackageReferenceName": "S3SourcePackage"
+          },
+          {
+            "StepName": "Push package to Chocolatey",
+            "ActionName": "Push package to Chocolatey",
+            "Version": "2021.2.366",
+            "PackageReferenceName": "NuGetPush.Source.Package"
+          }
+        ],
+        "ProjectVariableSetSnapshotId": "variableset-Projects-4224-s-48-RVKH9",
+        "VersionControlReference": {
+          "GitRef": null,
+          "GitCommit": null
+        },
+        "SpaceId": "Spaces-622",
+        "Links": {
+          "Self": "/api/Spaces-622/releases/Releases-84631",
+          "Project": "/api/Spaces-622/projects/Projects-4224",
+          "Progression": "/api/Spaces-622/releases/Releases-84631/progression",
+          "Deployments": "/api/Spaces-622/releases/Releases-84631/deployments{?skip,take}",
+          "DeploymentTemplate": "/api/Spaces-622/releases/Releases-84631/deployments/template",
+          "Artifacts": "/api/Spaces-622/artifacts?regarding=Releases-84631",
+          "ProjectVariableSnapshot": "/api/Spaces-622/variables/variableset-Projects-4224-s-48-RVKH9",
+          "ProjectDeploymentProcessSnapshot": "/api/Spaces-622/deploymentprocesses/deploymentprocess-Projects-4224-s-202-RED6U",
+          "Web": "/app#/Spaces-622/releases/Releases-84631",
+          "SnapshotVariables": "/api/Spaces-622/releases/Releases-84631/snapshot-variables",
+          "Defects": "/api/Spaces-622/releases/Releases-84631/defects",
+          "ReportDefect": "/api/Spaces-622/releases/Releases-84631/defects",
+          "ResolveDefect": "/api/Spaces-622/releases/Releases-84631/defects/resolve",
+          "DeploymentPreviews": "/api/Spaces-622/releases/Releases-84631/deployments/previews/"
+        }
+      },
+      "Channel": {
+        "Id": "Channels-4946",
+        "Name": "Current Dev - 2021.2",
+        "Description": "eg: `2021.2.6701`",
+        "ProjectId": "Projects-4224",
+        "LifecycleId": "Lifecycles-1670",
+        "IsDefault": false,
+        "Rules": [
+          {
+            "Id": "0486633b-683a-4257-a624-c314347f1c2b",
+            "VersionRange": "[2021.2.0-a,2021.2.99999)",
+            "Tag": "^$",
+            "ActionPackages": [
+              {
+                "DeploymentAction": "Push package to Chocolatey",
+                "PackageReference": "NuGetPush.Source.Package"
+              }
+            ],
+            "Links": {},
+            "Actions": ["Push package to Chocolatey"]
+          },
+          {
+            "Id": "8c693366-7547-49d4-afdc-41235dd4d7a5",
+            "VersionRange": "[2021.2.0-a,2021.2.99999)",
+            "Tag": "^$",
+            "ActionPackages": [
+              {
+                "DeploymentAction": "Upload Windows Installers to S3 for direct download",
+                "PackageReference": "S3SourcePackage"
+              }
+            ],
+            "Links": {},
+            "Actions": ["Upload Windows Installers to S3 for direct download"]
+          }
+        ],
+        "TenantTags": [],
+        "SpaceId": "Spaces-622",
+        "Links": {
+          "Self": "/api/Spaces-622/channels/Channels-4946",
+          "Releases": "/api/Spaces-622/channels/Channels-4946/releases{?skip,take,searchByVersion}",
+          "Project": "/api/Spaces-622/projects/Projects-4224"
+        }
+      },
+      "Deployments": {
+        "Environments-2583": [
+          {
+            "Id": "Deployments-104307",
+            "ProjectId": "Projects-4224",
+            "EnvironmentId": "Environments-2583",
+            "ReleaseId": "Releases-84631",
+            "DeploymentId": "Deployments-104307",
+            "TaskId": "ServerTasks-1369175",
+            "TenantId": null,
+            "ChannelId": "Channels-4946",
+            "ReleaseVersion": "2021.2.366",
+            "Created": "2021-03-15T04:14:34.961+00:00",
+            "QueueTime": "2021-03-15T04:14:34.962+00:00",
+            "StartTime": "2021-03-15T04:14:35.408+00:00",
+            "CompletedTime": "2021-03-15T04:27:39.848+00:00",
+            "State": "Success",
+            "HasPendingInterruptions": false,
+            "HasWarningsOrErrors": true,
+            "ErrorMessage": "",
+            "Duration": "13 minutes",
+            "IsCurrent": false,
+            "IsPrevious": true,
+            "IsCompleted": true,
+            "Links": {
+              "Self": "/api/Spaces-622/deployments/Deployments-104307",
+              "Release": "/api/Spaces-622/releases/Releases-84631",
+              "Tenant": "/api/Spaces-622/tenants/",
+              "Task": "/api/tasks/ServerTasks-1369175"
+            }
+          }
+        ],
+        "Environments-2621": [
+          {
+            "Id": "Deployments-104351",
+            "ProjectId": "Projects-4224",
+            "EnvironmentId": "Environments-2621",
+            "ReleaseId": "Releases-84631",
+            "DeploymentId": "Deployments-104351",
+            "TaskId": "ServerTasks-1370623",
+            "TenantId": null,
+            "ChannelId": "Channels-4946",
+            "ReleaseVersion": "2021.2.366",
+            "Created": "2021-03-15T13:10:16.954+00:00",
+            "QueueTime": "2021-03-15T13:10:16.923+00:00",
+            "StartTime": "2021-03-15T13:10:17.356+00:00",
+            "CompletedTime": "2021-03-15T14:36:42.76+00:00",
+            "State": "Success",
+            "HasPendingInterruptions": false,
+            "HasWarningsOrErrors": false,
+            "ErrorMessage": "",
+            "Duration": "1 hour",
+            "IsCurrent": false,
+            "IsPrevious": true,
+            "IsCompleted": true,
+            "Links": {
+              "Self": "/api/Spaces-622/deployments/Deployments-104351",
+              "Release": "/api/Spaces-622/releases/Releases-84631",
+              "Tenant": "/api/Spaces-622/tenants/",
+              "Task": "/api/tasks/ServerTasks-1370623"
+            }
+          },
+          {
+            "Id": "Deployments-104309",
+            "ProjectId": "Projects-4224",
+            "EnvironmentId": "Environments-2621",
+            "ReleaseId": "Releases-84631",
+            "DeploymentId": "Deployments-104309",
+            "TaskId": "ServerTasks-1369230",
+            "TenantId": null,
+            "ChannelId": "Channels-4946",
+            "ReleaseVersion": "2021.2.366",
+            "Created": "2021-03-15T04:37:13.801+00:00",
+            "QueueTime": "2021-03-15T04:37:13.771+00:00",
+            "StartTime": "2021-03-15T07:16:23.764+00:00",
+            "CompletedTime": "2021-03-15T07:48:37.625+00:00",
+            "State": "Failed",
+            "HasPendingInterruptions": false,
+            "HasWarningsOrErrors": true,
+            "ErrorMessage": "The deployment failed because one or more steps failed. Please see the deployment log for details.",
+            "Duration": "3 hours",
+            "IsCurrent": false,
+            "IsPrevious": false,
+            "IsCompleted": true,
+            "Links": {
+              "Self": "/api/Spaces-622/deployments/Deployments-104309",
+              "Release": "/api/Spaces-622/releases/Releases-84631",
+              "Tenant": "/api/Spaces-622/tenants/",
+              "Task": "/api/tasks/ServerTasks-1369230"
+            }
+          }
+        ],
+        "Environments-2601": [
+          {
+            "Id": "Deployments-104358",
+            "ProjectId": "Projects-4224",
+            "EnvironmentId": "Environments-2601",
+            "ReleaseId": "Releases-84631",
+            "DeploymentId": "Deployments-104358",
+            "TaskId": "ServerTasks-1370857",
+            "TenantId": null,
+            "ChannelId": "Channels-4946",
+            "ReleaseVersion": "2021.2.366",
+            "Created": "2021-03-15T14:38:41.739+00:00",
+            "QueueTime": "2021-03-15T14:38:41.705+00:00",
+            "StartTime": "2021-03-15T14:38:42.164+00:00",
+            "CompletedTime": "2021-03-15T14:45:21.977+00:00",
+            "State": "Success",
+            "HasPendingInterruptions": false,
+            "HasWarningsOrErrors": true,
+            "ErrorMessage": "",
+            "Duration": "7 minutes",
+            "IsCurrent": false,
+            "IsPrevious": true,
+            "IsCompleted": true,
+            "Links": {
+              "Self": "/api/Spaces-622/deployments/Deployments-104358",
+              "Release": "/api/Spaces-622/releases/Releases-84631",
+              "Tenant": "/api/Spaces-622/tenants/",
+              "Task": "/api/tasks/ServerTasks-1370857"
+            }
+          }
+        ]
+      },
+      "NextDeployments": ["Environments-2584"],
+      "HasUnresolvedDefect": false,
+      "ReleaseRetentionPeriod": null,
+      "TentacleRetentionPeriod": null
+    },
+    {
+      "Release": {
+        "Id": "Releases-84617",
+        "Version": "2021.2.350",
+        "ChannelId": "Channels-4946",
+        "ReleaseNotes": "",
+        "ProjectDeploymentProcessSnapshotId": "deploymentprocess-Projects-4224-s-202-RED6U",
+        "IgnoreChannelRules": false,
+        "BuildInformation": [],
+        "Assembled": "2021-03-15T00:54:39.372+00:00",
+        "ProjectId": "Projects-4224",
+        "LibraryVariableSetSnapshotIds": [
+          "variableset-LibraryVariableSets-921-s-2-VPUL3"
+        ],
+        "SelectedPackages": [
+          {
+            "StepName": "Upload Windows Installers to S3 for direct download",
+            "ActionName": "Upload Windows Installers to S3 for direct download",
+            "Version": "2021.2.350",
+            "PackageReferenceName": "S3SourcePackage"
+          },
+          {
+            "StepName": "Push package to Chocolatey",
+            "ActionName": "Push package to Chocolatey",
+            "Version": "2021.2.350",
+            "PackageReferenceName": "NuGetPush.Source.Package"
+          }
+        ],
+        "ProjectVariableSetSnapshotId": "variableset-Projects-4224-s-48-RVKH9",
+        "VersionControlReference": {
+          "GitRef": null,
+          "GitCommit": null
+        },
+        "SpaceId": "Spaces-622",
+        "Links": {
+          "Self": "/api/Spaces-622/releases/Releases-84617",
+          "Project": "/api/Spaces-622/projects/Projects-4224",
+          "Progression": "/api/Spaces-622/releases/Releases-84617/progression",
+          "Deployments": "/api/Spaces-622/releases/Releases-84617/deployments{?skip,take}",
+          "DeploymentTemplate": "/api/Spaces-622/releases/Releases-84617/deployments/template",
+          "Artifacts": "/api/Spaces-622/artifacts?regarding=Releases-84617",
+          "ProjectVariableSnapshot": "/api/Spaces-622/variables/variableset-Projects-4224-s-48-RVKH9",
+          "ProjectDeploymentProcessSnapshot": "/api/Spaces-622/deploymentprocesses/deploymentprocess-Projects-4224-s-202-RED6U",
+          "Web": "/app#/Spaces-622/releases/Releases-84617",
+          "SnapshotVariables": "/api/Spaces-622/releases/Releases-84617/snapshot-variables",
+          "Defects": "/api/Spaces-622/releases/Releases-84617/defects",
+          "ReportDefect": "/api/Spaces-622/releases/Releases-84617/defects",
+          "ResolveDefect": "/api/Spaces-622/releases/Releases-84617/defects/resolve",
+          "DeploymentPreviews": "/api/Spaces-622/releases/Releases-84617/deployments/previews/"
+        }
+      },
+      "Channel": {
+        "Id": "Channels-4946",
+        "Name": "Current Dev - 2021.2",
+        "Description": "eg: `2021.2.6701`",
+        "ProjectId": "Projects-4224",
+        "LifecycleId": "Lifecycles-1670",
+        "IsDefault": false,
+        "Rules": [
+          {
+            "Id": "0486633b-683a-4257-a624-c314347f1c2b",
+            "VersionRange": "[2021.2.0-a,2021.2.99999)",
+            "Tag": "^$",
+            "ActionPackages": [
+              {
+                "DeploymentAction": "Push package to Chocolatey",
+                "PackageReference": "NuGetPush.Source.Package"
+              }
+            ],
+            "Links": {},
+            "Actions": ["Push package to Chocolatey"]
+          },
+          {
+            "Id": "8c693366-7547-49d4-afdc-41235dd4d7a5",
+            "VersionRange": "[2021.2.0-a,2021.2.99999)",
+            "Tag": "^$",
+            "ActionPackages": [
+              {
+                "DeploymentAction": "Upload Windows Installers to S3 for direct download",
+                "PackageReference": "S3SourcePackage"
+              }
+            ],
+            "Links": {},
+            "Actions": ["Upload Windows Installers to S3 for direct download"]
+          }
+        ],
+        "TenantTags": [],
+        "SpaceId": "Spaces-622",
+        "Links": {
+          "Self": "/api/Spaces-622/channels/Channels-4946",
+          "Releases": "/api/Spaces-622/channels/Channels-4946/releases{?skip,take,searchByVersion}",
+          "Project": "/api/Spaces-622/projects/Projects-4224"
+        }
+      },
+      "Deployments": {
+        "Environments-2583": [
+          {
+            "Id": "Deployments-104276",
+            "ProjectId": "Projects-4224",
+            "EnvironmentId": "Environments-2583",
+            "ReleaseId": "Releases-84617",
+            "DeploymentId": "Deployments-104276",
+            "TaskId": "ServerTasks-1368629",
+            "TenantId": null,
+            "ChannelId": "Channels-4946",
+            "ReleaseVersion": "2021.2.350",
+            "Created": "2021-03-15T00:54:39.69+00:00",
+            "QueueTime": "2021-03-15T00:54:39.691+00:00",
+            "StartTime": "2021-03-15T00:54:40.14+00:00",
+            "CompletedTime": "2021-03-15T01:16:48.929+00:00",
+            "State": "Success",
+            "HasPendingInterruptions": false,
+            "HasWarningsOrErrors": true,
+            "ErrorMessage": "",
+            "Duration": "22 minutes",
+            "IsCurrent": false,
+            "IsPrevious": false,
+            "IsCompleted": true,
+            "Links": {
+              "Self": "/api/Spaces-622/deployments/Deployments-104276",
+              "Release": "/api/Spaces-622/releases/Releases-84617",
+              "Tenant": "/api/Spaces-622/tenants/",
+              "Task": "/api/tasks/ServerTasks-1368629"
+            }
+          }
+        ],
+        "Environments-2621": [
+          {
+            "Id": "Deployments-104303",
+            "ProjectId": "Projects-4224",
+            "EnvironmentId": "Environments-2621",
+            "ReleaseId": "Releases-84617",
+            "DeploymentId": "Deployments-104303",
+            "TaskId": "ServerTasks-1369054",
+            "TenantId": null,
+            "ChannelId": "Channels-4946",
+            "ReleaseVersion": "2021.2.350",
+            "Created": "2021-03-15T03:34:30.268+00:00",
+            "QueueTime": "2021-03-15T03:34:30.239+00:00",
+            "StartTime": "2021-03-15T05:57:31.814+00:00",
+            "CompletedTime": "2021-03-15T06:37:55.852+00:00",
+            "State": "Success",
+            "HasPendingInterruptions": false,
+            "HasWarningsOrErrors": false,
+            "ErrorMessage": "",
+            "Duration": "3 hours",
+            "IsCurrent": false,
+            "IsPrevious": false,
+            "IsCompleted": true,
+            "Links": {
+              "Self": "/api/Spaces-622/deployments/Deployments-104303",
+              "Release": "/api/Spaces-622/releases/Releases-84617",
+              "Tenant": "/api/Spaces-622/tenants/",
+              "Task": "/api/tasks/ServerTasks-1369054"
+            }
+          },
+          {
+            "Id": "Deployments-104288",
+            "ProjectId": "Projects-4224",
+            "EnvironmentId": "Environments-2621",
+            "ReleaseId": "Releases-84617",
+            "DeploymentId": "Deployments-104288",
+            "TaskId": "ServerTasks-1368807",
+            "TenantId": null,
+            "ChannelId": "Channels-4946",
+            "ReleaseVersion": "2021.2.350",
+            "Created": "2021-03-15T01:58:53.649+00:00",
+            "QueueTime": "2021-03-15T01:58:53.615+00:00",
+            "StartTime": "2021-03-15T02:40:36.5+00:00",
+            "CompletedTime": "2021-03-15T03:33:46.612+00:00",
+            "State": "Failed",
+            "HasPendingInterruptions": false,
+            "HasWarningsOrErrors": true,
+            "ErrorMessage": "The deployment failed because one or more steps failed. Please see the deployment log for details.",
+            "Duration": "2 hours",
+            "IsCurrent": false,
+            "IsPrevious": false,
+            "IsCompleted": true,
+            "Links": {
+              "Self": "/api/Spaces-622/deployments/Deployments-104288",
+              "Release": "/api/Spaces-622/releases/Releases-84617",
+              "Tenant": "/api/Spaces-622/tenants/",
+              "Task": "/api/tasks/ServerTasks-1368807"
+            }
+          },
+          {
+            "Id": "Deployments-104282",
+            "ProjectId": "Projects-4224",
+            "EnvironmentId": "Environments-2621",
+            "ReleaseId": "Releases-84617",
+            "DeploymentId": "Deployments-104282",
+            "TaskId": "ServerTasks-1368778",
+            "TenantId": null,
+            "ChannelId": "Channels-4946",
+            "ReleaseVersion": "2021.2.350",
+            "Created": "2021-03-15T01:48:55.032+00:00",
+            "QueueTime": "2021-03-15T01:48:54.997+00:00",
+            "StartTime": "2021-03-15T01:48:55.372+00:00",
+            "CompletedTime": "2021-03-15T01:50:53.639+00:00",
+            "State": "Failed",
+            "HasPendingInterruptions": false,
+            "HasWarningsOrErrors": true,
+            "ErrorMessage": "The deployment failed because one or more steps failed. Please see the deployment log for details.",
+            "Duration": "2 minutes",
+            "IsCurrent": false,
+            "IsPrevious": false,
+            "IsCompleted": true,
+            "Links": {
+              "Self": "/api/Spaces-622/deployments/Deployments-104282",
+              "Release": "/api/Spaces-622/releases/Releases-84617",
+              "Tenant": "/api/Spaces-622/tenants/",
+              "Task": "/api/tasks/ServerTasks-1368778"
+            }
+          }
+        ],
+        "Environments-2601": [
+          {
+            "Id": "Deployments-104341",
+            "ProjectId": "Projects-4224",
+            "EnvironmentId": "Environments-2601",
+            "ReleaseId": "Releases-84617",
+            "DeploymentId": "Deployments-104341",
+            "TaskId": "ServerTasks-1369672",
+            "TenantId": null,
+            "ChannelId": "Channels-4946",
+            "ReleaseVersion": "2021.2.350",
+            "Created": "2021-03-15T07:16:54.148+00:00",
+            "QueueTime": "2021-03-15T07:16:54.116+00:00",
+            "StartTime": "2021-03-15T07:16:54.62+00:00",
+            "CompletedTime": "2021-03-15T07:23:49.352+00:00",
+            "State": "Success",
+            "HasPendingInterruptions": false,
+            "HasWarningsOrErrors": false,
+            "ErrorMessage": "",
+            "Duration": "7 minutes",
+            "IsCurrent": false,
+            "IsPrevious": false,
+            "IsCompleted": true,
+            "Links": {
+              "Self": "/api/Spaces-622/deployments/Deployments-104341",
+              "Release": "/api/Spaces-622/releases/Releases-84617",
+              "Tenant": "/api/Spaces-622/tenants/",
+              "Task": "/api/tasks/ServerTasks-1369672"
+            }
+          }
+        ],
+        "Environments-2584": [
+          {
+            "Id": "Deployments-104501",
+            "ProjectId": "Projects-4224",
+            "EnvironmentId": "Environments-2584",
+            "ReleaseId": "Releases-84617",
+            "DeploymentId": "Deployments-104501",
+            "TaskId": "ServerTasks-1373611",
+            "TenantId": null,
+            "ChannelId": "Channels-4946",
+            "ReleaseVersion": "2021.2.350",
+            "Created": "2021-03-16T07:25:06.527+00:00",
+            "QueueTime": "2021-03-16T07:25:06.5+00:00",
+            "StartTime": "2021-03-16T07:25:06.925+00:00",
+            "CompletedTime": null,
+            "State": "Executing",
+            "HasPendingInterruptions": false,
+            "HasWarningsOrErrors": false,
+            "ErrorMessage": "",
+            "Duration": "9 minutes",
+            "IsCurrent": true,
+            "IsPrevious": false,
+            "IsCompleted": false,
+            "Links": {
+              "Self": "/api/Spaces-622/deployments/Deployments-104501",
+              "Release": "/api/Spaces-622/releases/Releases-84617",
+              "Tenant": "/api/Spaces-622/tenants/",
+              "Task": "/api/tasks/ServerTasks-1373611"
+            }
+          }
+        ]
+      },
+      "NextDeployments": ["Environments-2584"],
+      "HasUnresolvedDefect": false,
+      "ReleaseRetentionPeriod": null,
+      "TentacleRetentionPeriod": null
+    }
+  ],
+  "Links": {}
+}

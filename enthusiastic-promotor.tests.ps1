@@ -145,6 +145,17 @@ Describe 'Enthusiastic promoter' {
     $result[0].ChannelName | Should -be "Latest Release - 2020.5"
   }
 
+  It 'should work when a newer candidate is ready for deployment to the next env but a previous deployment is still deploying there' {
+    Mock Test-PipelineBlocked { return $false; }
+    $progression = (Get-Content -Path "SampleData/sample7.json" -Raw) | ConvertFrom-Json
+    $channels = (Get-Content -Path "SampleData/sample7-channels.json" -Raw) | ConvertFrom-Json
+    Mock Get-CurrentDate { return [System.DateTime]::Parse("05/Feb/2021 1:08:20 AM") }
+
+    $result = $((Get-PromotionCandidates $progression $channels).Values) | sort-object -property Version
+
+    $result | should -be $null
+  }
+
   It 'should not promote during weekend period' -TestCases @( # All written in AEST times
     @{ datetime = '20/Nov/2020 16:00:00'; shouldPromote = $false} #Friday 4pm
     @{ datetime = '20/Nov/2020 15:59:59'; shouldPromote = $true} #Friday 3:59pm
