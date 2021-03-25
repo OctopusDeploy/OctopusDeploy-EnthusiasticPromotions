@@ -30,9 +30,6 @@ function Invoke-WithRetry {
     $returnvalue = $null
     $success = $false;
 
-    Write-Host "MaxRetries: $MaxRetries"
-    Write-Host "InitialBackoffInMs: $InitialBackoffInMs"
-
     while($success -eq $false) {
         try {
             $retrycount++
