@@ -48,7 +48,7 @@ jobs:
         run: cp ./enthusiastic-promoter.ps1 ./packagesoutput/$OCTOPUS_PACKAGE_NAME
     
       - name: Install Octo CLI
-        uses: OctopusDeploy/install-octopus-cli-action@v1.1.1
+        uses: OctopusDeploy/install-octopus-cli-action
         with:
           version: latest
           
