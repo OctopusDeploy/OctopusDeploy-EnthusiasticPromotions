@@ -29,7 +29,7 @@ jobs:
         shell: pwsh
 
       - name: Install Octo CLI
-        uses: OctopusDeploy/install-octopus-cli-action@latest
+        uses: OctopusDeploy/install-octopus-cli-action@v1
         with:
           version: latest
 
