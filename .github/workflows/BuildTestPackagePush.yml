@@ -47,12 +47,10 @@ jobs:
         id: move-ps-script-to-build-folder
         run: cp ./enthusiastic-promoter.ps1 ./packagesoutput/$OCTOPUS_PACKAGE_NAME
     
-      - name: Install Octopus CLI
-        run: |
-          sudo apt update && sudo apt install --no-install-recommends gnupg curl ca-certificates apt-transport-https && \
-          curl -sSfL https://apt.octopus.com/public.key | sudo apt-key add - && \
-          sudo sh -c "echo deb https://apt.octopus.com/ stable main > /etc/apt/sources.list.d/octopus.com.list" && \
-          sudo apt update && sudo apt install octopuscli 
+      - name: Install Octo CLI
+        uses: OctopusDeploy/install-octopus-cli-action@v1.1.1
+        with:
+          version: 7.4.3140 
           
       - name: Package
         run: octo pack --id="$OCTOPUS_PACKAGE_NAME" --format="Zip" --version="$PACKAGE_VERSION" --basePath="./packagesoutput/$OCTOPUS_PACKAGE_NAME" --outFolder="./packages"
