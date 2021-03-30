@@ -47,4 +47,4 @@ jobs:
           api_key: ${{ secrets.OCTOPUS_APIKEY }}
           server: ${{ secrets.OCTOPUS_SERVER }}
           space: "Octopus Server"
-          packages: "$OCTOPUS_PACKAGE_NAME.1.0.0.txt"
+          packages: $OCTOPUS_PACKAGE_NAME.1.0.0.txt
