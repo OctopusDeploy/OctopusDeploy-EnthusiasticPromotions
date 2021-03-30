@@ -50,7 +50,7 @@ jobs:
       - name: Install Octo CLI
         uses: OctopusDeploy/install-octopus-cli-action@v1.1.1
         with:
-          version: 7.4.3140 
+          version: latest
           
       - name: Package
         run: octo pack --id="$OCTOPUS_PACKAGE_NAME" --format="Zip" --version="$PACKAGE_VERSION" --basePath="./packagesoutput/$OCTOPUS_PACKAGE_NAME" --outFolder="./packages"
