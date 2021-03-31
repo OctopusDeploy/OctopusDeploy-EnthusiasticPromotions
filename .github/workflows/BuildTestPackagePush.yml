@@ -54,9 +54,14 @@ jobs:
           
       - name: Package
         run: octo pack --id="$OCTOPUS_PACKAGE_NAME" --format="Zip" --version="$PACKAGE_VERSION" --basePath="./packagesoutput/$OCTOPUS_PACKAGE_NAME" --outFolder="./packages"
-          
-      - name: Push to Octopus
-        run: octo push --package="./packages/$OCTOPUS_PACKAGE_NAME.$PACKAGE_VERSION.zip" --server="${{ secrets.OCTOPUS_SERVER }}" --apiKey="${{ secrets.OCTOPUS_APIKEY }}" --space="$OCTOPUS_SPACE_NAME"
+
+      - name: Push to Octopus Deploy
+        uses: OctopusDeploy/push-package-action@main
+        with:
+          api_key: ${{ secrets.OCTOPUS_APIKEY }}
+          server: ${{ secrets.OCTOPUS_SERVER }}
+          space: ${{ env.OCTOPUS_SPACE_NAME }}
+          packages: "./packages/${{env.OCTOPUS_PACKAGE_NAME}}.$PACKAGE_VERSION.zip"
 
       - name: Publish Runbook
         run: ./Build/UpdateRunbook.ps1 -octopusURL "${{ secrets.OCTOPUS_SERVER }}" -octopusAPIKey "${{ secrets.OCTOPUS_APIKEY }}" -spaceName "${{ env.OCTOPUS_SPACE_NAME }}" -projectName "${{ env.OCTOPUS_PROJECT_NAME }}" -runbookName "${{ env.OCTOPUS_ENTHUSIASTIC_PROMOTIONS_RUNBOOK_NAME }}"
