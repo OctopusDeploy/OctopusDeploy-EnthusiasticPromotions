@@ -27,13 +27,3 @@ jobs:
           $configuration.Run.Exit = $true
           Invoke-Pester -configuration $configuration
         shell: pwsh
-
-      - name: Install Octo CLI
-        uses: OctopusDeploy/install-octopus-cli-action@main
-        with:
-          version: latest
-
-      - name: make file
-        id: make-file
-        run: New-Item "${{env.OCTOPUS_PACKAGE_NAME}}.1.0.0.txt"
-        shell: pwsh
