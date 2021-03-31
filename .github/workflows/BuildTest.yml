@@ -7,9 +7,6 @@ on:
   pull_request:
     branches: [ main ]
 
-env:
-  OCTOPUS_PACKAGE_NAME: EnthisuasticPromotions
-
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -40,11 +37,3 @@ jobs:
         id: make-file
         run: New-Item "${{env.OCTOPUS_PACKAGE_NAME}}.1.0.0.txt"
         shell: pwsh
-
-      - name: Push to Octopus Deploy
-        uses: OctopusDeploy/push-package-action@main
-        with:
-          api_key: ${{ secrets.OCTOPUS_APIKEY }}
-          server: ${{ secrets.OCTOPUS_SERVER }}
-          space: "Octopus Server"
-          packages: ${{env.OCTOPUS_PACKAGE_NAME}}.1.0.0.txt
