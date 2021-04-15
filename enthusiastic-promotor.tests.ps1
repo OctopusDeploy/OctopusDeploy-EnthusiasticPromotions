@@ -156,6 +156,21 @@ Describe 'Enthusiastic promoter' {
     $result | should -be $null
   }
 
+  It 'should skip releases in a channel that have not gone to any environment when checking most recent deploy to an environment'  {
+    Mock Test-PipelineBlocked { return $false }
+    Mock Get-CurrentDate { return [System.DateTime]::Parse("15/Apr/2021 10:00:00 AM") }
+    $progression = (Get-Content -Path "SampleData/sample8.json" -Raw) | ConvertFrom-Json
+    $channels = (Get-Content -Path "SampleData/sample8-channels.json" -Raw) | ConvertFrom-Json
+
+    $result = $((Get-PromotionCandidates $progression $channels).Values) | sort-object -property Version
+
+    $result.Count | should -be 1
+
+    $result[0].Version | Should -be "2021.1.6969"
+    $result[0].EnvironmentName | Should -be "Friends of Octopus"
+    $result[0].ChannelName | Should -be "Latest Release - 2021.1"
+  }
+
   It 'should not promote during weekend period' -TestCases @( # All written in AEST times
     @{ datetime = '20/Nov/2020 16:00:00'; shouldPromote = $false} #Friday 4pm
     @{ datetime = '20/Nov/2020 15:59:59'; shouldPromote = $true} #Friday 3:59pm

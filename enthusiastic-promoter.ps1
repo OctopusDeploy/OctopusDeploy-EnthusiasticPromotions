@@ -203,6 +203,7 @@ function Add-PromotionCandidate {
 function Get-MostRecentReleaseDeployedToEnvironment($progression, $release, $environmentId) {
     return $progression.Releases `
            | Where-Object { $_.Release.ChannelId -eq $release.Release.ChannelId } `
+           | Where-Object { $false -eq [string]::IsNullOrEmpty($_.Deployments) }
            | where-object { (Get-AlreadyDeployedEnvironmentIds $_) -contains $environmentId } `
            | sort-object { New-Object Octopus.Versioning.Semver.SemanticVersion $_.Release.Version } -Descending `
            | Select-Object -First 1

@@ -1,0 +1,334 @@
+{
+    "ItemType": "Channel",
+    "TotalResults": 6,
+    "ItemsPerPage": 30,
+    "NumberOfPages": 1,
+    "LastPageNumber": 0,
+    "Items": [
+      {
+        "Id": "Channels-4447",
+        "Name": "Branch Builds",
+        "Description": "eg:\n`2020.5.0-bug-cloudservice0001`\n`2020.5.0-mergebot-from-re031`\n`2020.5.0-pr6834-0286`\n`2020.5.0-beta0652`",
+        "ProjectId": "Projects-4224",
+        "LifecycleId": "Lifecycles-1665",
+        "IsDefault": false,
+        "Rules": [
+          {
+            "Id": "bfe53c6a-6e6c-46c2-8a2f-d7dee7dd1709",
+            "VersionRange": "",
+            "Tag": "^.+$",
+            "ActionPackages": [
+              {
+                "DeploymentAction": "Push package to Chocolatey",
+                "PackageReference": "NuGetPush.Source.Package"
+              }
+            ],
+            "Links": {
+              
+            },
+            "Actions": [
+              "Push package to Chocolatey"
+            ]
+          },
+          {
+            "Id": "bbb6f565-7ff3-4911-bda3-b9cfa2632e3c",
+            "VersionRange": "",
+            "Tag": "^.+$",
+            "ActionPackages": [
+              {
+                "DeploymentAction": "Upload Windows Installers to S3 for direct download",
+                "PackageReference": "S3SourcePackage"
+              }
+            ],
+            "Links": {
+              
+            },
+            "Actions": [
+              "Upload Windows Installers to S3 for direct download"
+            ]
+          }
+        ],
+        "TenantTags": [
+          
+        ],
+        "SpaceId": "Spaces-622",
+        "Links": {
+          "Self": "/api/Spaces-622/channels/Channels-4447",
+          "Releases": "/api/Spaces-622/channels/Channels-4447/releases{?skip,take,searchByVersion}",
+          "Project": "/api/Spaces-622/projects/Projects-4224"
+        }
+      },
+      {
+        "Id": "Channels-4946",
+        "Name": "Current Dev - 2021.2",
+        "Description": "eg: `2021.2.6701`",
+        "ProjectId": "Projects-4224",
+        "LifecycleId": "Lifecycles-1670",
+        "IsDefault": false,
+        "Rules": [
+          {
+            "Id": "0486633b-683a-4257-a624-c314347f1c2b",
+            "VersionRange": "[2021.2.0-a,2021.2.99999)",
+            "Tag": "^$",
+            "ActionPackages": [
+              {
+                "DeploymentAction": "Push package to Chocolatey",
+                "PackageReference": "NuGetPush.Source.Package"
+              }
+            ],
+            "Links": {
+              
+            },
+            "Actions": [
+              "Push package to Chocolatey"
+            ]
+          },
+          {
+            "Id": "8c693366-7547-49d4-afdc-41235dd4d7a5",
+            "VersionRange": "[2021.2.0-a,2021.2.99999)",
+            "Tag": "^$",
+            "ActionPackages": [
+              {
+                "DeploymentAction": "Upload Windows Installers to S3 for direct download",
+                "PackageReference": "S3SourcePackage"
+              }
+            ],
+            "Links": {
+              
+            },
+            "Actions": [
+              "Upload Windows Installers to S3 for direct download"
+            ]
+          }
+        ],
+        "TenantTags": [
+          
+        ],
+        "SpaceId": "Spaces-622",
+        "Links": {
+          "Self": "/api/Spaces-622/channels/Channels-4946",
+          "Releases": "/api/Spaces-622/channels/Channels-4946/releases{?skip,take,searchByVersion}",
+          "Project": "/api/Spaces-622/projects/Projects-4224"
+        }
+      },
+      {
+        "Id": "Channels-4448",
+        "Name": "Latest Release - 2021.1",
+        "Description": "eg: `2021.1.6701`",
+        "ProjectId": "Projects-4224",
+        "LifecycleId": "Lifecycles-1667",
+        "IsDefault": false,
+        "Rules": [
+          {
+            "Id": "86bac821-0539-4f15-8ea3-939136619188",
+            "VersionRange": "[2021.1.0-a,2021.1.99999)",
+            "Tag": "^$",
+            "ActionPackages": [
+              {
+                "DeploymentAction": "Push package to Chocolatey",
+                "PackageReference": "NuGetPush.Source.Package"
+              }
+            ],
+            "Links": {
+              
+            },
+            "Actions": [
+              "Push package to Chocolatey"
+            ]
+          },
+          {
+            "Id": "af112c81-e23f-490b-8bf9-7e9145268acd",
+            "VersionRange": "[2021.1.0-a,2021.1.99999)",
+            "Tag": "^$",
+            "ActionPackages": [
+              {
+                "DeploymentAction": "Upload Windows Installers to S3 for direct download",
+                "PackageReference": "S3SourcePackage"
+              }
+            ],
+            "Links": {
+              
+            },
+            "Actions": [
+              "Upload Windows Installers to S3 for direct download"
+            ]
+          }
+        ],
+        "TenantTags": [
+          
+        ],
+        "SpaceId": "Spaces-622",
+        "Links": {
+          "Self": "/api/Spaces-622/channels/Channels-4448",
+          "Releases": "/api/Spaces-622/channels/Channels-4448/releases{?skip,take,searchByVersion}",
+          "Project": "/api/Spaces-622/projects/Projects-4224"
+        }
+      },
+      {
+        "Id": "Channels-4847",
+        "Name": "Previous Release - 2020.6",
+        "Description": "eg\n`2020.6.0-rc0003`\n`2020.6.0`",
+        "ProjectId": "Projects-4224",
+        "LifecycleId": "Lifecycles-1669",
+        "IsDefault": false,
+        "Rules": [
+          {
+            "Id": "dde4af0b-2c4b-47ea-93ec-184210f07054",
+            "VersionRange": "[2020.6.0-a,2020.6.99999)",
+            "Tag": "^$",
+            "ActionPackages": [
+              {
+                "DeploymentAction": "Push package to Chocolatey",
+                "PackageReference": "NuGetPush.Source.Package"
+              }
+            ],
+            "Links": {
+              
+            },
+            "Actions": [
+              "Push package to Chocolatey"
+            ]
+          },
+          {
+            "Id": "e5b2cd67-664e-4cc2-9030-762a9bda2408",
+            "VersionRange": "[2020.6.0-a,2020.6.99999)",
+            "Tag": "^$",
+            "ActionPackages": [
+              {
+                "DeploymentAction": "Upload Windows Installers to S3 for direct download",
+                "PackageReference": "S3SourcePackage"
+              }
+            ],
+            "Links": {
+              
+            },
+            "Actions": [
+              "Upload Windows Installers to S3 for direct download"
+            ]
+          }
+        ],
+        "TenantTags": [
+          
+        ],
+        "SpaceId": "Spaces-622",
+        "Links": {
+          "Self": "/api/Spaces-622/channels/Channels-4847",
+          "Releases": "/api/Spaces-622/channels/Channels-4847/releases{?skip,take,searchByVersion}",
+          "Project": "/api/Spaces-622/projects/Projects-4224"
+        }
+      },
+      {
+        "Id": "Channels-4583",
+        "Name": "Previous Release 2 - 2020.5",
+        "Description": "eg\n`2020.5.0-rc0003`\n`2020.5.0`",
+        "ProjectId": "Projects-4224",
+        "LifecycleId": "Lifecycles-1668",
+        "IsDefault": false,
+        "Rules": [
+          {
+            "Id": "2cd84d29-23d9-4f8f-9035-6e54a9041fa7",
+            "VersionRange": "[2020.5.0-a,2020.5.99999)",
+            "Tag": "^rc\\d*$|^$",
+            "ActionPackages": [
+              {
+                "DeploymentAction": "Push package to Chocolatey",
+                "PackageReference": "NuGetPush.Source.Package"
+              }
+            ],
+            "Links": {
+              
+            },
+            "Actions": [
+              "Push package to Chocolatey"
+            ]
+          },
+          {
+            "Id": "71275451-9c17-472d-9ea5-53a3568cf603",
+            "VersionRange": "[2020.5.0-a,2020.5.99999)",
+            "Tag": "^rc\\d*$|^$",
+            "ActionPackages": [
+              {
+                "DeploymentAction": "Upload Windows Installers to S3 for direct download",
+                "PackageReference": "S3SourcePackage"
+              }
+            ],
+            "Links": {
+              
+            },
+            "Actions": [
+              "Upload Windows Installers to S3 for direct download"
+            ]
+          }
+        ],
+        "TenantTags": [
+          
+        ],
+        "SpaceId": "Spaces-622",
+        "Links": {
+          "Self": "/api/Spaces-622/channels/Channels-4583",
+          "Releases": "/api/Spaces-622/channels/Channels-4583/releases{?skip,take,searchByVersion}",
+          "Project": "/api/Spaces-622/projects/Projects-4224"
+        }
+      },
+      {
+        "Id": "Channels-4449",
+        "Name": "Previous Release 3 - 2020.4",
+        "Description": "eg\n`2020.4.0-rc0003`\n`2020.4.0`\n",
+        "ProjectId": "Projects-4224",
+        "LifecycleId": "Lifecycles-1668",
+        "IsDefault": false,
+        "Rules": [
+          {
+            "Id": "d6f4809f-918a-4c9e-8de8-ff1bdb63e2e9",
+            "VersionRange": "[2020.4.0-a,2020.4.99999)",
+            "Tag": "^rc\\d*$|^$",
+            "ActionPackages": [
+              {
+                "DeploymentAction": "Push package to Chocolatey",
+                "PackageReference": "NuGetPush.Source.Package"
+              }
+            ],
+            "Links": {
+              
+            },
+            "Actions": [
+              "Push package to Chocolatey"
+            ]
+          },
+          {
+            "Id": "e8dbbe59-4ac5-4c0f-b145-c31f65f6fc36",
+            "VersionRange": "[2020.4.0-a,2020.4.99999)",
+            "Tag": "^rc\\d*$|^$",
+            "ActionPackages": [
+              {
+                "DeploymentAction": "Upload Windows Installers to S3 for direct download",
+                "PackageReference": "S3SourcePackage"
+              }
+            ],
+            "Links": {
+              
+            },
+            "Actions": [
+              "Upload Windows Installers to S3 for direct download"
+            ]
+          }
+        ],
+        "TenantTags": [
+          
+        ],
+        "SpaceId": "Spaces-622",
+        "Links": {
+          "Self": "/api/Spaces-622/channels/Channels-4449",
+          "Releases": "/api/Spaces-622/channels/Channels-4449/releases{?skip,take,searchByVersion}",
+          "Project": "/api/Spaces-622/projects/Projects-4224"
+        }
+      }
+    ],
+    "Links": {
+      "Self": "/api/Spaces-622/projects/Projects-4224/channels?skip=0&take=30",
+      "Template": "/api/Spaces-622/projects/Projects-4224/channels{?skip,take,partialName}",
+      "Page.All": "/api/Spaces-622/projects/Projects-4224/channels?skip=0&take=2147483647",
+      "Page.Current": "/api/Spaces-622/projects/Projects-4224/channels?skip=0&take=30",
+      "Page.Last": "/api/Spaces-622/projects/Projects-4224/channels?skip=0&take=30"
+    }
+  }
