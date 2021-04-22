@@ -230,6 +230,10 @@ function Test-ShouldLimitDeploymentsToEnvironment($nextEnvironmentId, $mostRecen
     if ($null -eq $mostRecentReleaseDeployedToNextEnvironment) {
         return $false;
     }
+    if (-not ($waitTimeForEnvironmentLookup.ContainsKey($nextEnvironmentId))) {
+        Write-Error "Unable to find environment '$nextEnvironmentId' in lookup table. Cannot continue." -ErrorAction Continue
+        exit 1
+    }
     $minimumTimeBetweenDeployments = $waitTimeForEnvironmentLookup[$nextEnvironmentId].MinimumTimeBetweenDeployments
     $mostRecentDeploymentToNextEnvironment = Get-MostRecentDeploymentToEnvironment $mostRecentReleaseDeployedToNextEnvironment $nextEnvironmentId
     if ($null -eq $mostRecentDeploymentToNextEnvironment.CompletedTime) {
