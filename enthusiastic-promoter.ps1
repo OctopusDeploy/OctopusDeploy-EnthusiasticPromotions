@@ -300,10 +300,10 @@ function Test-IsPromotionCandidate {
 
     if (Test-ReleaseInStabilizationPhase -channelId $release.Release.ChannelId -channels $channels) {
         Write-Host " - Release '$($release.Release.Version)' is in stabilization phase - allowing longer bake times"
-        $bakeTime = $waitTimeForEnvironmentLookup[$nextEnvironmentId].StabilizationPhaseBakeTime
+        $bakeTime = $waitTimeForEnvironmentLookup[$currentEnvironmentId].StabilizationPhaseBakeTime
     } else {
         Write-Host " - Release '$($release.Release.Version)' is not in stabilization phase - using shorter bake times"
-        $bakeTime = $waitTimeForEnvironmentLookup[$nextEnvironmentId].BakeTime
+        $bakeTime = $waitTimeForEnvironmentLookup[$currentEnvironmentId].BakeTime
     }
     Write-Host " - Calculated the bake time that releases should stay in environment '$currentEnvironmentName' before being promoted to '$nextEnvironmentName' to be $bakeTime."
 
