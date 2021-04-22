@@ -12,7 +12,6 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v2
     - name: Set Timezone
       uses: szenius/set-timezone@v1.0
       with:
@@ -22,6 +21,7 @@ jobs:
         id: install-pester
         run: Install-Module "Pester" -Force
         shell: pwsh
+    - uses: actions/checkout@v2
 
       - name: Run Pester Tests
         id: pester-tests
