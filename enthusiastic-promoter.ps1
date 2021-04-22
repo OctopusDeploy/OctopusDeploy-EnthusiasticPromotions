@@ -396,13 +396,14 @@ if (Test-Path variable:OctopusParameters) {
     $octofrontApiKey = $OctopusParameters["OctofrontSoftwareProblemsAuthToken"]
     $octofrontUrl = $OctopusParameters["OctofrontUrl"]
     $enthusiasticPromoterApiKey = $OctopusParameters["EnthusiasticPromoterApiKey"]
+    $octopusServerUrl = $OctopusParameters["Octopus.Web.ServerUri"]
 
     $candidates = Get-ChildItem -recurse -filter "Octopus.Versioning.dll"
     Add-Type -Path $candidates[-1].FullName
 
-    $progression = Get-FromApi "https://deploy.octopus.app/api/$spaceId/progression/$projectId"
-    $channels = Get-FromApi "https://deploy.octopus.app/api/$spaceId/projects/$projectId/channels"
-    $lifecycles = Get-FromApi "https://deploy.octopus.app/api/$spaceId/lifecycles/all"
+    $progression = Get-FromApi "$octopusServerUrl/api/$spaceId/progression/$($projectId)?releaseHistoryCount=100"
+    $channels = Get-FromApi "$octopusServerUrl/api/$spaceId/projects/$projectId/channels"
+    $lifecycles = Get-FromApi "$octopusServerUrl/api/$spaceId/lifecycles/all"
 
     $promotionCandidates = Get-PromotionCandidates -progression $progression -channels $channels -lifecycles $lifecycles
 
