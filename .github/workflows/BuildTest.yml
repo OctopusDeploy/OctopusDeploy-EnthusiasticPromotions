@@ -12,18 +12,25 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v2
-        
-      - name: Install Pester
-        id: install-pester
-        run: Install-Module "Pester" -Force
-        shell: pwsh
-       
-      - name: Run Pester Tests
-        id: pester-tests
-        run: |
-          Import-Module -Name "Pester"
-          $configuration = [PesterConfiguration]::Default
-          $configuration.Run.Exit = $true
-          Invoke-Pester -configuration $configuration
-        shell: pwsh
+    - name: Set Timezone
+      uses: szenius/set-timezone@v1.0
+      with:
+        timezoneLinux: "Australia/Brisbane"
+
+    - name: Checkout
+      uses: actions/checkout@v2
+
+    - name: Install Pester
+      id: install-pester
+      run: Install-Module "Pester" -Force
+      shell: pwsh
+
+    - name: Run Pester Tests
+      id: pester-tests
+      run: |
+        Import-Module -Name "Pester"
+        $configuration = [PesterConfiguration]::Default
+        $configuration.Run.Exit = $true
+        $configuration.Run.PassThru = $true
+        Invoke-Pester -configuration $configuration
+      shell: pwsh
