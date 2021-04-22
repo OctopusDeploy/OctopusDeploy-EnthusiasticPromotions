@@ -424,14 +424,26 @@ if (Test-Path variable:OctopusParameters) {
     $enthusiasticPromoterApiKey = $OctopusParameters["EnthusiasticPromoterApiKey"]
     $octopusServerUrl = $OctopusParameters["Octopus.Web.ServerUri"]
 
-    $candidates = Get-ChildItem -recurse -filter "Octopus.Versioning.dll"
-    Add-Type -Path $candidates[-1].FullName
+    try {
+        $candidates = Get-ChildItem -recurse -filter "Octopus.Versioning.dll"
+        Add-Type -Path $candidates[-1].FullName
 
-    $progression = Get-FromApi "$octopusServerUrl/api/$spaceId/progression/$($projectId)?releaseHistoryCount=100"
-    $channels = Get-FromApi "$octopusServerUrl/api/$spaceId/projects/$projectId/channels"
-    $lifecycles = Get-FromApi "$octopusServerUrl/api/$spaceId/lifecycles/all"
+        $progression = Get-FromApi "$octopusServerUrl/api/$spaceId/progression/$($projectId)?releaseHistoryCount=100"
+        $channels = Get-FromApi "$octopusServerUrl/api/$spaceId/projects/$projectId/channels"
+        $lifecycles = Get-FromApi "$octopusServerUrl/api/$spaceId/lifecycles/all"
 
-    $promotionCandidates = Get-PromotionCandidates -progression $progression -channels $channels -lifecycles $lifecycles
+        $promotionCandidates = Get-PromotionCandidates -progression $progression -channels $channels -lifecycles $lifecycles
+    } catch {
+
+        [System.Console]::Error.WriteLine("$($error[0].CategoryInfo.Category): $($error[0].Exception.Message)")
+        [System.Console]::Error.WriteLine($error[0].InvocationInfo.PositionMessage)
+        [System.Console]::Error.WriteLine($error[0].ScriptStackTrace)
+        if ($null -ne $error[0].ErrorDetails) {
+            [System.Console]::Error.WriteLine($error[0].ErrorDetails.Message)
+        }
+
+        exit 1
+    }
 
     Promote-Releases $promotionCandidates
 }
