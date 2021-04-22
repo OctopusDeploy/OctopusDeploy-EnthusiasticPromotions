@@ -343,7 +343,7 @@ function Test-IsPromotionCandidate {
     return $candidateResult
 }
 
-function Get-PromotionCandidates($progression, $channels, $lifecycles) {
+function Get-PromotionCandidates($progression, $channels) {
     $promotionCandidates = @{}
 
     Write-Host "Looking for possible releases to promote:"
@@ -394,7 +394,6 @@ if (Test-Path variable:OctopusParameters) {
 
     #variables provided from additional packages
     $octopusToolsPath = $OctopusParameters["Octopus.Action.Package[OctopusTools].ExtractedPath"]
-    $octopusVersioningPath = $OctopusParameters["Octopus.Action.Package[Octopus.Versioning].ExtractedPath"]
 
     #variables from the project
     $octofrontApiKey = $OctopusParameters["OctofrontSoftwareProblemsAuthToken"]
@@ -408,9 +407,8 @@ if (Test-Path variable:OctopusParameters) {
 
         $progression = Get-FromApi "$octopusServerUrl/api/$spaceId/progression/$($projectId)?releaseHistoryCount=100"
         $channels = Get-FromApi "$octopusServerUrl/api/$spaceId/projects/$projectId/channels"
-        $lifecycles = Get-FromApi "$octopusServerUrl/api/$spaceId/lifecycles/all"
 
-        $promotionCandidates = Get-PromotionCandidates -progression $progression -channels $channels -lifecycles $lifecycles
+        $promotionCandidates = Get-PromotionCandidates -progression $progression -channels $channels
     } catch {
 
         [System.Console]::Error.WriteLine("$($error[0].CategoryInfo.Category): $($error[0].Exception.Message)")
