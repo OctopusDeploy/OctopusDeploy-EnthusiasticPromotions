@@ -67,7 +67,7 @@ jobs:
           api_key: ${{ secrets.OCTOPUS_APIKEY }}
           server: ${{ secrets.OCTOPUS_SERVER }}
           space: ${{ env.OCTOPUS_SPACE_NAME }}
-          packages: "./packages/${{env.OCTOPUS_PACKAGE_NAME}}.$PACKAGE_VERSION.zip"
+          packages: "./packages/${{env.OCTOPUS_PACKAGE_NAME}}.${{env.PACKAGE_VERSION}}.zip"
 
       - name: Publish Runbook
         run: ./Build/UpdateRunbook.ps1 -octopusURL "${{ secrets.OCTOPUS_SERVER }}" -octopusAPIKey "${{ secrets.OCTOPUS_APIKEY }}" -spaceName "${{ env.OCTOPUS_SPACE_NAME }}" -projectName "${{ env.OCTOPUS_PROJECT_NAME }}" -runbookName "${{ env.OCTOPUS_ENTHUSIASTIC_PROMOTIONS_RUNBOOK_NAME }}"
