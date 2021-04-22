@@ -242,6 +242,17 @@ function Test-ShouldLimitDeploymentsToEnvironment($nextEnvironmentId, $mostRecen
     return ($mostRecentDeploymentToNextEnvironment.CompletedTime.Add($minimumTimeBetweenDeployments) -gt (Get-CurrentDate))
 }
 
+function Format-Timespan([System.TimeSpan] $timespan) {
+    $result = ""
+    if ($timespan.Days -gt 0) {
+        $result = $result + "$($timespan.Days)d:$($timespan.Hours.ToString("D2"))h"
+    } else {
+        $result = $result + "$($timespan.Hours)h"
+    }
+    if ($timespan.Minutes -gt 0) { $result = $result + ":$($timespan.Minutes.ToString("D2"))m"}
+    return $result
+}
+
 class PromotionCandidateResult {
     [bool]$IsCandidate = $false
     [string]$NextEnvironmentId
@@ -297,7 +308,13 @@ function Test-IsPromotionCandidate {
         if ($null -eq $mostRecentDeploymentToNextEnvironment.CompletedTime) {
             Write-Host " - Release '$($release.Release.Version)' is valid for deployment, but '$($mostRecentReleaseDeployedToNextEnvironment.Release.Version)' has not yet completed. Will try again later."
         } else {
-            Write-Host " - Release '$($release.Release.Version)' is valid for deployment, but '$($mostRecentReleaseDeployedToNextEnvironment.Release.Version)' was deployed recently (within the last $minimumTimeBetweenDeployments). Will try again later after $($mostRecentDeploymentToNextEnvironment.CompletedTime.Add($minimumTimeBetweenDeployments)) (UTC)."
+            $ageOfLastDeployment = Format-Timespan (Get-CurrentDate).Subtract($mostRecentDeploymentToNextEnvironment.CompletedTime)
+            $retryTime = $mostRecentDeploymentToNextEnvironment.CompletedTime.Add($minimumTimeBetweenDeployments)
+            $formattedMinimumTimeBetweenDeployments = Format-Timespan $minimumTimeBetweenDeployments
+            Write-Host " - Release '$($release.Release.Version)' is valid for deployment, but '$($mostRecentReleaseDeployedToNextEnvironment.Release.Version)' was deployed recently ($ageOfLastDeployment ago, which is within the last $formattedMinimumTimeBetweenDeployments)."
+            $currDate = Get-CurrentDate
+            $retryTimeSpan = Format-TimeSpan $retryTime.Subtract($currDate)
+            Write-Host " - Will try again later after $($retryTime) (UTC) (in $retryTimeSpan)."
         }
         return $nonCandidateResult
     }
@@ -309,12 +326,17 @@ function Test-IsPromotionCandidate {
         Write-Host " - Release '$($release.Release.Version)' is not in stabilization phase - using shorter bake times"
         $bakeTime = $waitTimeForEnvironmentLookup[$currentEnvironmentId].BakeTime
     }
-    Write-Host " - Calculated the bake time that releases should stay in environment '$currentEnvironmentName' before being promoted to '$nextEnvironmentName' to be $bakeTime."
+    $formattedBakeTime = Format-Timespan $bakeTime
+    Write-Host " - Calculated the bake time that releases should stay in environment '$currentEnvironmentName' before being promoted to '$nextEnvironmentName' to be $formattedBakeTime."
 
     $deploymentsToCurrentEnvironment = Get-MostRecentDeploymentToEnvironment $release $currentEnvironmentId
     if (($null -ne $deploymentsToCurrentEnvironment) -and ($deploymentsToCurrentEnvironment.CompletedTime.Add($bakeTime) -gt (Get-CurrentDate))) {
-        Write-Host " - Completion time of last deployment to $currentEnvironmentName was $($deploymentsToCurrentEnvironment.CompletedTime) (UTC)"
-        Write-Host " - This release is still baking. Will try again later after $($deploymentsToCurrentEnvironment.CompletedTime.Add($bakeTime)) (UTC)."
+        $ageOfLastDeployment = Format-Timespan (Get-CurrentDate).Subtract($deploymentsToCurrentEnvironment.CompletedTime)
+        Write-Host " - Completion time of last deployment to $currentEnvironmentName was $($deploymentsToCurrentEnvironment.CompletedTime) (UTC) ($ageOfLastDeployment ago)"
+        $retryTime = $deploymentsToCurrentEnvironment.CompletedTime.Add($bakeTime)
+        $currDate = Get-CurrentDate
+        $retryTimeSpan = Format-TimeSpan $retryTime.Subtract($currDate)
+        Write-Host " - This release is still baking. Will try again later after $($retryTime) (UTC) (in $retryTimeSpan)."
         return $nonCandidateResult
     }
     if (Test-IsWeekendAEST) {
