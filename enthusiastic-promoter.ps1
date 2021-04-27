@@ -6,15 +6,15 @@ trap { Write-Error $_ -ErrorAction Continue; exit 1 }
 
 #lookup table for "how long the release needs to be in the specified environment, before allowing it to move on"
 $waitTimeForEnvironmentLookup = @{
-    "Environments-2583" = @{ "Name" = "Branch Instances (Staging)"; "BakeTime" = New-TimeSpan -Minutes 0; "StabilizationPhaseBakeTime" = New-TimeSpan -Hours 2;   "MinimumTimeBetweenDeployments" = New-TimeSpan -Minutes 0; }
-    "Environments-2621" = @{ "Name" = "Octopus Cloud Tests";        "BakeTime" = New-TimeSpan -Minutes 0; "StabilizationPhaseBakeTime" = New-TimeSpan -Minutes 0; "MinimumTimeBetweenDeployments" = New-TimeSpan -Minutes 0; }
-    "Environments-2601" = @{ "Name" = "Production";                 "BakeTime" = New-TimeSpan -Minutes 0; "StabilizationPhaseBakeTime" = New-TimeSpan -Minutes 0; "MinimumTimeBetweenDeployments" = New-TimeSpan -Minutes 0; }
-    "Environments-2584" = @{ "Name" = "Branch Instances (Prod)";    "BakeTime" = New-TimeSpan -Days 1;    "StabilizationPhaseBakeTime" = New-TimeSpan -Days 1;    "MinimumTimeBetweenDeployments" = New-TimeSpan -Minutes 0; }
-    "Environments-2585" = @{ "Name" = "Staff";                      "BakeTime" = New-TimeSpan -Minutes 0; "StabilizationPhaseBakeTime" = New-TimeSpan -Days 1;    "MinimumTimeBetweenDeployments" = New-TimeSpan -Minutes 0; }
-    "Environments-2586" = @{ "Name" = "Friends of Octopus";         "BakeTime" = New-TimeSpan -Minutes 0; "StabilizationPhaseBakeTime" = New-TimeSpan -Days 1;    "MinimumTimeBetweenDeployments" = New-TimeSpan -Hours 12; }
-    "Environments-2587" = @{ "Name" = "Early Adopters";             "BakeTime" = New-TimeSpan -Minutes 0; "StabilizationPhaseBakeTime" = New-TimeSpan -Days 7;    "MinimumTimeBetweenDeployments" = New-TimeSpan -Days 3; }
-    "Environments-2588" = @{ "Name" = "Stable";                     "BakeTime" = New-TimeSpan -Minutes 0; "StabilizationPhaseBakeTime" = New-TimeSpan -Days 7;    "MinimumTimeBetweenDeployments" = New-TimeSpan -Days 7; }
-    "Environments-2589" = @{ "Name" = "General Availablilty";       "BakeTime" = New-TimeSpan -Minutes 0; "StabilizationPhaseBakeTime" = New-TimeSpan -Minutes 0; "MinimumTimeBetweenDeployments" = New-TimeSpan -Minutes 0; }
+    "Environments-2583" = @{ "Name" = "Branch Instances (Staging)"; "BakeTime" = New-TimeSpan -Minutes 0; "StabilizationPhaseBakeTime" = New-TimeSpan -Hours 2;   "MinimumTimeBetweenDeployments" = New-TimeSpan -Minutes 0; "PreventDeploymentsOnWeekends" = $false; }
+    "Environments-2621" = @{ "Name" = "Octopus Cloud Tests";        "BakeTime" = New-TimeSpan -Minutes 0; "StabilizationPhaseBakeTime" = New-TimeSpan -Minutes 0; "MinimumTimeBetweenDeployments" = New-TimeSpan -Minutes 0; "PreventDeploymentsOnWeekends" = $false; }
+    "Environments-2601" = @{ "Name" = "Production";                 "BakeTime" = New-TimeSpan -Minutes 0; "StabilizationPhaseBakeTime" = New-TimeSpan -Minutes 0; "MinimumTimeBetweenDeployments" = New-TimeSpan -Minutes 0; "PreventDeploymentsOnWeekends" = $false; }
+    "Environments-2584" = @{ "Name" = "Branch Instances (Prod)";    "BakeTime" = New-TimeSpan -Days 1;    "StabilizationPhaseBakeTime" = New-TimeSpan -Days 1;    "MinimumTimeBetweenDeployments" = New-TimeSpan -Minutes 0; "PreventDeploymentsOnWeekends" = $true; }
+    "Environments-2585" = @{ "Name" = "Staff";                      "BakeTime" = New-TimeSpan -Minutes 0; "StabilizationPhaseBakeTime" = New-TimeSpan -Days 1;    "MinimumTimeBetweenDeployments" = New-TimeSpan -Minutes 0; "PreventDeploymentsOnWeekends" = $true; }
+    "Environments-2586" = @{ "Name" = "Friends of Octopus";         "BakeTime" = New-TimeSpan -Minutes 0; "StabilizationPhaseBakeTime" = New-TimeSpan -Days 1;    "MinimumTimeBetweenDeployments" = New-TimeSpan -Hours 12;  "PreventDeploymentsOnWeekends" = $true; }
+    "Environments-2587" = @{ "Name" = "Early Adopters";             "BakeTime" = New-TimeSpan -Minutes 0; "StabilizationPhaseBakeTime" = New-TimeSpan -Days 7;    "MinimumTimeBetweenDeployments" = New-TimeSpan -Days 3;    "PreventDeploymentsOnWeekends" = $true; }
+    "Environments-2588" = @{ "Name" = "Stable";                     "BakeTime" = New-TimeSpan -Minutes 0; "StabilizationPhaseBakeTime" = New-TimeSpan -Days 7;    "MinimumTimeBetweenDeployments" = New-TimeSpan -Days 7;    "PreventDeploymentsOnWeekends" = $true; }
+    "Environments-2589" = @{ "Name" = "General Availablilty";       "BakeTime" = New-TimeSpan -Minutes 0; "StabilizationPhaseBakeTime" = New-TimeSpan -Minutes 0; "MinimumTimeBetweenDeployments" = New-TimeSpan -Minutes 0; "PreventDeploymentsOnWeekends" = $true; }
 }
 
 function Invoke-WithRetry {
@@ -339,9 +339,9 @@ function Test-IsPromotionCandidate {
         Write-Host " - This release is still baking. Will try again later after $($retryTime) (UTC) (in $retryTimeSpan)."
         return $nonCandidateResult
     }
-    if (Test-IsWeekendAEST) {
+    if (Test-IsWeekendAEST -and $waitTimeForEnvironmentLookup[$nextEnvironmentId].PreventDeploymentsOnWeekends) {
         # Don't promote after 4pm Friday and 8am Monday morning AEST
-        Write-Host " - Bake time is complete but we aren't going to promote it as it's between 4pm Friday AEST and 8am Monday AEST. This helps us avoid potential issues with rolling out to lots of customers over the weekend when a large majority of our team is unavailable to assist if something goes wrong."
+        Write-Host " - Bake time is complete but we aren't going to promote it to $nextEnvironmentName as it's between 4pm Friday AEST and 8am Monday AEST. This helps us avoid potential issues with rolling out to lots of customers over the weekend when a large majority of our team is unavailable to assist if something goes wrong."
         return $nonCandidateResult
     }
 
