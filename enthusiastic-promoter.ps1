@@ -314,7 +314,7 @@ function Test-IsPromotionCandidate {
             Write-Host " - Release '$($release.Release.Version)' is valid for deployment, but '$($mostRecentReleaseDeployedToNextEnvironment.Release.Version)' was deployed recently ($ageOfLastDeployment ago, which is within the last $formattedMinimumTimeBetweenDeployments)."
             $currDate = Get-CurrentDate
             $retryTimeSpan = Format-TimeSpan $retryTime.Subtract($currDate)
-            Write-Host " - Will try again later after $($retryTime) (UTC) (in $retryTimeSpan)."
+            Write-Host " - Will try again later after $($retryTime.ToString("R")) (in $retryTimeSpan)."
         }
         return $nonCandidateResult
     }
@@ -332,11 +332,11 @@ function Test-IsPromotionCandidate {
     $deploymentsToCurrentEnvironment = Get-MostRecentDeploymentToEnvironment $release $currentEnvironmentId
     if (($null -ne $deploymentsToCurrentEnvironment) -and ($deploymentsToCurrentEnvironment.CompletedTime.Add($bakeTime) -gt (Get-CurrentDate))) {
         $ageOfLastDeployment = Format-Timespan (Get-CurrentDate).Subtract($deploymentsToCurrentEnvironment.CompletedTime)
-        Write-Host " - Completion time of last deployment to $currentEnvironmentName was $($deploymentsToCurrentEnvironment.CompletedTime) (UTC) ($ageOfLastDeployment ago)"
+        Write-Host " - Completion time of last deployment to $currentEnvironmentName was $($deploymentsToCurrentEnvironment.CompletedTime.ToString("R")) ($ageOfLastDeployment ago)"
         $retryTime = $deploymentsToCurrentEnvironment.CompletedTime.Add($bakeTime)
         $currDate = Get-CurrentDate
         $retryTimeSpan = Format-TimeSpan $retryTime.Subtract($currDate)
-        Write-Host " - This release is still baking. Will try again later after $($retryTime) (UTC) (in $retryTimeSpan)."
+        Write-Host " - This release is still baking. Will try again later after $($retryTime.ToString("R")) (in $retryTimeSpan)."
         return $nonCandidateResult
     }
     if (Test-IsWeekendAEST -and $waitTimeForEnvironmentLookup[$nextEnvironmentId].PreventDeploymentsOnWeekends) {
@@ -349,7 +349,7 @@ function Test-IsPromotionCandidate {
         # not sure this should ever happen
         Write-Warning " - Bake time was ignored as there was no deployments to the environment $currentEnvironmentName"
     } else {
-        Write-Host " - Completion time of last deployment to $currentEnvironmentName was $($deploymentsToCurrentEnvironment[0].CompletedTime) (UTC). Release has completed baking."
+        Write-Host " - Completion time of last deployment to $currentEnvironmentName was $($deploymentsToCurrentEnvironment[0].CompletedTime.ToString("R")). Release has completed baking."
     }
     Write-Host " - Checking Andon cord to see if release pipeline is blocked..."
     if (Test-PipelineBlocked $release) {
