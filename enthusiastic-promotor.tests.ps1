@@ -186,7 +186,7 @@ Describe 'Enthusiastic promoter' {
     )
 
     $timezone = "E. Australia Standard Time";
-    if($IsLinux) {
+    if($IsLinux -or $IsMacOS) {
       $timezone = "Australia/Brisbane"
     }
 

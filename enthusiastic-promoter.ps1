@@ -139,7 +139,7 @@ function Get-CurrentTimezone {
 }
 
 function Get-BrisbaneTimezone {
-    if($IsLinux) {
+    if($IsLinux -or $IsMacOS) {
         return Get-TimeZone -Id "Australia/Brisbane"
     }
 
@@ -203,9 +203,9 @@ function Add-PromotionCandidate {
 function Get-MostRecentReleaseDeployedToEnvironment($progression, $release, $environmentId) {
     return $progression.Releases `
            | Where-Object { $_.Release.ChannelId -eq $release.Release.ChannelId } `
-           | Where-Object { $false -eq [string]::IsNullOrEmpty($_.Deployments) }
-           | where-object { (Get-AlreadyDeployedEnvironmentIds $_) -contains $environmentId } `
-           | sort-object { New-Object Octopus.Versioning.Semver.SemanticVersion $_.Release.Version } -Descending `
+           | Where-Object { $false -eq [string]::IsNullOrEmpty($_.Deployments) } `
+           | Where-Object { (Get-AlreadyDeployedEnvironmentIds $_) -contains $environmentId } `
+           | Sort-Object { New-Object Octopus.Versioning.Semver.SemanticVersion $_.Release.Version } -Descending `
            | Select-Object -First 1
 }
 
@@ -402,7 +402,7 @@ function Promote-Releases($promotionCandidates) {
             write-host "--------------------------------------------------------"
             Write-Host " - Promoting release '$($promotionCandidate.Version)' to environment '$($promotionCandidate.EnvironmentName)' ($($promotionCandidate.EnvironmentId))."
             write-host "--------------------------------------------------------"
-            & $octopusToolsPath\tools\octo.exe deploy-release --deployTo $promotionCandidate.EnvironmentId --version $promotionCandidate.Version --project "$projectName" --apiKey $enthusiasticPromoterApiKey --server "https://deploy.octopus.app" --space "Octopus Server"
+            & $octopusToolsPath\tools\octo.exe deploy-release --deployTo $promotionCandidate.EnvironmentId --version $promotionCandidate.Version --project $projectId --apiKey $enthusiasticPromoterApiKey --server "$octopusServerUrl" --space $spaceId
         }
     }
     write-host "--------------------------------------------------------"
