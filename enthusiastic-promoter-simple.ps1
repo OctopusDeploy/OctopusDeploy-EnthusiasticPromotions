@@ -363,24 +363,23 @@ function Promote-Releases($promotionCandidates) {
             write-host "--------------------------------------------------------"
             Write-Host " - Promoting release '$($promotionCandidate.Version)' to environment '$($promotionCandidate.EnvironmentName)' ($($promotionCandidate.EnvironmentId))."
             write-host "--------------------------------------------------------"
-            & $octopusToolsPath deploy-release --deployTo $promotionCandidate.EnvironmentId --version $promotionCandidate.Version --project $projectId --apiKey $enthusiasticPromoterApiKey --server "$octopusServerUrl" --space $spaceId
+            & $octopusToolsPath/tools/octo.exe deploy-release --deployTo $promotionCandidate.EnvironmentId --version $promotionCandidate.Version --project $projectId --apiKey $enthusiasticPromoterApiKey --server "$octopusServerUrl" --space $spaceId
         }
     }
     write-host "--------------------------------------------------------"
 }
 
-#if (Test-Path variable:OctopusParameters) {
+if (Test-Path variable:OctopusParameters) {
     #automatically provided variables
-    $projectName = "Promotion tester"#$OctopusParameters["Octopus.Project.Name"]
-    $spaceId = "Spaces-142" #$OctopusParameters["Octopus.Space.Id"]
-    $projectId = "Projects-4985" #$OctopusParameters["Octopus.Project.Id"]
+    $spaceId = $OctopusParameters["Octopus.Space.Id"]
+    $projectId = $OctopusParameters["Octopus.Project.Id"]
 
     #variables provided from additional packages
-    $octopusToolsPath = "dotnet-octo" #$OctopusParameters["Octopus.Action.Package[OctopusTools].ExtractedPath"]
+    $octopusToolsPath = $OctopusParameters["Octopus.Action.Package[OctopusTools].ExtractedPath"]
 
     #variables from the project
-    $enthusiasticPromoterApiKey = "API-CHWIBWDVLKUMHWBGCAXL5UEHKGWOTGX" #$OctopusParameters["EnthusiasticPromoterApiKey"]
-    $octopusServerUrl = "https://deploy.octopus.app" #$OctopusParameters["Octopus.Web.ServerUri"]
+    $enthusiasticPromoterApiKey = $OctopusParameters["EnthusiasticPromoterApiKey"]
+    $octopusServerUrl = $OctopusParameters["Octopus.Web.ServerUri"]
 
     try {
         $candidates = Get-ChildItem -recurse -filter "Octopus.Versioning.dll"
@@ -403,4 +402,4 @@ function Promote-Releases($promotionCandidates) {
     }
 
     Promote-Releases $promotionCandidates
-#}
+}
