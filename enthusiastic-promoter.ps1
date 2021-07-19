@@ -76,7 +76,7 @@ function Test-PipelineBlocked($release) {
     {
         $activeProblemsCount = Invoke-WithRetry -ScriptBlock {
             Write-Verbose "Getting response from $url"
-            $activeProblems =  (Invoke-restmethod -Uri $url -Headers @{ 'Authorization' = "Bearer $($octofrontApiKey)"}).ActiveProblems
+            $activeProblems =  (Invoke-RestMethod -Uri $url -Headers @{ 'Authorization' = "Bearer $($octofrontApiKey)"} -TimeoutSec 60 -MaximumRetryCount 2 -RetryIntervalSec 10).ActiveProblems
 
             # log out the  json, so we can diagnose what's happening / write a test for it
             write-verbose "--------------------------------------------------------"
