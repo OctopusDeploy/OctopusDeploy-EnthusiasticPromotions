@@ -380,7 +380,7 @@ function Get-PromotionCandidates($progression, $channels) {
 
 function Get-FromApi($url) {
     Write-Verbose "Getting response from $url"
-    $result = Invoke-restmethod -Uri $url -Headers @{ 'X-Octopus-ApiKey' = $enthusiasticPromoterApiKey }
+    $result = Invoke-RestMethod -TimeoutSec 60 -RetryIntervalSec 10 -MaximumRetryCount 2 -Uri $url -Headers @{ 'X-Octopus-ApiKey' = $enthusiasticPromoterApiKey }
 
     # log out the  json, so we can diagnose what's happening / write a test for it
     write-verbose "--------------------------------------------------------"
